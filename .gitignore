@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv/
+venv/
+ENV/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Raw NASA SPICE kernels and LOLA DEM grids (preserve .gitkeep)
+backend/data/kernels/*
+!backend/data/kernels/.gitkeep
+backend/data/lola_grids/*
+!backend/data/lola_grids/.gitkeep
+backend/data/site_packs/*
+!backend/data/site_packs/.gitkeep
+
+# Node / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+*.tsbuildinfo
+npm-debug.log*
+
+# OS & Env
+.DS_Store
+.AppleDouble
+.LSOverride
+.env
+.env.*
+!.env.example

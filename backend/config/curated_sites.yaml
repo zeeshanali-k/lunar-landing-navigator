@@ -1,0 +1,44 @@
+# Curated lunar landing sites registry (East-positive selenographic coordinates in [-180, +180])
+sites:
+  - id: artemis-shackleton-ridge
+    name: Shackleton Connecting Ridge
+    category: artemis_iii
+    agency: NASA
+    lat_deg: -89.45
+    lon_deg: 135.2
+    summary: High-elevation ridge connecting Shackleton and de Gerlache craters with extended illumination.
+  - id: artemis-mons-mouton
+    name: Mons Mouton (Leibnitz Beta Plateau)
+    category: artemis_iii
+    agency: NASA
+    lat_deg: -84.65
+    lon_deg: 31.2
+    summary: Broad flat-topped massif near the lunar South Pole offering high Earth visibility and gentle slopes.
+  - id: artemis-malapert-massif
+    name: Malapert Massif
+    category: artemis_iii
+    agency: NASA
+    lat_deg: -85.97
+    lon_deg: -2.7
+    summary: Prominent Earth-facing peak at the South Pole with strong direct-to-Earth communications clearance.
+  - id: clps-mare-crisium
+    name: Mare Crisium (Blue Ghost)
+    category: clps_commercial
+    agency: NASA / Firefly
+    lat_deg: 18.56
+    lon_deg: 61.81
+    summary: Smooth mid-latitude basalt basin near Mons Latreille targeted by CLPS Blue Ghost Mission 1.
+  - id: apollo-11-tranquillitatis
+    name: Apollo 11 (Mare Tranquillitatis)
+    category: apollo_historic
+    agency: NASA
+    lat_deg: 0.674
+    lon_deg: 23.473
+    summary: Tranquility Base historic first crewed lunar landing site with minimal horizon obstruction.
+  - id: change-4-von-karman
+    name: Chang'e-4 (Von Karman Crater)
+    category: international
+    agency: CNSA
+    lat_deg: -45.457
+    lon_deg: 177.588
+    summary: Historic first lunar far-side landing inside South Pole-Aitken basin; 0% direct-to-Earth visibility.

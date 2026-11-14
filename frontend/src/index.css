@@ -1,0 +1,23 @@
+:root {
+  color-scheme: dark;
+  --bg-space: #070b14;
+  --bg-panel: #101726;
+  --border-subtle: #233049;
+  --text-primary: #e8eef9;
+  --text-muted: #93a4c3;
+  --accent-sun: #f59e0b;
+  --accent-dte: #38bdf8;
+  --accent-ok: #10b981;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: var(--bg-space);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
