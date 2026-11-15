@@ -342,6 +342,9 @@ zeta is the only writer and pusher of `bauerceptor`.
   or the push fails, zeta does not push and does not unblock; it reports.
 - No force-push, no rebase, no squash, no agent-branch push. `completed_commit` hashes stay
   resolvable.
+- If orchestrated with herdr: one agent per worktree, copy `NEXT_SESSION.md` into each worktree,
+  route each `ZETA HANDOFF` to zeta, disable auto-merge/auto-push for A/B/C, and route
+  `M3 UNBLOCK` to the human/usairam only after zeta’s push.
 
 The handoff block is in `NEXT_SESSION.md` section 5.6:
 
