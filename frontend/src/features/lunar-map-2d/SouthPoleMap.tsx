@@ -31,8 +31,7 @@ const RADIUS_PX = 96;
 const POLE_RINGS_DEG = [-80, -84, -86, -88];
 
 export function SouthPoleMap() {
-  const { sites, selectedSiteId, selectedSite, evaluationData, selectSite, moonRadiusKm } =
-    useMissionStore();
+  const { sites, selectedSiteId, selectedSite, evaluationData, selectSite, moonRadiusKm } = useMissionStore();
   const currentIndex = usePlaybackStore((s) => s.currentIndex);
 
   const [viewMode, setViewMode] = useState<MapViewMode>("south_pole");
@@ -86,7 +85,9 @@ export function SouthPoleMap() {
   return (
     <section className="panel-card">
       <h2 className="panel-title">
-        <span><Compass size={13} /> 2D Lunar Map ({viewMode === "south_pole" ? "Polar Stereo" : "Global"})</span>
+        <span>
+          <Compass size={13} /> 2D Lunar Map ({viewMode === "south_pole" ? "Polar Stereo" : "Global"})
+        </span>
         {viewMode === "south_pole" && (
           <button
             type="button"
@@ -99,24 +100,35 @@ export function SouthPoleMap() {
         )}
       </h2>
 
-      <LayerToggleBar
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
-        quickmapUrl={quickmapUrl}
-        moonTrekUrl={moonTrekUrl}
-      />
+      <LayerToggleBar viewMode={viewMode} onViewModeChange={setViewMode} quickmapUrl={quickmapUrl} moonTrekUrl={moonTrekUrl} />
 
       <div style={{ position: "relative" }}>
         <svg
           ref={svgRef}
           viewBox={`0 0 ${SVG_W} ${SVG_H}`}
           onMouseMove={(e) => setHoverCoords(toCoordsFromEvent(e))}
-          onMouseLeave={() => { setHoverCoords(null); setHoveredInfo(null); }}
-          style={{ width: "100%", height: "auto", aspectRatio: `${SVG_W} / ${SVG_H}`, display: "block", background: "#070c18", borderRadius: "0.55rem", border: "1px solid var(--border-subtle)" }}
+          onMouseLeave={() => {
+            setHoverCoords(null);
+            setHoveredInfo(null);
+          }}
+          style={{
+            width: "100%",
+            height: "auto",
+            aspectRatio: `${SVG_W} / ${SVG_H}`,
+            display: "block",
+            background: "#070c18",
+            borderRadius: "0.55rem",
+            border: "1px solid var(--border-subtle)",
+          }}
         >
           <defs>
-            <radialGradient id="lunarPoleBg" cx="50%" cy="50%" r="50%"><stop offset="0%" stopColor="#162138" /><stop offset="100%" stopColor="#0a1120" /></radialGradient>
-            <clipPath id="southPoleClip"><circle cx={CX} cy={CY} r={RADIUS_PX} /></clipPath>
+            <radialGradient id="lunarPoleBg" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#162138" />
+              <stop offset="100%" stopColor="#0a1120" />
+            </radialGradient>
+            <clipPath id="southPoleClip">
+              <circle cx={CX} cy={CY} r={RADIUS_PX} />
+            </clipPath>
           </defs>
 
           {viewMode === "south_pole" ? (
@@ -131,10 +143,18 @@ export function SouthPoleMap() {
                 <line x1={CX - RADIUS_PX} y1={CY} x2={CX + RADIUS_PX} y2={CY} stroke="#1f2e4a" strokeWidth={0.8} />
                 <line x1={CX} y1={CY - RADIUS_PX} x2={CX} y2={CY + RADIUS_PX} stroke="#1f2e4a" strokeWidth={0.8} />
               </g>
-              <text x={CX} y={CY - RADIUS_PX - 5} textAnchor="middle" fontSize="7.5" fill="#38bdf8" fontWeight="700">0°E ▲</text>
-              <text x={CX + RADIUS_PX + 14} y={CY + 3} textAnchor="middle" fontSize="7" fill="#93a4c3">90°E</text>
-              <text x={CX} y={CY + RADIUS_PX + 10} textAnchor="middle" fontSize="7" fill="#93a4c3">180°</text>
-              <text x={CX - RADIUS_PX - 15} y={CY + 3} textAnchor="middle" fontSize="7" fill="#93a4c3">90°W</text>
+              <text x={CX} y={CY - RADIUS_PX - 5} textAnchor="middle" fontSize="7.5" fill="#38bdf8" fontWeight="700">
+                0°E ▲
+              </text>
+              <text x={CX + RADIUS_PX + 14} y={CY + 3} textAnchor="middle" fontSize="7" fill="#93a4c3">
+                90°E
+              </text>
+              <text x={CX} y={CY + RADIUS_PX + 10} textAnchor="middle" fontSize="7" fill="#93a4c3">
+                180°
+              </text>
+              <text x={CX - RADIUS_PX - 15} y={CY + 3} textAnchor="middle" fontSize="7" fill="#93a4c3">
+                90°W
+              </text>
             </g>
           ) : (
             <g>
@@ -154,13 +174,23 @@ export function SouthPoleMap() {
             return (
               <g
                 key={site.id}
-                onClick={(e) => { e.stopPropagation(); void selectSite(site.id); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  void selectSite(site.id);
+                }}
                 onMouseEnter={() => setHoveredInfo(siteTip)}
                 onMouseLeave={() => setHoveredInfo(null)}
                 style={{ cursor: "pointer" }}
               >
                 <title>{siteTip}</title>
-                <circle cx={pt.x} cy={pt.y} r={isCurrent ? 4.2 : 3} fill={isCurrent ? "#10b981" : "#cbd5e1"} stroke="#070b14" strokeWidth={1} />
+                <circle
+                  cx={pt.x}
+                  cy={pt.y}
+                  r={isCurrent ? 4.2 : 3}
+                  fill={isCurrent ? "#10b981" : "#cbd5e1"}
+                  stroke="#070b14"
+                  strokeWidth={1}
+                />
               </g>
             );
           })}
@@ -168,10 +198,32 @@ export function SouthPoleMap() {
           {activePoint?.visible && (
             <g pointerEvents="none">
               {sunRay && currentSample && (
-                <g><line x1={activePoint.x} y1={activePoint.y} x2={sunRay.x2} y2={sunRay.y2} stroke="#f59e0b" strokeWidth={1.8} strokeDasharray={currentSample.is_sunlit ? undefined : "3 2"} /><circle cx={sunRay.x2} cy={sunRay.y2} r={3.2} fill="#f59e0b" /></g>
+                <g>
+                  <line
+                    x1={activePoint.x}
+                    y1={activePoint.y}
+                    x2={sunRay.x2}
+                    y2={sunRay.y2}
+                    stroke="#f59e0b"
+                    strokeWidth={1.8}
+                    strokeDasharray={currentSample.is_sunlit ? undefined : "3 2"}
+                  />
+                  <circle cx={sunRay.x2} cy={sunRay.y2} r={3.2} fill="#f59e0b" />
+                </g>
               )}
               {earthRay && currentSample && (
-                <g><line x1={activePoint.x} y1={activePoint.y} x2={earthRay.x2} y2={earthRay.y2} stroke={currentSample.is_dte_visible ? "#38bdf8" : "#ef4444"} strokeWidth={1.6} strokeDasharray={currentSample.is_dte_visible ? undefined : "3 2"} /><circle cx={earthRay.x2} cy={earthRay.y2} r={2.8} fill={currentSample.is_dte_visible ? "#38bdf8" : "#ef4444"} /></g>
+                <g>
+                  <line
+                    x1={activePoint.x}
+                    y1={activePoint.y}
+                    x2={earthRay.x2}
+                    y2={earthRay.y2}
+                    stroke={currentSample.is_dte_visible ? "#38bdf8" : "#ef4444"}
+                    strokeWidth={1.6}
+                    strokeDasharray={currentSample.is_dte_visible ? undefined : "3 2"}
+                  />
+                  <circle cx={earthRay.x2} cy={earthRay.y2} r={2.8} fill={currentSample.is_dte_visible ? "#38bdf8" : "#ef4444"} />
+                </g>
               )}
               <circle cx={activePoint.x} cy={activePoint.y} r={7} fill="none" stroke="#10b981" strokeWidth={1.4} />
               <circle cx={activePoint.x} cy={activePoint.y} r={3} fill="#10b981" />
@@ -179,17 +231,48 @@ export function SouthPoleMap() {
           )}
         </svg>
         {hoveredInfo && (
-          <div style={{ position: "absolute", left: "0.5rem", bottom: "0.5rem", right: "0.5rem", pointerEvents: "none", padding: "0.35rem 0.6rem", borderRadius: "0.4rem", background: "rgba(7, 11, 20, 0.92)", border: "1px solid var(--accent-dte)", color: "var(--text-primary)", fontSize: "0.73rem" }}>
+          <div
+            style={{
+              position: "absolute",
+              left: "0.5rem",
+              bottom: "0.5rem",
+              right: "0.5rem",
+              pointerEvents: "none",
+              padding: "0.35rem 0.6rem",
+              borderRadius: "0.4rem",
+              background: "rgba(7, 11, 20, 0.92)",
+              border: "1px solid var(--accent-dte)",
+              color: "var(--text-primary)",
+              fontSize: "0.73rem",
+            }}
+          >
             {hoveredInfo}
           </div>
         )}
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "0.5rem", fontSize: "0.75rem", color: "var(--text-muted)" }}>
-        <span>{hoverCoords ? `Cursor: ${hoverCoords.lat_deg.toFixed(2)}°, ${hoverCoords.lon_deg.toFixed(2)}°` : activeLat !== null && activeLon !== null ? `Active: ${activeLat.toFixed(2)}°, ${activeLon.toFixed(2)}°` : "No site selected"}</span>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: "0.5rem",
+          fontSize: "0.75rem",
+          color: "var(--text-muted)",
+        }}
+      >
+        <span>
+          {hoverCoords
+            ? `Cursor: ${hoverCoords.lat_deg.toFixed(2)}°, ${hoverCoords.lon_deg.toFixed(2)}°`
+            : activeLat !== null && activeLon !== null
+              ? `Active: ${activeLat.toFixed(2)}°, ${activeLon.toFixed(2)}°`
+              : "No site selected"}
+        </span>
         <span style={{ display: "flex", gap: "0.75rem" }}>
           <span style={{ color: "var(--accent-sun)" }}>● Sun Az {currentSample ? `${currentSample.sun_az_deg.toFixed(0)}°` : "—"}</span>
-          <span style={{ color: currentSample?.is_dte_visible ? "var(--accent-dte)" : "var(--accent-danger)" }}>● Earth Az {currentSample ? `${currentSample.earth_az_deg.toFixed(0)}°` : "—"}</span>
+          <span style={{ color: currentSample?.is_dte_visible ? "var(--accent-dte)" : "var(--accent-danger)" }}>
+            ● Earth Az {currentSample ? `${currentSample.earth_az_deg.toFixed(0)}°` : "—"}
+          </span>
         </span>
       </div>
     </section>

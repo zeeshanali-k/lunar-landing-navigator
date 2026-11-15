@@ -10,14 +10,6 @@ export {
   subscribeOfflineStatus,
   type RequestJsonOptions,
 } from "./httpClient";
-export {
-  fetchCustomTerrain,
-  fetchSiteTerrain,
-  fetchSites,
-} from "./siteService";
-export {
-  compareScenarios,
-  evaluateScenario,
-  scanWindows,
-} from "./evaluationService";
+export { fetchCustomTerrain, fetchSiteTerrain, fetchSites } from "./siteService";
+export { compareScenarios, evaluateScenario, scanWindows } from "./evaluationService";
 export { fetchHealth, type HealthResponse } from "./healthService";

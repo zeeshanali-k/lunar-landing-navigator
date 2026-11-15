@@ -1,12 +1,7 @@
 /** Solar Array Orientation & Mast Height Selector backed by API evaluation metrics (F4.6). */
 
 import { usePlaybackStore } from "../../state";
-import type {
-  EvaluationSummary,
-  ObserverHeightM,
-  SolarArrayType,
-  TimeseriesPoint,
-} from "../../types";
+import type { EvaluationSummary, ObserverHeightM, SolarArrayType, TimeseriesPoint } from "../../types";
 
 export interface SolarArraySelectorProps {
   summary: EvaluationSummary;
@@ -69,7 +64,11 @@ export function SolarArraySelector({
                 disabled={loading}
                 onClick={() => onChangeArrayType(opt.id)}
                 style={{
-                  flex: "1 1 90px", padding: "0.32rem 0.5rem", borderRadius: "0.4rem", textAlign: "left", cursor: "pointer",
+                  flex: "1 1 90px",
+                  padding: "0.32rem 0.5rem",
+                  borderRadius: "0.4rem",
+                  textAlign: "left",
+                  cursor: "pointer",
                   border: `1px solid ${selected ? "var(--accent-sun)" : "var(--border-subtle)"}`,
                   background: selected ? "rgba(245, 158, 11, 0.14)" : "#0b1120",
                   color: selected ? "#fef3c7" : "var(--text-primary)",
@@ -92,7 +91,12 @@ export function SolarArraySelector({
                 disabled={loading}
                 onClick={() => onChangeObserverHeight(opt.heightM)}
                 style={{
-                  flex: "1 1 85px", padding: "0.36rem 0.5rem", borderRadius: "0.4rem", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer",
+                  flex: "1 1 85px",
+                  padding: "0.36rem 0.5rem",
+                  borderRadius: "0.4rem",
+                  fontSize: "0.75rem",
+                  fontWeight: 600,
+                  cursor: "pointer",
                   border: `1px solid ${selected ? "var(--accent-dte)" : "var(--border-subtle)"}`,
                   background: selected ? "rgba(56, 189, 248, 0.14)" : "#0b1120",
                   color: selected ? "#e0f2fe" : "var(--text-primary)",
@@ -105,12 +109,28 @@ export function SolarArraySelector({
         </div>
       </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "0.5rem", padding: "0.38rem 0.65rem", borderRadius: "0.45rem", background: "rgba(16, 185, 129, 0.08)", border: "1px solid rgba(16, 185, 129, 0.3)", fontSize: "0.74rem", fontVariantNumeric: "tabular-nums" }}>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: "0.5rem",
+          padding: "0.38rem 0.65rem",
+          borderRadius: "0.45rem",
+          background: "rgba(16, 185, 129, 0.08)",
+          border: "1px solid rgba(16, 185, 129, 0.3)",
+          fontSize: "0.74rem",
+          fontVariantNumeric: "tabular-nums",
+        }}
+      >
         <span>
-          Mean Power Factor: <strong style={{ color: "var(--accent-ok)" }}>{meanPowerPct}%</strong> ({summary.mean_irradiance_w_m2.toFixed(0)} W/m²)
+          Mean Power Factor: <strong style={{ color: "var(--accent-ok)" }}>{meanPowerPct}%</strong> (
+          {summary.mean_irradiance_w_m2.toFixed(0)} W/m²)
         </span>
         <span style={{ color: "var(--text-muted)" }}>
-          Sunlit: <strong>{summary.sunlit_hours.toFixed(0)}h</strong> · Max Dark: <strong>{summary.longest_dark_streak_hours.toFixed(0)}h</strong>
+          Sunlit: <strong>{summary.sunlit_hours.toFixed(0)}h</strong> · Max Dark:{" "}
+          <strong>{summary.longest_dark_streak_hours.toFixed(0)}h</strong>
         </span>
       </div>
     </section>

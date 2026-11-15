@@ -28,14 +28,10 @@ export const useComparisonStore = create<ComparisonState>((set, get) => ({
 
   pinScenario: async (scenario) => {
     const { pinnedScenarios } = get();
-    const existingIdx = pinnedScenarios.findIndex(
-      (item) => item.scenario_id === scenario.scenario_id,
-    );
+    const existingIdx = pinnedScenarios.findIndex((item) => item.scenario_id === scenario.scenario_id);
     let updated: CompareScenarioInput[];
     if (existingIdx >= 0) {
-      updated = pinnedScenarios.map((item, idx) =>
-        idx === existingIdx ? scenario : item,
-      );
+      updated = pinnedScenarios.map((item, idx) => (idx === existingIdx ? scenario : item));
     } else if (pinnedScenarios.length >= MAX_PINNED_SCENARIOS) {
       updated = [...pinnedScenarios.slice(1), scenario];
     } else {
@@ -48,8 +44,7 @@ export const useComparisonStore = create<ComparisonState>((set, get) => ({
   unpinScenario: async (scenarioId) => {
     const { pinnedScenarios, baselineIndex } = get();
     const updated = pinnedScenarios.filter((item) => item.scenario_id !== scenarioId);
-    const nextBaseline =
-      updated.length === 0 ? 0 : Math.min(baselineIndex, updated.length - 1);
+    const nextBaseline = updated.length === 0 ? 0 : Math.min(baselineIndex, updated.length - 1);
     set({ pinnedScenarios: updated, baselineIndex: nextBaseline });
     if (updated.length > 0) {
       await get().runComparison();

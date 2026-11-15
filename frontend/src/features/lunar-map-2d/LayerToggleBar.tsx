@@ -15,14 +15,17 @@ export interface LayerToggleBarProps {
   moonTrekUrl?: string;
 }
 
-export function LayerToggleBar({
-  viewMode,
-  onViewModeChange,
-  quickmapUrl,
-  moonTrekUrl,
-}: LayerToggleBarProps) {
+export function LayerToggleBar({ viewMode, onViewModeChange, quickmapUrl, moonTrekUrl }: LayerToggleBarProps) {
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "0.45rem" }}>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: "0.45rem",
+      }}
+    >
       <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", alignItems: "center" }}>
         <button
           type="button"

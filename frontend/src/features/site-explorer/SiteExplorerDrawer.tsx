@@ -8,12 +8,7 @@ import { SITE_CATEGORY_META, SiteCard } from "./SiteCard";
 
 type CategoryFilter = "all" | SiteCategory;
 
-const CATEGORY_ORDER: SiteCategory[] = [
-  "artemis_iii",
-  "clps_commercial",
-  "apollo_historic",
-  "international",
-];
+const CATEGORY_ORDER: SiteCategory[] = ["artemis_iii", "clps_commercial", "apollo_historic", "international"];
 
 const CATEGORY_FILTERS: { id: CategoryFilter; label: string }[] = [
   { id: "all", label: "All Sites" },
@@ -41,26 +36,18 @@ export function SiteExplorerDrawer() {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
 
-  const pinnedIds = useMemo(
-    () => new Set(pinnedScenarios.map((item) => item.scenario_id)),
-    [pinnedScenarios],
-  );
+  const pinnedIds = useMemo(() => new Set(pinnedScenarios.map((item) => item.scenario_id)), [pinnedScenarios]);
 
   const filteredSites = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     return sites.filter((site) => {
       if (categoryFilter !== "all" && site.category !== categoryFilter) return false;
       if (!q) return true;
-      return (
-        site.name.toLowerCase().includes(q) ||
-        site.agency.toLowerCase().includes(q) ||
-        site.summary.toLowerCase().includes(q)
-      );
+      return site.name.toLowerCase().includes(q) || site.agency.toLowerCase().includes(q) || site.summary.toLowerCase().includes(q);
     });
   }, [sites, categoryFilter, searchQuery]);
 
-  const getSiteScenarioId = (siteId: string): string =>
-    `${siteId}-${solarArrayType}-${observerHeightM}m`;
+  const getSiteScenarioId = (siteId: string): string => `${siteId}-${solarArrayType}-${observerHeightM}m`;
 
   const handlePinSiteToggle = (site: SiteSummary): void => {
     const scenarioId = getSiteScenarioId(site.id);
@@ -89,15 +76,14 @@ export function SiteExplorerDrawer() {
   return (
     <aside className="panel-card site-explorer-drawer">
       <h2 className="panel-title">
-        <span><MapPin size={13} /> Landing Site Explorer</span>
+        <span>
+          <MapPin size={13} /> Landing Site Explorer
+        </span>
         <span style={{ fontSize: "0.72rem", color: "var(--accent-dte)" }}>{sites.length} Curated</span>
       </h2>
 
       <div style={{ position: "relative" }}>
-        <Search
-          size={14}
-          style={{ position: "absolute", left: "0.6rem", top: "0.55rem", color: "var(--text-muted)" }}
-        />
+        <Search size={14} style={{ position: "absolute", left: "0.6rem", top: "0.55rem", color: "var(--text-muted)" }} />
         <input
           type="search"
           value={searchQuery}

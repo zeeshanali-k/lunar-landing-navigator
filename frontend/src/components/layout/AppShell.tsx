@@ -32,9 +32,7 @@ export function AppShell() {
   const unpinScenario = useComparisonStore((s) => s.unpinScenario);
 
   const isSphericalLimbOnly =
-    terrainUnavailable ||
-    evaluationData?.site.has_precomputed_terrain === false ||
-    selectedSite?.has_precomputed_terrain === false;
+    terrainUnavailable || evaluationData?.site.has_precomputed_terrain === false || selectedSite?.has_precomputed_terrain === false;
   const horizonProfile = evaluationData?.horizon_profile ?? [];
   const timeseries = evaluationData?.timeseries ?? [];
 
@@ -46,7 +44,14 @@ export function AppShell() {
           <div
             className="panel-card"
             data-testid="url-notices-banner"
-            style={{ borderColor: "var(--accent-warn)", color: "#fde68a", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.75rem" }}
+            style={{
+              borderColor: "var(--accent-warn)",
+              color: "#fde68a",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "0.75rem",
+            }}
           >
             <div style={{ display: "grid", gap: "0.25rem", fontSize: "0.82rem" }}>
               {notices.map((notice) => (
@@ -66,7 +71,11 @@ export function AppShell() {
         )}
 
         {isSphericalLimbOnly && (
-          <div className="panel-card" data-testid="class-b-banner" style={{ borderColor: "var(--accent-warn)", color: "#fde68a", padding: "0.65rem 1rem" }}>
+          <div
+            className="panel-card"
+            data-testid="class-b-banner"
+            style={{ borderColor: "var(--accent-warn)", color: "#fde68a", padding: "0.65rem 1rem" }}
+          >
             <strong style={{ fontSize: "0.82rem" }}>Terrain model unavailable — spherical limb only</strong>
           </div>
         )}
@@ -122,7 +131,9 @@ export function AppShell() {
           </>
         ) : (
           <section className="panel-card">
-            <h2 className="panel-title"><span>{activeTab.toUpperCase()} Workspace</span></h2>
+            <h2 className="panel-title">
+              <span>{activeTab.toUpperCase()} Workspace</span>
+            </h2>
             {activeTab === "compare" && (
               <div style={{ display: "grid", gap: "0.5rem" }}>
                 <p style={{ margin: 0, color: "var(--text-muted)" }}>

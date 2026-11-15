@@ -1,11 +1,8 @@
 /** Unit tests for canonical P0 URL sync, parameter validation, and notices. */
 
-import {
-  buildShareableScenarioUrl,
-  parseScenarioFromUrl,
-  scenarioKey,
-  type ScenarioUrlParams,
-} from "../state/urlSync";
+import { it } from "vitest";
+
+import { buildShareableScenarioUrl, parseScenarioFromUrl, scenarioKey, type ScenarioUrlParams } from "../state/urlSync";
 
 function assert(condition: boolean, message: string): void {
   if (!condition) {
@@ -14,7 +11,7 @@ function assert(condition: boolean, message: string): void {
 }
 
 const VALID_PARAMS: ScenarioUrlParams = {
-  siteId: "artemis-shackleton-ridge",
+  siteId: "artemis-cabeus-peak",
   startUtc: "2027-11-01T00:00:00Z",
   durationDays: 14,
   stepMinutes: 60,
@@ -22,11 +19,10 @@ const VALID_PARAMS: ScenarioUrlParams = {
   fixedArrayAzimuthDeg: 45,
   observerHeightM: 2,
   minCommsElevDeg: 5,
-  personaMode: "planner",
 };
 
 export function runUrlSyncTests(): void {
-  // 1. Canonical key ordering (8 P0 keys, no mode param)
+  // 1. Canonical key ordering (8 P0 keys only)
   const key = scenarioKey(VALID_PARAMS);
   const keys = [...new URLSearchParams(key).keys()];
   const expectedKeys = ["site", "start", "days", "step", "array", "array_az", "mast", "min_comms"];
@@ -39,7 +35,7 @@ export function runUrlSyncTests(): void {
   // 2. Round-trip parse of valid parameters produces zero notices
   const valid = parseScenarioFromUrl(`?${key}`);
   assert(valid.notices.length === 0, `expected 0 notices, got ${valid.notices.length}`);
-  assert(valid.params.siteId === "artemis-shackleton-ridge", "siteId mismatch");
+  assert(valid.params.siteId === "artemis-cabeus-peak", "siteId mismatch");
   assert(valid.params.durationDays === 14, "durationDays mismatch");
   assert(valid.params.stepMinutes === 60, "stepMinutes mismatch");
   assert(valid.params.solarArrayType === "vertical_tracking", "solarArrayType mismatch");
@@ -60,7 +56,12 @@ export function runUrlSyncTests(): void {
   // 4. Unparseable start timestamp emits notice
   const badStart = parseScenarioFromUrl("?start=not-a-timestamp");
   assert(badStart.params.startUtc === undefined, "unparseable startUtc should be undefined");
-  assert(badStart.notices.some((msg) => msg.includes("start date")), "expected start date notice");
+  assert(
+    badStart.notices.some((msg) => msg.includes("start date")),
+    "expected start date notice",
+  );
 }
 
-runUrlSyncTests();
+it("canonical P0 URL sync, parameter validation, and notices", () => {
+  runUrlSyncTests();
+});

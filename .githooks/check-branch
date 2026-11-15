@@ -41,7 +41,9 @@ if [[ -f "$owners_file" && -n "$identity" ]]; then
     }
   ' "$owners_file")"
 
-  if [[ -n "$expected" && "$current" != "$expected" ]]; then
+  # A declared parallel-agent session may use <owner-branch>-* branches;
+  # see plan/OWNERS.md "Parallel agent session".
+  if [[ -n "$expected" && "$current" != "$expected" && "$current" != "$expected"-* ]]; then
     echo "BRANCH GUARD: identity '$identity' belongs on branch '$expected', not '$current'." >&2
     echo "  See plan/OWNERS.md." >&2
     exit 1

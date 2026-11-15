@@ -1,5 +1,7 @@
 /** Unit tests for horizon interpolation, panoramic projection, and sky-dome math. */
 
+import { it } from "vitest";
+
 import {
   azElevToPanoramaSVG,
   azElevToSkyDomeSVG,
@@ -80,4 +82,19 @@ export function runHorizonMathTests(): void {
   assertApprox(eastRim.y, 150, 1e-6, "east rim y");
 }
 
-runHorizonMathTests();
+it("horizon interpolation, panoramic projection, and sky-dome math", () => {
+  runHorizonMathTests();
+});
+
+it("renders 360-azimuth-sample terrain profiles into ridge and limb SVG paths", () => {
+  const profile360: HorizonProfilePoint[] = Array.from({ length: 360 }, (_, az) => ({
+    azimuth_deg: az,
+    terrain_elev_deg: 2,
+    geometric_limb_deg: 0,
+  }));
+  const paths = buildPanoramaHorizonPaths(profile360, 720, 240, -10, 20);
+  assert(profile360.length === 360, `expected 360 samples, got ${profile360.length}`);
+  assert(paths.ridgeLinePath.startsWith("M0.0,"), "ridgeLinePath must be non-empty for 360 samples");
+  assert(paths.limbLinePath.startsWith("M0.0,"), "limbLinePath must be non-empty for 360 samples");
+  assert(paths.areaPath.endsWith("Z"), "areaPath must close cleanly for 360 samples");
+});

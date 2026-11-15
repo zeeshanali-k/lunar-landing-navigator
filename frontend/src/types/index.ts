@@ -1,38 +1,11 @@
-/** Central re-export of locked Track 0 API contracts (Contracts A-E) and coordinate utils. */
+/** Re-export of the generated wire contract plus display-only coordinate helpers.
+ *
+ * The wire types are generated from the Pydantic models in
+ * backend/src/api/schemas via `python -m src.cli.export_openapi`; nothing in this
+ * barrel restates a contract field. `coordinates.ts` holds deg/rad conversion and
+ * azimuth normalisation only.
+ */
 
-export type {
-  CustomTerrainRequest,
-  ExternalLinks,
-  SiteCategory,
-  SiteSummary,
-  TerrainPatch,
-} from "./site";
-export type {
-  CustomCoords,
-  DurationDays,
-  EvaluateRequest,
-  EvaluateResponse,
-  EvaluatedSite,
-  EvaluationSummary,
-  HorizonProfilePoint,
-  NextEventsFromStart,
-  ObserverHeightM,
-  SolarArrayType,
-  StepMinutes,
-  SubScores,
-  TimeseriesPoint,
-} from "./evaluation";
-export type {
-  ComparedScenario,
-  CompareRequest,
-  CompareResponse,
-  CompareScenarioInput,
-  ScenarioDeltas,
-} from "./comparison";
-export type {
-  TopWindow,
-  WindowCandidate,
-  WindowsRequest,
-  WindowsResponse,
-} from "./windows";
+export * from "./api.generated";
+export type { CustomTerrainRequest as CustomCoords } from "./api.generated";
 export { degToRad, normalizeAzimuthDeg, radToDeg } from "./coordinates";

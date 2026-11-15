@@ -1,24 +1,40 @@
-/** Core mission state store coordinating site selection, evaluation, terrain, and URL sync (F3.1).
+/** Core mission state store coordinating curated site selection, evaluation, terrain, and URL sync (F3.1).
  *
  * Delegates every computation to the backend API without clamping or rescaling (REQ-06, REQ-10).
  */
 
 import { create } from "zustand";
 import {
-  evaluateScenario, fetchCustomTerrain, fetchHealth, fetchSites, fetchSiteTerrain,
-  isAbortError, isOfflineFallbackActive, subscribeOfflineStatus,
+  evaluateScenario,
+  fetchHealth,
+  fetchSites,
+  fetchSiteTerrain,
+  isAbortError,
+  isOfflineFallbackActive,
+  subscribeOfflineStatus,
 } from "../services";
 import type {
-  CustomCoords, DurationDays, EvaluateRequest, EvaluateResponse, ObserverHeightM,
-  SiteSummary, SolarArrayType, StepMinutes, TerrainPatch,
+  CustomCoords,
+  DurationDays,
+  EvaluateRequest,
+  EvaluateResponse,
+  ObserverHeightM,
+  SiteSummary,
+  SolarArrayType,
+  StepMinutes,
+  TerrainPatch,
 } from "../types";
 import {
-  parseScenarioFromUrl, scenarioKey, syncScenarioToUrl,
-  type PersonaMode, type ScenarioUrlParams, type WorkspaceTab,
+  parseScenarioFromUrl,
+  scenarioKey,
+  syncScenarioToUrl,
+  type PersonaMode,
+  type ScenarioUrlParams,
+  type WorkspaceTab,
 } from "./urlSync";
 import { usePlaybackStore } from "./usePlaybackStore";
 
-const DEFAULT_SITE_ID = "artemis-shackleton-ridge";
+const DEFAULT_SITE_ID = "artemis-cabeus-peak";
 let offlineSubscribed = false;
 let activeRefreshSeq = 0;
 
@@ -50,7 +66,12 @@ export interface MissionState {
   setCustomCoordinates: (coords: CustomCoords) => Promise<void>;
   setSchedule: (startUtc: string, durationDays?: DurationDays) => Promise<void>;
   setStepMinutes: (stepMinutes: StepMinutes) => Promise<void>;
-  setHardwareConfig: (solarArrayType: SolarArrayType, observerHeightM: ObserverHeightM, fixedArrayAzimuthDeg?: number, minCommsElevDeg?: number) => Promise<void>;
+  setHardwareConfig: (
+    solarArrayType: SolarArrayType,
+    observerHeightM: ObserverHeightM,
+    fixedArrayAzimuthDeg?: number,
+    minCommsElevDeg?: number,
+  ) => Promise<void>;
   setPersonaMode: (mode: PersonaMode) => void;
   setActiveTab: (tab: WorkspaceTab) => void;
   dismissNotices: () => void;
@@ -58,11 +79,29 @@ export interface MissionState {
 }
 
 function toUrlParams(s: MissionState): ScenarioUrlParams {
-  return { siteId: s.selectedSiteId, startUtc: s.startUtc, durationDays: s.durationDays, stepMinutes: s.stepMinutes, solarArrayType: s.solarArrayType, fixedArrayAzimuthDeg: s.fixedArrayAzimuthDeg, observerHeightM: s.observerHeightM, minCommsElevDeg: s.minCommsElevDeg, personaMode: s.personaMode };
+  return {
+    siteId: s.selectedSiteId,
+    startUtc: s.startUtc,
+    durationDays: s.durationDays,
+    stepMinutes: s.stepMinutes,
+    solarArrayType: s.solarArrayType,
+    fixedArrayAzimuthDeg: s.fixedArrayAzimuthDeg,
+    observerHeightM: s.observerHeightM,
+    minCommsElevDeg: s.minCommsElevDeg,
+  };
 }
 
-function toEvaluateRequest(s: MissionState): EvaluateRequest {
-  return { site_id: s.customCoords ? null : s.selectedSiteId, custom_coords: s.customCoords, start_utc: s.startUtc, duration_days: s.durationDays, step_minutes: s.stepMinutes, solar_array_type: s.solarArrayType, fixed_array_azimuth_deg: s.fixedArrayAzimuthDeg, observer_height_m: s.observerHeightM, min_comms_elev_deg: s.minCommsElevDeg };
+function toEvaluateRequest(siteId: string, s: MissionState): EvaluateRequest {
+  return {
+    site_id: siteId,
+    start_utc: s.startUtc,
+    duration_days: s.durationDays,
+    step_minutes: s.stepMinutes,
+    solar_array_type: s.solarArrayType,
+    fixed_array_azimuth_deg: s.fixedArrayAzimuthDeg,
+    observer_height_m: s.observerHeightM,
+    min_comms_elev_deg: s.minCommsElevDeg,
+  };
 }
 
 export const useMissionStore = create<MissionState>((set, get) => ({
@@ -105,7 +144,6 @@ export const useMissionStore = create<MissionState>((set, get) => ({
       fixedArrayAzimuthDeg: parsed.fixedArrayAzimuthDeg ?? s.fixedArrayAzimuthDeg,
       observerHeightM: parsed.observerHeightM ?? s.observerHeightM,
       minCommsElevDeg: parsed.minCommsElevDeg ?? s.minCommsElevDeg,
-      personaMode: parsed.personaMode ?? s.personaMode,
       notices,
       loading: true,
       error: null,
@@ -114,9 +152,10 @@ export const useMissionStore = create<MissionState>((set, get) => ({
       const [sites, health] = await Promise.all([fetchSites(), fetchHealth()]);
       const requestedId = parsed.siteId;
       const matched = sites.find((s) => s.id === get().selectedSiteId) ?? sites[0] ?? null;
-      const extraNotice = requestedId && !sites.some((s) => s.id === requestedId)
-        ? [`Unknown site "${requestedId}"; fell back to ${matched?.id ?? DEFAULT_SITE_ID}.`]
-        : [];
+      const extraNotice =
+        requestedId && !sites.some((s) => s.id === requestedId)
+          ? [`Unknown site "${requestedId}"; fell back to ${matched?.id ?? DEFAULT_SITE_ID}.`]
+          : [];
       set((s) => ({
         moonRadiusKm: health.moon_radius_km,
         sites,
@@ -136,26 +175,22 @@ export const useMissionStore = create<MissionState>((set, get) => ({
   refreshScenario: async () => {
     const seq = ++activeRefreshSeq;
     const state = get();
-    if (!state.customCoords && !state.selectedSiteId) return;
+    const { selectedSiteId } = state;
+    if (!selectedSiteId) return;
     const urlParams = toUrlParams(state);
     syncScenarioToUrl(urlParams);
     set({ loading: true, error: null });
     try {
-      const evaluationData = await evaluateScenario(toEvaluateRequest(state), scenarioKey(urlParams));
+      const evaluationData = await evaluateScenario(toEvaluateRequest(selectedSiteId, state), scenarioKey(urlParams));
       if (seq !== activeRefreshSeq) return;
       let terrainPatch: TerrainPatch | null = null;
       let terrainUnavailable = false;
       try {
-        terrainPatch = state.customCoords
-          ? await fetchCustomTerrain(state.customCoords)
-          : await fetchSiteTerrain(state.selectedSiteId ?? DEFAULT_SITE_ID);
+        terrainPatch = await fetchSiteTerrain(selectedSiteId);
       } catch (terrainErr: unknown) {
         const message = terrainErr instanceof Error ? terrainErr.message : "";
-        if (message.includes("TERRAIN_NOT_AVAILABLE") || message.includes("409")) {
-          terrainUnavailable = true;
-        } else {
-          throw terrainErr;
-        }
+        if (message.includes("TERRAIN_NOT_AVAILABLE") || message.includes("409")) terrainUnavailable = true;
+        else throw terrainErr;
       }
       if (seq !== activeRefreshSeq) return;
       usePlaybackStore.getState().setTotalSteps(evaluationData.timeseries.length);
@@ -165,6 +200,7 @@ export const useMissionStore = create<MissionState>((set, get) => ({
       set({ loading: false, error: err instanceof Error ? err.message : "Scenario evaluation failed." });
     }
   },
+
   selectSite: async (siteId) => {
     set({ selectedSiteId: siteId, selectedSite: get().sites.find((s) => s.id === siteId) ?? null, customCoords: null });
     usePlaybackStore.getState().jumpToIndex(0);
@@ -175,12 +211,23 @@ export const useMissionStore = create<MissionState>((set, get) => ({
     usePlaybackStore.getState().jumpToIndex(0);
     await get().refreshScenario();
   },
-  setSchedule: async (startUtc, durationDays) => { set((s) => ({ startUtc, durationDays: durationDays ?? s.durationDays })); await get().refreshScenario(); },
-  setStepMinutes: async (stepMinutes) => { set({ stepMinutes }); await get().refreshScenario(); },
-  setHardwareConfig: async (solarArrayType, observerHeightM, fixedArrayAzimuthDeg, minCommsElevDeg) => {
-    set((s) => ({ solarArrayType, observerHeightM, fixedArrayAzimuthDeg: fixedArrayAzimuthDeg ?? s.fixedArrayAzimuthDeg, minCommsElevDeg: minCommsElevDeg ?? s.minCommsElevDeg }));
+  setSchedule: async (startUtc, durationDays) => {
+    set((s) => ({ startUtc, durationDays: durationDays ?? s.durationDays }));
     await get().refreshScenario();
   },
-  setPersonaMode: (personaMode) => { set({ personaMode }); syncScenarioToUrl(toUrlParams(get())); },
+  setStepMinutes: async (stepMinutes) => {
+    set({ stepMinutes });
+    await get().refreshScenario();
+  },
+  setHardwareConfig: async (solarArrayType, observerHeightM, fixedArrayAzimuthDeg, minCommsElevDeg) => {
+    set((s) => ({
+      solarArrayType,
+      observerHeightM,
+      fixedArrayAzimuthDeg: fixedArrayAzimuthDeg ?? s.fixedArrayAzimuthDeg,
+      minCommsElevDeg: minCommsElevDeg ?? s.minCommsElevDeg,
+    }));
+    await get().refreshScenario();
+  },
+  setPersonaMode: (personaMode) => set({ personaMode }),
   setActiveTab: (activeTab) => set({ activeTab }),
 }));

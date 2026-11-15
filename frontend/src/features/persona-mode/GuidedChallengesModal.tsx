@@ -3,12 +3,7 @@
 import { useState, type CSSProperties } from "react";
 import { ArrowRight, BookOpen, Eye, HelpCircle, Lightbulb, Rocket, Sparkles } from "lucide-react";
 import { useMissionStore, usePlaybackStore } from "../../state";
-import {
-  EDUCATIONAL_CALLOUTS,
-  MISSION_CHALLENGES,
-  getLiveExplorerInsight,
-  type MissionChallenge,
-} from "./educationalGlossary";
+import { EDUCATIONAL_CALLOUTS, MISSION_CHALLENGES, getLiveExplorerInsight, type MissionChallenge } from "./educationalGlossary";
 
 const CALLOUT_BOX: CSSProperties = {
   padding: "0.7rem 0.85rem",
@@ -42,13 +37,34 @@ export function ExplorerCalloutBanner() {
     <section
       className="panel-card"
       aria-label="Explorer Educational Callout"
-      style={{ borderColor: "rgba(245, 158, 11, 0.45)", background: "rgba(245, 158, 11, 0.06)", gap: "0.85rem", padding: "1rem 1.15rem" }}
+      style={{
+        borderColor: "rgba(245, 158, 11, 0.45)",
+        background: "rgba(245, 158, 11, 0.06)",
+        gap: "0.85rem",
+        padding: "1rem 1.15rem",
+      }}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: "1rem",
+        }}
+      >
         <div style={{ display: "flex", alignItems: "flex-start", gap: "0.6rem", flex: "1 1 360px", maxWidth: "920px" }}>
           <Lightbulb size={18} color="var(--accent-sun)" style={{ flexShrink: 0, marginTop: "0.15rem" }} />
           <div>
-            <div style={{ fontSize: "0.74rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: "#fcd34d" }}>
+            <div
+              style={{
+                fontSize: "0.74rem",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.04em",
+                color: "#fcd34d",
+              }}
+            >
               Explorer Mode — Why Does This Happen?
             </div>
             <div style={{ fontSize: "0.86rem", color: "var(--text-primary)", marginTop: "0.25rem", lineHeight: 1.5 }}>{liveInsight}</div>
@@ -82,7 +98,15 @@ export function ExplorerCalloutBanner() {
 
       {activeTopic && (
         <div style={{ ...CALLOUT_BOX, borderColor: "rgba(56, 189, 248, 0.35)" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", gap: "0.5rem", fontSize: "0.84rem", fontWeight: 700 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: "0.5rem",
+              fontSize: "0.84rem",
+              fontWeight: 700,
+            }}
+          >
             <span>{activeTopic.title}</span>
             <span style={{ fontSize: "0.7rem", color: "var(--accent-dte)" }}>{activeTopic.tag}</span>
           </div>
@@ -133,7 +157,16 @@ export function GuidedChallengesView() {
             const state = revealed[c.id];
             return (
               <div key={c.id} style={CALLOUT_BOX}>
-                <div style={{ fontSize: "0.73rem", fontWeight: 700, color: "var(--accent-sun)", textTransform: "uppercase" }}>{c.title}</div>
+                <div
+                  style={{
+                    fontSize: "0.73rem",
+                    fontWeight: 700,
+                    color: "var(--accent-sun)",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {c.title}
+                </div>
                 <div style={{ fontSize: "0.94rem", fontWeight: 700, color: "var(--text-primary)" }}>{c.question}</div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginTop: "0.2rem" }}>
                   <button
@@ -182,11 +215,20 @@ export function GuidedChallengesView() {
             <div key={topic.id} style={CALLOUT_BOX}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem" }}>
                 <strong style={{ fontSize: "0.9rem" }}>{topic.title}</strong>
-                <span className="status-pill" style={{ fontSize: "0.68rem", padding: "0.15rem 0.5rem", color: "var(--accent-dte)" }}>{topic.tag}</span>
+                <span className="status-pill" style={{ fontSize: "0.68rem", padding: "0.15rem 0.5rem", color: "var(--accent-dte)" }}>
+                  {topic.tag}
+                </span>
               </div>
               <div style={{ fontSize: "0.82rem", color: "#fcd34d", fontWeight: 500 }}>{topic.summary}</div>
               <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--text-primary)", lineHeight: 1.45 }}>{topic.whyItHappens}</p>
-              <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", borderTop: "1px solid var(--border-subtle)", paddingTop: "0.35rem" }}>
+              <div
+                style={{
+                  fontSize: "0.75rem",
+                  color: "var(--text-muted)",
+                  borderTop: "1px solid var(--border-subtle)",
+                  paddingTop: "0.35rem",
+                }}
+              >
                 {topic.plannerMetricNote}
               </div>
             </div>

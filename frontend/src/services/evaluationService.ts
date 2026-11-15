@@ -18,11 +18,7 @@ import {
 import { requestJson } from "./httpClient";
 
 /** Evaluate solar power, DTE comms, countdowns, and score for a scenario (Contract B). */
-export async function evaluateScenario(
-  payload: EvaluateRequest,
-  scenarioKey: string,
-  signal?: AbortSignal,
-): Promise<EvaluateResponse> {
+export async function evaluateScenario(payload: EvaluateRequest, scenarioKey: string, signal?: AbortSignal): Promise<EvaluateResponse> {
   return requestJson<EvaluateResponse>({
     path: "/evaluate",
     method: "POST",
@@ -34,11 +30,7 @@ export async function evaluateScenario(
 }
 
 /** Compare up to 4 pinned scenarios or schedule shifts side-by-side (Contract D). */
-export async function compareScenarios(
-  payload: CompareRequest,
-  scenarioKey: string,
-  signal?: AbortSignal,
-): Promise<CompareResponse> {
+export async function compareScenarios(payload: CompareRequest, scenarioKey: string, signal?: AbortSignal): Promise<CompareResponse> {
   return requestJson<CompareResponse>({
     path: "/compare",
     method: "POST",
@@ -50,11 +42,7 @@ export async function compareScenarios(
 }
 
 /** Scan 12 months of candidate launch dates for optimal landing windows (Contract E). */
-export async function scanWindows(
-  payload: WindowsRequest,
-  scenarioKey: string,
-  signal?: AbortSignal,
-): Promise<WindowsResponse> {
+export async function scanWindows(payload: WindowsRequest, scenarioKey: string, signal?: AbortSignal): Promise<WindowsResponse> {
   return requestJson<WindowsResponse>({
     path: "/windows",
     method: "POST",

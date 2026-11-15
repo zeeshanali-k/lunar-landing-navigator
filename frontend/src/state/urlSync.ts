@@ -23,7 +23,6 @@ export interface ScenarioUrlParams {
   fixedArrayAzimuthDeg: number;
   observerHeightM: ObserverHeightM;
   minCommsElevDeg: number;
-  personaMode: PersonaMode;
 }
 
 export interface ParsedScenario {
@@ -34,18 +33,11 @@ export interface ParsedScenario {
 export const ALLOWED_DURATIONS = [7, 14, 29.5] as const;
 export const ALLOWED_STEPS = [10, 60] as const;
 export const ALLOWED_MASTS = [1.5, 2.0, 10.0] as const;
-const VALID_ARRAY_TYPES = new Set<SolarArrayType>([
-  "horizontal_fixed",
-  "vertical_fixed",
-  "vertical_tracking",
-]);
-
+const VALID_ARRAY_TYPES = new Set<SolarArrayType>(["horizontal_fixed", "vertical_fixed", "vertical_tracking"]);
 const REJECTED_KEYS = ["lat", "lon", "label", "custom_coords", "array_azimuth"] as const;
 
 function parseFiniteNumber(raw: string | null): number | null {
-  if (raw === null || raw.trim() === "") {
-    return null;
-  }
+  if (raw === null || raw.trim() === "") return null;
   const parsed = Number(raw);
   return Number.isFinite(parsed) ? parsed : null;
 }
@@ -55,90 +47,58 @@ function isAllowedNumber(value: number, allowed: readonly number[]): boolean {
 }
 
 /** Parse and validate scenario parameters from a URL query string. */
-export function parseScenarioFromUrl(
-  search: string = typeof window !== "undefined" ? window.location.search : "",
-): ParsedScenario {
+export function parseScenarioFromUrl(search: string = typeof window !== "undefined" ? window.location.search : ""): ParsedScenario {
   const params = new URLSearchParams(search);
   const result: Partial<ScenarioUrlParams> = {};
   const notices: string[] = [];
 
   for (const key of REJECTED_KEYS) {
-    if (params.has(key)) {
-      notices.push(`Ignored unsupported parameter "${key}".`);
-    }
+    if (params.has(key)) notices.push(`Ignored unsupported parameter "${key}".`);
   }
 
   const site = params.get("site");
-  if (site && site.trim().length > 0) {
-    result.siteId = site.trim();
-  }
+  if (site && site.trim().length > 0) result.siteId = site.trim();
 
   const start = params.get("start");
   if (start) {
-    if (!Number.isNaN(Date.parse(start))) {
-      result.startUtc = start;
-    } else {
-      notices.push("Ignored unparseable start date.");
-    }
+    if (!Number.isNaN(Date.parse(start))) result.startUtc = start;
+    else notices.push("Ignored unparseable start date.");
   }
 
   const days = parseFiniteNumber(params.get("days"));
   if (days !== null) {
-    if (isAllowedNumber(days, ALLOWED_DURATIONS)) {
-      result.durationDays = days as DurationDays;
-    } else {
-      notices.push(`Duration must be one of ${ALLOWED_DURATIONS.join(", ")} days.`);
-    }
+    if (isAllowedNumber(days, ALLOWED_DURATIONS)) result.durationDays = days as DurationDays;
+    else notices.push(`Duration must be one of ${ALLOWED_DURATIONS.join(", ")} days.`);
   }
 
   const step = parseFiniteNumber(params.get("step"));
   if (step !== null) {
-    if (isAllowedNumber(step, ALLOWED_STEPS)) {
-      result.stepMinutes = step as StepMinutes;
-    } else {
-      notices.push(`Step must be one of ${ALLOWED_STEPS.join(", ")} minutes.`);
-    }
+    if (isAllowedNumber(step, ALLOWED_STEPS)) result.stepMinutes = step as StepMinutes;
+    else notices.push(`Step must be one of ${ALLOWED_STEPS.join(", ")} minutes.`);
   }
 
   const arrayParam = params.get("array") as SolarArrayType | null;
   if (arrayParam) {
-    if (VALID_ARRAY_TYPES.has(arrayParam)) {
-      result.solarArrayType = arrayParam;
-    } else {
-      notices.push("Ignored unknown solar array type.");
-    }
+    if (VALID_ARRAY_TYPES.has(arrayParam)) result.solarArrayType = arrayParam;
+    else notices.push("Ignored unknown solar array type.");
   }
 
   const azimuth = parseFiniteNumber(params.get("array_az"));
   if (azimuth !== null) {
-    if (azimuth >= 0 && azimuth < 360) {
-      result.fixedArrayAzimuthDeg = azimuth;
-    } else {
-      notices.push("Array azimuth must be in [0, 360).");
-    }
+    if (azimuth >= 0 && azimuth < 360) result.fixedArrayAzimuthDeg = azimuth;
+    else notices.push("Array azimuth must be in [0, 360).");
   }
 
   const mast = parseFiniteNumber(params.get("mast"));
   if (mast !== null) {
-    if (isAllowedNumber(mast, ALLOWED_MASTS)) {
-      result.observerHeightM = mast as ObserverHeightM;
-    } else {
-      notices.push(`Observer height must be one of ${ALLOWED_MASTS.join(", ")} m.`);
-    }
+    if (isAllowedNumber(mast, ALLOWED_MASTS)) result.observerHeightM = mast as ObserverHeightM;
+    else notices.push(`Observer height must be one of ${ALLOWED_MASTS.join(", ")} m.`);
   }
 
   const minComms = parseFiniteNumber(params.get("min_comms"));
   if (minComms !== null) {
-    if (minComms >= -5 && minComms <= 45) {
-      result.minCommsElevDeg = minComms;
-    } else {
-      notices.push("Minimum comms elevation must be in [-5, 45] degrees.");
-    }
-  }
-
-  const mode = params.get("mode");
-  if (mode === "planner" || mode === "explorer") {
-    result.personaMode = mode;
+    if (minComms >= -5 && minComms <= 45) result.minCommsElevDeg = minComms;
+    else notices.push("Minimum comms elevation must be in [-5, 45] degrees.");
   }
 
   return { params: result, notices };
@@ -146,9 +106,7 @@ export function parseScenarioFromUrl(
 
 function buildSearchParams(params: ScenarioUrlParams): URLSearchParams {
   const query = new URLSearchParams();
-  if (params.siteId) {
-    query.set("site", params.siteId);
-  }
+  if (params.siteId) query.set("site", params.siteId);
   query.set("start", params.startUtc);
   query.set("days", String(params.durationDays));
   query.set("step", String(params.stepMinutes));

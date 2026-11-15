@@ -1,11 +1,8 @@
 /** Unit tests for mission timeline step inference and Gantt segment grouping. */
 
-import {
-  buildCommsSegments,
-  buildPowerSegments,
-  classifyPowerState,
-  inferStepHours,
-} from "../features/mission-timeline/timelineSegments";
+import { it } from "vitest";
+
+import { buildCommsSegments, buildPowerSegments, classifyPowerState, inferStepHours } from "../features/mission-timeline/timelineSegments";
 import type { TimeseriesPoint } from "../types";
 
 function assert(condition: boolean, message: string): void {
@@ -20,12 +17,7 @@ function assertApprox(actual: number, expected: number, eps: number, label: stri
   }
 }
 
-function makePoint(
-  timestamp_utc: string,
-  sun_visible_fraction: number,
-  is_sunlit: boolean,
-  is_dte_visible: boolean,
-): TimeseriesPoint {
+function makePoint(timestamp_utc: string, sun_visible_fraction: number, is_sunlit: boolean, is_dte_visible: boolean): TimeseriesPoint {
   return {
     timestamp_utc,
     sun_az_deg: 0,
@@ -60,17 +52,11 @@ export function runTimelineSegmentsTests(): void {
   ];
   assertApprox(inferStepHours(hourly), 1.0, 1e-6, "hourly inferStepHours");
 
-  const halfHourly = [
-    makePoint("2027-11-06T00:00:00Z", 1.0, true, true),
-    makePoint("2027-11-06T00:30:00Z", 1.0, true, true),
-  ];
+  const halfHourly = [makePoint("2027-11-06T00:00:00Z", 1.0, true, true), makePoint("2027-11-06T00:30:00Z", 1.0, true, true)];
   assertApprox(inferStepHours(halfHourly), 0.5, 1e-6, "30-min inferStepHours");
 
   // 2. Power state classification
-  assert(
-    classifyPowerState(makePoint("2027-11-06T00:00:00Z", 0.9, false, false)) === "dark",
-    "is_sunlit=false must classify as dark",
-  );
+  assert(classifyPowerState(makePoint("2027-11-06T00:00:00Z", 0.9, false, false)) === "dark", "is_sunlit=false must classify as dark");
   assert(
     classifyPowerState(makePoint("2027-11-06T00:00:00Z", 0.02, true, false)) === "dark",
     "sun_visible_fraction<=0.05 must classify as dark",
@@ -133,4 +119,30 @@ export function runTimelineSegmentsTests(): void {
   );
 }
 
-runTimelineSegmentsTests();
+it("mission timeline step inference and Gantt segment grouping", () => {
+  runTimelineSegmentsTests();
+});
+
+it("covers all three timeline tracks: solar states, DTE states, and elevation curves", () => {
+  const series: TimeseriesPoint[] = [
+    { ...makePoint("2027-11-06T00:00:00Z", 1.0, true, true), sun_elev_deg: 2.5, earth_elev_deg: 4.0 },
+    { ...makePoint("2027-11-06T01:00:00Z", 0.5, true, false), sun_elev_deg: 0.4, earth_elev_deg: -1.5 },
+    { ...makePoint("2027-11-06T02:00:00Z", 0.0, false, false), sun_elev_deg: -2.0, earth_elev_deg: -3.2 },
+  ];
+  const powerTracks = buildPowerSegments(series);
+  const commsTracks = buildCommsSegments(series);
+  const elevationValues = series.map((pt) => [pt.sun_elev_deg, pt.earth_elev_deg]);
+
+  assert(
+    JSON.stringify(powerTracks.map((seg) => seg.state)) === JSON.stringify(["sunlit", "grazing", "dark"]),
+    "solar track must distinguish sunlit, grazing, and dark intervals",
+  );
+  assert(
+    JSON.stringify(commsTracks.map((seg) => seg.state)) === JSON.stringify(["dte_active", "dte_blocked"]),
+    "DTE track must distinguish dte_active and dte_blocked intervals",
+  );
+  assert(
+    elevationValues.length === 3 && elevationValues[0][0] === 2.5 && elevationValues[2][1] === -3.2,
+    "elevation track must preserve sun_elev_deg and earth_elev_deg series values",
+  );
+});

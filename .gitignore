@@ -33,8 +33,6 @@ backend/data/kernels/*
 !backend/data/kernels/.gitkeep
 backend/data/lola_grids/*
 !backend/data/lola_grids/.gitkeep
-backend/data/site_packs/*
-!backend/data/site_packs/.gitkeep
 
 # Node / Frontend
 frontend/node_modules/
@@ -74,3 +72,8 @@ npm-debug.log*
 
 # Local session handoff — personal starting notes, not shared.
 NEXT_SESSION.md
+
+# Raw upstream data — disposable cache, never committed.
+# Provenance lives in data/manifests/; runtime reads backend/data/site_packs/.
+/data/downloads/
+**.part

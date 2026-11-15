@@ -1,19 +1,39 @@
-# External NASA / JPL data sources and SPICE kernel definitions (Module 1)
-lola:
-  south_pole_dem_url: "https://imbrium.mit.edu/DATA/LOLA_GDR/POLAR/IMG/LDEM_80S_120M.IMG"
-  south_pole_label_url: "https://imbrium.mit.edu/DATA/LOLA_GDR/POLAR/IMG/LDEM_80S_120M.LBL"
-  global_dem_url: "https://imbrium.mit.edu/DATA/LOLA_GDR/CYLINDRICAL/IMG/LDEM_16.IMG"
-  global_label_url: "https://imbrium.mit.edu/DATA/LOLA_GDR/CYLINDRICAL/IMG/LDEM_16.LBL"
+# External data sources for the Lunar Landing Site Navigator.
+#
+# Only what the app consumes. Every entry is verified live before use, and a
+# mismatch blocks the task rather than triggering a substitute.
+#
+# Deliberately absent: SPICE kernels. Runtime SPICE was replaced by precomputed
+# JPL Horizons packs, so the kernels are dead weight (~33 MB). Global and
+# equatorial DEMs are also absent: the global LOLA GDR directory returns 404,
+# and equatorial sites use the documented spherical_limb_only model (REQ-05).
 
-spice_kernels:
-  base_url: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/"
-  files:
-    - "spk/planets/de440s.bsp"
-    - "pck/moon_pa_de421_1900-2050.bpc"
-    - "fk/satellites/moon_080317.tf"
-    - "lsk/naif0012.tls"
+lola:
+  # Verified: HTTP 200, Content-Length exactly 115,520,000 bytes.
+  # 7600x7600, 16-bit LSB, polar stereographic, planetocentric, centre lon 0,
+  # MAP_SCALE 80 m/pix, OFFSET 1737400 m, coverage 80S..90S.
+  base_url: "https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/polar/img"
+  image: "ldem_80s_80m.img"
+  label: "ldem_80s_80m.lbl"
+  expected_bytes: 115520000
+  expected_shape: [7600, 7600]
+  expected_scale_m_per_px: 80.0
 
 jpl_horizons:
   api_url: "https://ssd.jpl.nasa.gov/api/horizons.api"
-  center_body: "coord@301"
+  # Topocentric observer at a site on the Moon's surface.
+  center: "coord@301"
+  coord_type: "GEODETIC"
   quantities: "4"
+  # SITE_COORD is 'east_lon_deg,lat_deg,altitude_KILOMETRES' — altitude is in
+  # KILOMETRES, not metres. Longitude is east-positive on the Moon.
+  bodies:
+    sun: "10"
+    earth: "399"
+  # Verified against the API: this window returns exactly 26,305 hourly rows.
+  # A stop of 2028-12-31 yields only 26,281 and silently drops a day.
+  coverage:
+    start_utc: "2026-01-01T00:00:00Z"
+    stop_utc: "2029-01-01T00:00:00Z"
+    step: "1h"
+    expected_samples: 26305

@@ -91,9 +91,27 @@ export function DateAndDurationBar() {
 
   return (
     <section className="panel-card" style={{ gap: "0.65rem" }}>
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "0.6rem" }}>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "0.6rem",
+        }}
+      >
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.35rem" }}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem", fontSize: "0.75rem", fontWeight: 600, color: "var(--text-muted)", marginRight: "0.2rem" }}>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.3rem",
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              color: "var(--text-muted)",
+              marginRight: "0.2rem",
+            }}
+          >
             <Calendar size={13} /> Presets:
           </span>
           {DATE_PRESETS.map((preset) => {
@@ -113,7 +131,15 @@ export function DateAndDurationBar() {
         </div>
 
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.6rem" }}>
-          <label style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", fontSize: "0.76rem", color: "var(--text-muted)" }}>
+          <label
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.35rem",
+              fontSize: "0.76rem",
+              color: "var(--text-muted)",
+            }}
+          >
             <span>UTC Start:</span>
             <input
               type="datetime-local"
@@ -128,7 +154,13 @@ export function DateAndDurationBar() {
           <div style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
             <Clock size={12} color="var(--text-muted)" />
             {DURATION_OPTIONS.map((days) => (
-              <button key={days} type="button" disabled={loading} onClick={() => void setSchedule(startUtc, days)} className={`category-pill ${durationDays === days ? "active" : ""}`}>
+              <button
+                key={days}
+                type="button"
+                disabled={loading}
+                onClick={() => void setSchedule(startUtc, days)}
+                className={`category-pill ${durationDays === days ? "active" : ""}`}
+              >
                 {days}d
               </button>
             ))}
@@ -137,7 +169,13 @@ export function DateAndDurationBar() {
           <div style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }} role="group" aria-label="Time step">
             <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Step:</span>
             {STEP_OPTIONS.map((step) => (
-              <button key={step} type="button" disabled={loading} onClick={() => void setStepMinutes(step)} className={`category-pill ${stepMinutes === step ? "active" : ""}`}>
+              <button
+                key={step}
+                type="button"
+                disabled={loading}
+                onClick={() => void setStepMinutes(step)}
+                className={`category-pill ${stepMinutes === step ? "active" : ""}`}
+              >
                 {step}m
               </button>
             ))}
@@ -145,7 +183,13 @@ export function DateAndDurationBar() {
 
           <label style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", fontSize: "0.76rem" }}>
             <Sliders size={12} color="var(--text-muted)" />
-            <select value={solarArrayType} onChange={(e) => void setHardwareConfig(e.target.value as SolarArrayType, observerHeightM)} className="select-surface" style={{ fontSize: "0.76rem" }} aria-label="Solar array type">
+            <select
+              value={solarArrayType}
+              onChange={(e) => void setHardwareConfig(e.target.value as SolarArrayType, observerHeightM)}
+              className="select-surface"
+              style={{ fontSize: "0.76rem" }}
+              aria-label="Solar array type"
+            >
               <option value="vertical_tracking">Vertical Tracking</option>
               <option value="vertical_fixed">Vertical Fixed</option>
               <option value="horizontal_fixed">Horizontal Fixed</option>
@@ -154,13 +198,31 @@ export function DateAndDurationBar() {
 
           <label style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem", fontSize: "0.75rem", color: "var(--text-muted)" }}>
             <span>Array Az (°):</span>
-            <input type="number" min={0} max={359} step={15} disabled={loading} value={azDraft} onChange={(e) => handleAzChange(e.target.value)} onBlur={() => setAzDraft(String(fixedArrayAzimuthDeg))} className="select-surface" style={{ width: "4.1rem", fontSize: "0.76rem" }} aria-label="Fixed array azimuth degrees" />
+            <input
+              type="number"
+              min={0}
+              max={359}
+              step={15}
+              disabled={loading}
+              value={azDraft}
+              onChange={(e) => handleAzChange(e.target.value)}
+              onBlur={() => setAzDraft(String(fixedArrayAzimuthDeg))}
+              className="select-surface"
+              style={{ width: "4.1rem", fontSize: "0.76rem" }}
+              aria-label="Fixed array azimuth degrees"
+            />
           </label>
 
           <div style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }} role="group" aria-label="Mast height">
             <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Mast:</span>
             {MAST_HEIGHT_OPTIONS.map((heightM) => (
-              <button key={heightM} type="button" disabled={loading} onClick={() => void setHardwareConfig(solarArrayType, heightM)} className={`category-pill ${observerHeightM === heightM ? "active" : ""}`}>
+              <button
+                key={heightM}
+                type="button"
+                disabled={loading}
+                onClick={() => void setHardwareConfig(solarArrayType, heightM)}
+                className={`category-pill ${observerHeightM === heightM ? "active" : ""}`}
+              >
                 {heightM}m
               </button>
             ))}
@@ -168,7 +230,19 @@ export function DateAndDurationBar() {
 
           <label style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem", fontSize: "0.75rem", color: "var(--text-muted)" }}>
             <span>Min Comms (°):</span>
-            <input type="number" min={-5} max={45} step={1} disabled={loading} value={commsDraft} onChange={(e) => handleCommsChange(e.target.value)} onBlur={() => setCommsDraft(String(minCommsElevDeg))} className="select-surface" style={{ width: "3.9rem", fontSize: "0.76rem" }} aria-label="Minimum communications elevation degrees" />
+            <input
+              type="number"
+              min={-5}
+              max={45}
+              step={1}
+              disabled={loading}
+              value={commsDraft}
+              onChange={(e) => handleCommsChange(e.target.value)}
+              onBlur={() => setCommsDraft(String(minCommsElevDeg))}
+              className="select-surface"
+              style={{ width: "3.9rem", fontSize: "0.76rem" }}
+              aria-label="Minimum communications elevation degrees"
+            />
           </label>
         </div>
       </div>

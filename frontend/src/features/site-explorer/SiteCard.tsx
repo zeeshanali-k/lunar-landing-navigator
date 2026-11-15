@@ -44,9 +44,7 @@ export function SiteCard({ site, isSelected, isPinned, onSelect, onPinToggle }: 
       aria-pressed={isSelected}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.4rem" }}>
-        <span style={{ fontSize: "0.7rem", fontWeight: 700, color: categoryMeta.color }}>
-          {categoryMeta.label}
-        </span>
+        <span style={{ fontSize: "0.7rem", fontWeight: 700, color: categoryMeta.color }}>{categoryMeta.label}</span>
         <div style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
           <span
             style={{
@@ -75,25 +73,33 @@ export function SiteCard({ site, isSelected, isPinned, onSelect, onPinToggle }: 
       </div>
 
       <div style={{ fontWeight: 600, fontSize: "0.88rem", lineHeight: 1.25 }}>{site.name}</div>
-      <p style={{ margin: 0, fontSize: "0.76rem", color: "var(--text-muted)", lineHeight: 1.35 }}>
-        {site.summary}
-      </p>
+      <p style={{ margin: 0, fontSize: "0.76rem", color: "var(--text-muted)", lineHeight: 1.35 }}>{site.summary}</p>
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.4rem", marginTop: "0.15rem", flexWrap: "wrap" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: "0.4rem",
+          marginTop: "0.15rem",
+          flexWrap: "wrap",
+        }}
+      >
         <div style={{ display: "flex", gap: "0.55rem", fontSize: "0.72rem", color: "var(--text-muted)", flexWrap: "wrap" }}>
-          <span>{site.lat_deg.toFixed(2)}°, {site.lon_deg.toFixed(2)}°</span>
+          <span>
+            {site.lat_deg.toFixed(2)}°, {site.lon_deg.toFixed(2)}°
+          </span>
           {site.has_precomputed_terrain && site.elevation_m !== null && site.mean_slope_deg !== null ? (
             <>
               <span style={{ display: "inline-flex", alignItems: "center", gap: "0.2rem" }}>
                 <Mountain size={11} />
-                {site.elevation_m >= 0 ? "+" : ""}{site.elevation_m.toFixed(0)}m
+                {site.elevation_m >= 0 ? "+" : ""}
+                {site.elevation_m.toFixed(0)}m
               </span>
               <span>Slope {site.mean_slope_deg.toFixed(1)}°</span>
             </>
           ) : (
-            <span style={{ color: "var(--accent-sun)" }}>
-              Terrain model unavailable — spherical limb only
-            </span>
+            <span style={{ color: "var(--accent-sun)" }}>Terrain model unavailable — spherical limb only</span>
           )}
         </div>
 

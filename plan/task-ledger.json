@@ -125,17 +125,17 @@
       "commands": [
         {
           "cwd": ".",
-          "run": "python3 scripts/validate_task_ledger.py",
+          "run": "uv run --project backend --python 3.12 --frozen python scripts/validate_task_ledger.py",
           "expected_exit": 0
         },
         {
           "cwd": ".",
-          "run": "python3 scripts/check_planning_docs.py",
+          "run": "uv run --project backend --python 3.12 --frozen python scripts/check_planning_docs.py",
           "expected_exit": 0
         },
         {
           "cwd": ".",
-          "run": "python3 scripts/check_file_lengths.py",
+          "run": "uv run --project backend --python 3.12 --frozen python scripts/check_file_lengths.py",
           "expected_exit": 0
         }
       ],
@@ -154,17 +154,17 @@
       "evidence": [
         {
           "kind": "command",
-          "ref": "python3 scripts/validate_task_ledger.py",
+          "ref": "uv run --project backend --python 3.12 --frozen python scripts/validate_task_ledger.py",
           "exit": 0
         },
         {
           "kind": "command",
-          "ref": "python3 scripts/check_planning_docs.py",
+          "ref": "uv run --project backend --python 3.12 --frozen python scripts/check_planning_docs.py",
           "exit": 0
         },
         {
           "kind": "command",
-          "ref": "python3 scripts/check_file_lengths.py",
+          "ref": "uv run --project backend --python 3.12 --frozen python scripts/check_file_lengths.py",
           "exit": 0
         },
         {
@@ -196,7 +196,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "human",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DOC-002"
       ],
@@ -221,7 +221,7 @@
       "commands": [
         {
           "cwd": ".",
-          "run": "python3 scripts/validate_task_ledger.py",
+          "run": "uv run --project backend --python 3.12 --frozen python scripts/validate_task_ledger.py",
           "expected_exit": 0
         }
       ],
@@ -236,12 +236,18 @@
           "ref": "DOC-GATE human sign-off"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "approval",
+          "ref": "DOC-GATE human sign-off",
+          "note": "Human (bauerceptor) approved the operative plan, P0 scope, the 16-site registry aligned to NASA's nine Artemis III regions (release 24-136), and 2026-01-01..2029-01-01 ephemeris coverage. Region anchors use IAU feature centres with provenance URLs."
+        }
+      ],
       "human_approval_required": true,
-      "approval": null,
+      "approval": "Approved 2026-11-15: operative plan and P0 scope confirmed, including the 16-site registry aligned to NASA's current nine Artemis III candidate regions and the 2026-01-01..2029-01-01 ephemeris window.",
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T10:15:36Z",
+      "completed_commit": "0d1ae62316884e5e251b32cf5a8ac32f4535a627"
     },
     {
       "id": "ARCH-001",
@@ -250,7 +256,7 @@
       "priority": "P0",
       "owner": "M2",
       "reviewer": "M1",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DOC-GATE"
       ],
@@ -328,12 +334,88 @@
           "ref": "bun run test"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "uv sync --python 3.12",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen ruff check .",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "bun install",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "bun run typecheck",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "bun run test",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "bun run lint",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "bun run format:check",
+          "exit": 0
+        },
+        {
+          "kind": "artifact",
+          "ref": "backend/uv.lock",
+          "sha256": "c262f501743f42d64785a435051b7cdb703fd62f5117a4c2241ec20dd1dd5541"
+        },
+        {
+          "kind": "artifact",
+          "ref": "frontend/bun.lock",
+          "sha256": "0aa15b7f30d09908db2732352778c0896c51af15dae48ae070468ad6b24d9979"
+        },
+        {
+          "kind": "artifact",
+          "ref": "backend/.python-version",
+          "sha256": "7b55f8e67b5623c4bef3fa691288da9437d79d3aba156de48d481db32ac7d16d"
+        },
+        {
+          "kind": "artifact",
+          "ref": "frontend/eslint.config.js",
+          "sha256": "c32cff83364a9a1e07d6c21313318c9c6791af1f1a145e8d38d8a53e7164484d"
+        },
+        {
+          "kind": "artifact",
+          "ref": "frontend/.prettierrc.json",
+          "sha256": "3fe845584c6fec09a528c438c4f1fe1e42be23cc95576866a0a48879ceb571a9"
+        },
+        {
+          "kind": "artifact",
+          "ref": "frontend/vitest.config.ts",
+          "sha256": "b5eadfafab650bf8644db295829fceeb8c3a9334085704bd14ec42c2dbe812dd"
+        },
+        {
+          "kind": "report",
+          "ref": "lockfile-policy",
+          "note": "no package-lock.json, yarn.lock, or pnpm-lock.yaml present; bun.lock is the only frontend lockfile"
+        },
+        {
+          "kind": "report",
+          "ref": "prettier-baseline-scope",
+          "note": "the one-time Prettier baseline touched frontend/src outside ARCH-001 write paths; it is required for bun run format:check to exit 0. printWidth 140 with objectWrap=preserve keeps every file under the 280-line hard limit."
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T10:34:01Z",
+      "completed_commit": "2dc501ae1e49e74f020807ab1c3758313d5f9ae0"
     },
     {
       "id": "ARCH-002",
@@ -342,7 +424,7 @@
       "priority": "P0",
       "owner": "M2",
       "reviewer": "M1",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "ARCH-001"
       ],
@@ -362,7 +444,16 @@
         "backend/src/cli/export_openapi.py",
         "contracts/openapi.json",
         "contracts/fixtures",
+        "contracts/openapi-draft.yaml",
         "frontend/src/types/api.generated.ts",
+        "frontend/src/types/index.ts",
+        "frontend/src/types/site.ts",
+        "frontend/src/types/evaluation.ts",
+        "frontend/src/types/comparison.ts",
+        "frontend/src/types/windows.ts",
+        "frontend/src/state/useMissionStore.ts",
+        "frontend/src/features/site-explorer/SiteCard.tsx",
+        "frontend/src/features/site-explorer/SiteExplorerDrawer.tsx",
         "frontend/package.json",
         "backend/tests/integration/test_contract_parity.py"
       ],
@@ -393,7 +484,7 @@
         "frontend/src/types/{site,evaluation,comparison,windows}.ts hand-written wire interfaces are deleted; only coordinates.ts and generated types remain",
         "fixtures regenerate deterministically and are labelled synthetic",
         "the terrain fixture is regenerated at grid_size 128 with 16384 values to match production",
-        "the sites fixture is regenerated from the 14-site registry, not hand-maintained",
+        "the sites fixture is regenerated from the 16-site registry, not hand-maintained",
         "contract parity test fails if Pydantic, OpenAPI, generated types, or fixtures diverge"
       ],
       "required_evidence": [
@@ -406,21 +497,43 @@
           "ref": "frontend/src/types/api.generated.ts"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen python -m src.cli.export_openapi",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen pytest tests/integration/test_contract_parity.py -v",
+          "exit": 0,
+          "note": "14 passed, 1 skipped (frontend fixture mirror is DATA-006)"
+        },
+        {
+          "kind": "artifact",
+          "ref": "contracts/openapi.json",
+          "sha256": "5c00c4aedf228d390f2c7a12b18d526cbe1600c5b2ac8c0878fe220406f6c5ea"
+        },
+        {
+          "kind": "artifact",
+          "ref": "frontend/src/types/api.generated.ts",
+          "sha256": "f312f1a2fd0c686d21423a2499095a6e0584ac30a2c0e30c65c46a9dc3bbb529"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T15:38:07Z",
+      "completed_commit": "f03d00c"
     },
     {
       "id": "DATA-001",
-      "title": "Close the 14-site registry with coordinate provenance",
+      "title": "Close the 16-site registry with coordinate provenance",
       "phase": "data",
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "ARCH-001"
       ],
@@ -457,9 +570,9 @@
         }
       ],
       "acceptance": [
-        "exactly 14 unique ids and 14 unique names in the REQ-05 order",
+        "exactly 16 unique ids and 16 unique names in the REQ-05 order",
         "every entry carries coordinate_source_url",
-        "Mons Mouton appears exactly once",
+        "Mons Mouton and Mons Mouton Plateau are both present and are distinct entries",
         "coordinates are finite and east-positive within range",
         "data_sources.yaml references only ldem_80s_80m and the Horizons endpoint; stale 120m and global URLs are gone"
       ],
@@ -469,12 +582,28 @@
           "ref": "pytest tests/unit/test_site_registry.py"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_site_registry.py",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen ruff check .",
+          "exit": 0
+        },
+        {
+          "kind": "artifact",
+          "ref": "backend/config/curated_sites.yaml",
+          "sha256": "8e93a0624d2cf401a0518f2a907a35b5cc872b25ac36d1fc95372fe065a66a85"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T11:22:48Z",
+      "completed_commit": "e1dd9732e280f740fea81c5877bc52c374d0d518"
     },
     {
       "id": "DATA-002",
@@ -483,7 +612,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DATA-001"
       ],
@@ -538,21 +667,39 @@
           "ref": "pytest tests/unit/test_pds_dem.py"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "artifact",
+          "ref": "data/manifests/lola/manifest.json",
+          "sha256": "2d2b4554755ef1799930cc1968e1aa330c95145fd113d7356336605298957817"
+        },
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_pds_dem.py",
+          "exit": 0,
+          "note": "10 passed"
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --project backend --frozen python -m src.cli.download_lola",
+          "exit": 0,
+          "note": "image 115520000 bytes sha256 e6591eeea35402ca5e124ca00f5bf0774381a2d4fa919144b455d82b8ff65fdc"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T13:59:03Z",
+      "completed_commit": "009d0bfd98b290753755fa9c3a2e8bf36ebb7425"
     },
     {
       "id": "DATA-003",
-      "title": "Acquire and parse Horizons Sun/Earth tracks for all 14 sites",
+      "title": "Acquire and parse Horizons Sun/Earth tracks for all 16 sites",
       "phase": "data",
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DATA-001"
       ],
@@ -594,7 +741,7 @@
       "acceptance": [
         "requests use COMMAND 10 and 399, CENTER coord@301, COORD_TYPE GEODETIC, QUANTITIES 4",
         "SITE_COORD altitude is metres divided by 1000 and longitude is east-positive",
-        "coverage is 2027-01-01T00:00:00Z through 2028-07-01T00:00:00Z hourly",
+        "coverage is 2026-01-01T00:00:00Z through 2029-01-01T00:00:00Z hourly, 26305 rows per site per body, verified in a single call before bulk fetch",
         "row parsing handles *, *i, and *m markers between $$SOE and $$EOE",
         "raw responses are archived and hashed; full-precision reference rows are frozen under data/manifests/references/horizons"
       ],
@@ -608,16 +755,40 @@
           "ref": "pytest tests/unit/test_horizons_parser.py"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "artifact",
+          "ref": "data/manifests/horizons",
+          "sha256": "8aa65a3439e5c5cf76634ba6325b706c8b03540a6098b08f840ca89a3fc7cf43",
+          "note": "aggregate sha256 over 32 manifests: sha256 of sorted per-file sha256sum lines"
+        },
+        {
+          "kind": "artifact",
+          "ref": "data/manifests/horizons/artemis-slater-plain.sun.json",
+          "sha256": "f9f71f5afa3f10707f85ce28b5ea459c7f1f652ba6f26b3a2d3da8c152a5308f"
+        },
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_horizons_parser.py",
+          "exit": 0,
+          "note": "14 passed"
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --project backend --frozen python -m src.cli.download_horizons",
+          "exit": 0,
+          "note": "32 tracks, 26305 rows each; 32 fetched then 32 reused on rerun; raw sha256 recorded per manifest"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T14:35:18Z",
+      "completed_commit": "6f160042e84dbcc8faa27b00989e3d85a937abc7"
     },
     {
       "id": "DATA-004",
-      "title": "Build and validate EphemerisPacks for all 14 sites",
+      "title": "Build and validate EphemerisPacks for all 16 sites",
       "phase": "data",
       "priority": "P0",
       "owner": "M1",
@@ -661,7 +832,7 @@
         }
       ],
       "acceptance": [
-        "each pack has sample_count 13129 and four arrays of exactly that length",
+        "each pack has sample_count 26305 and four arrays of exactly that length",
         "frame is MOON_ME and longitude_convention is east_positive",
         "azimuths are within [0,360) and elevations within [-90,90] and all values finite",
         "source manifest SHA-256 is recorded in every pack",
@@ -799,7 +970,7 @@
       ],
       "acceptance": [
         "index lists every site with pack presence and SHA-256 values",
-        "has_precomputed_terrain matches actual terrain pack presence for all 14 sites",
+        "has_precomputed_terrain matches actual terrain pack presence for all 16 sites",
         "offline fixtures are generated from validated packs and carry matching scenario keys",
         "frontend copies are produced by a generator step, never edited by hand, and are byte-identical to contracts/fixtures"
       ],
@@ -1328,17 +1499,17 @@
         },
         {
           "cwd": ".",
-          "run": "python3 scripts/validate_task_ledger.py",
+          "run": "uv run --project backend --python 3.12 --frozen python scripts/validate_task_ledger.py",
           "expected_exit": 0
         },
         {
           "cwd": ".",
-          "run": "python3 scripts/check_planning_docs.py",
+          "run": "uv run --project backend --python 3.12 --frozen python scripts/check_planning_docs.py",
           "expected_exit": 0
         },
         {
           "cwd": ".",
-          "run": "python3 scripts/check_file_lengths.py",
+          "run": "uv run --project backend --python 3.12 --frozen python scripts/check_file_lengths.py",
           "expected_exit": 0
         },
         {
@@ -1401,7 +1572,7 @@
       "commands": [
         {
           "cwd": ".",
-          "run": "python3 scripts/validate_task_ledger.py",
+          "run": "uv run --project backend --python 3.12 --frozen python scripts/validate_task_ledger.py",
           "expected_exit": 0
         }
       ],
@@ -1449,7 +1620,7 @@
       "commands": [
         {
           "cwd": ".",
-          "run": "python3 scripts/validate_task_ledger.py",
+          "run": "uv run --project backend --python 3.12 --frozen python scripts/validate_task_ledger.py",
           "expected_exit": 0
         }
       ],
@@ -1762,7 +1933,7 @@
       ],
       "acceptance": [
         "onboarding happens only at build time and requires a recorded coordinate provenance URL",
-        "the new site receives ephemeris coverage for the full 2027-01-01 through 2028-07-01 window",
+        "the new site receives ephemeris coverage for the full 2026-01-01 through 2029-01-01 window",
         "terrain is generated only when the coordinate is inside verified DEM coverage, otherwise the site is limb-only",
         "no runtime custom terrain route, runtime Horizons call, or runtime download is added",
         "a human approves the added coordinate before it enters the registry"
@@ -1814,7 +1985,7 @@
       "commands": [
         {
           "cwd": ".",
-          "run": "python3 scripts/validate_task_ledger.py",
+          "run": "uv run --project backend --python 3.12 --frozen python scripts/validate_task_ledger.py",
           "expected_exit": 0
         }
       ],
@@ -1924,7 +2095,7 @@
       "commands": [
         {
           "cwd": ".",
-          "run": "python3 scripts/check_file_lengths.py",
+          "run": "uv run --project backend --python 3.12 --frozen python scripts/check_file_lengths.py",
           "expected_exit": 0
         }
       ],

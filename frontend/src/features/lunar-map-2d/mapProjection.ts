@@ -29,11 +29,7 @@ export function maxStereoRadiusKm(moonRadiusKm: number): number {
 }
 
 /** Forward polar stereographic projection centred on the South Pole (0E at +y / top). */
-export function projectSouthPoleStereoKm(
-  latDeg: number,
-  lonDeg: number,
-  moonRadiusKm: number,
-): { xKm: number; yKm: number; rKm: number } {
+export function projectSouthPoleStereoKm(latDeg: number, lonDeg: number, moonRadiusKm: number): { xKm: number; yKm: number; rKm: number } {
   const rKm = 2 * moonRadiusKm * Math.tan(degToRad(90 + latDeg) / 2);
   const lonRad = degToRad(lonDeg);
   return {
@@ -44,11 +40,7 @@ export function projectSouthPoleStereoKm(
 }
 
 /** Inverse polar stereographic projection from km offsets to selenographic (lat, lon). */
-export function unprojectSouthPoleStereoKm(
-  xKm: number,
-  yKm: number,
-  moonRadiusKm: number,
-): { lat_deg: number; lon_deg: number } {
+export function unprojectSouthPoleStereoKm(xKm: number, yKm: number, moonRadiusKm: number): { lat_deg: number; lon_deg: number } {
   const rKm = Math.hypot(xKm, yKm);
   const latDeg = 2 * radToDeg(Math.atan(rKm / (2 * moonRadiusKm))) - 90;
   const lonDeg = rKm < 1e-9 ? 0.0 : radToDeg(Math.atan2(xKm, yKm));

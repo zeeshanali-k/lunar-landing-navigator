@@ -8,8 +8,7 @@ export function DataProvenanceFooter() {
   const terrainUnavailable = useMissionStore((s) => s.terrainUnavailable);
 
   const hasPrecomputed =
-    (evaluationData?.site.has_precomputed_terrain ?? selectedSite?.has_precomputed_terrain ?? true) &&
-    !terrainUnavailable;
+    (evaluationData?.site.has_precomputed_terrain ?? selectedSite?.has_precomputed_terrain ?? true) && !terrainUnavailable;
 
   const quickmapUrl = selectedSite?.external_links.quickmap_url ?? null;
   const moonTrekUrl = selectedSite?.external_links.moon_trek_url ?? null;
@@ -35,9 +34,7 @@ export function DataProvenanceFooter() {
         </span>
         <span>•</span>
         <span>
-          {hasPrecomputed
-            ? "Measured terrain mask enabled from LOLA elevation data."
-            : "Terrain model unavailable — spherical limb only"}
+          {hasPrecomputed ? "Measured terrain mask enabled from LOLA elevation data." : "Terrain model unavailable — spherical limb only"}
         </span>
       </div>
 

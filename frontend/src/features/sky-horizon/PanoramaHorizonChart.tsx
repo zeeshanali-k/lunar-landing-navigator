@@ -3,12 +3,7 @@
 import { useMemo, useState } from "react";
 import { usePlaybackStore } from "../../state";
 import type { HorizonProfilePoint, TimeseriesPoint } from "../../types";
-import {
-  azElevToPanoramaSVG,
-  buildPanoramaHorizonPaths,
-  interpolateHorizonElevDeg,
-  splitWrappedTrajectorySegments,
-} from "./horizonMath";
+import { azElevToPanoramaSVG, buildPanoramaHorizonPaths, interpolateHorizonElevDeg, splitWrappedTrajectorySegments } from "./horizonMath";
 
 export interface PanoramaHorizonChartProps {
   horizonProfile: HorizonProfilePoint[];
@@ -33,7 +28,13 @@ const PLOT_H = H - PAD.top - PAD.bottom;
 const MIN_ELEV = -2;
 const MAX_ELEV = 12;
 const ELEV_TICKS = [-2, 0, 2, 4, 6, 8, 10, 12];
-const AZ_TICKS = [{ az: 0, label: "0° N" }, { az: 90, label: "90° E" }, { az: 180, label: "180° S" }, { az: 270, label: "270° W" }, { az: 360, label: "360° N" }];
+const AZ_TICKS = [
+  { az: 0, label: "0° N" },
+  { az: 90, label: "90° E" },
+  { az: 180, label: "180° S" },
+  { az: 270, label: "270° W" },
+  { az: 360, label: "360° N" },
+];
 
 const project = (az: number, elev: number) => azElevToPanoramaSVG(az, elev, PLOT_W, PLOT_H, MIN_ELEV, MAX_ELEV);
 
@@ -44,7 +45,12 @@ function toBodyPolylines(timeseries: TimeseriesPoint[], body: "Sun" | "Earth"): 
     index,
   }));
   return splitWrappedTrajectorySegments(pts).map((seg) =>
-    seg.map((p) => { const pt = project(p.azDeg, p.elevDeg); return `${pt.x.toFixed(1)},${pt.y.toFixed(1)}`; }).join(" "),
+    seg
+      .map((p) => {
+        const pt = project(p.azDeg, p.elevDeg);
+        return `${pt.x.toFixed(1)},${pt.y.toFixed(1)}`;
+      })
+      .join(" "),
   );
 }
 
@@ -60,12 +66,7 @@ function buildBodyReadout(body: "Sun" | "Earth", pt: TimeseriesPoint, profile: H
   return { body, azDeg, elevDeg, horizonDeg, clearanceDeg: elevDeg - horizonDeg };
 }
 
-export function PanoramaHorizonChart({
-  horizonProfile,
-  timeseries,
-  currentIndex,
-  onSelectIndex,
-}: PanoramaHorizonChartProps) {
+export function PanoramaHorizonChart({ horizonProfile, timeseries, currentIndex, onSelectIndex }: PanoramaHorizonChartProps) {
   const storeIndex = usePlaybackStore((s) => s.currentIndex);
   const jumpToIndex = usePlaybackStore((s) => s.jumpToIndex);
   const activeIdx = currentIndex ?? storeIndex;
@@ -109,14 +110,26 @@ export function PanoramaHorizonChart({
         </span>
       </div>
 
-      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block", background: "#070c17", borderRadius: "0.5rem" }}>
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        style={{ width: "100%", height: "auto", display: "block", background: "#070c17", borderRadius: "0.5rem" }}
+      >
         <g transform={`translate(${PAD.left},${PAD.top})`}>
           {ELEV_TICKS.map((elev) => {
             const { y } = project(0, elev);
             return (
               <g key={elev}>
-                <line x1={0} y1={y} x2={PLOT_W} y2={y} stroke={elev === 0 ? "#475569" : "#1e293b"} strokeDasharray={elev === 0 ? "3 3" : undefined} />
-                <text x={-6} y={y + 3} textAnchor="end" fontSize="9.5" fill="#94a3b8">{elev}°</text>
+                <line
+                  x1={0}
+                  y1={y}
+                  x2={PLOT_W}
+                  y2={y}
+                  stroke={elev === 0 ? "#475569" : "#1e293b"}
+                  strokeDasharray={elev === 0 ? "3 3" : undefined}
+                />
+                <text x={-6} y={y + 3} textAnchor="end" fontSize="9.5" fill="#94a3b8">
+                  {elev}°
+                </text>
               </g>
             );
           })}
@@ -125,7 +138,9 @@ export function PanoramaHorizonChart({
             return (
               <g key={t.az}>
                 <line x1={x} y1={0} x2={x} y2={PLOT_H} stroke="#1e293b" />
-                <text x={x} y={PLOT_H + 16} textAnchor="middle" fontSize="10" fill="#94a3b8">{t.label}</text>
+                <text x={x} y={PLOT_H + 16} textAnchor="middle" fontSize="10" fill="#94a3b8">
+                  {t.label}
+                </text>
               </g>
             );
           })}
@@ -134,19 +149,81 @@ export function PanoramaHorizonChart({
           <path d={limbLinePath} fill="none" stroke="#94a3b8" strokeWidth="1.2" strokeDasharray="5 4" />
           {hasTerrain && ridgeLinePath && <path d={ridgeLinePath} fill="none" stroke="#cbd5e1" strokeWidth="1.75" />}
 
-          {sunPolylines.map((pts, i) => <polyline key={`sun-${i}`} fill="none" stroke="#f59e0b" strokeOpacity="0.6" strokeWidth="1.4" strokeDasharray="2 3" points={pts} />)}
-          {earthPolylines.map((pts, i) => <polyline key={`earth-${i}`} fill="none" stroke="#38bdf8" strokeOpacity="0.65" strokeWidth="1.4" strokeDasharray="2 3" points={pts} />)}
+          {sunPolylines.map((pts, i) => (
+            <polyline
+              key={`sun-${i}`}
+              fill="none"
+              stroke="#f59e0b"
+              strokeOpacity="0.6"
+              strokeWidth="1.4"
+              strokeDasharray="2 3"
+              points={pts}
+            />
+          ))}
+          {earthPolylines.map((pts, i) => (
+            <polyline
+              key={`earth-${i}`}
+              fill="none"
+              stroke="#38bdf8"
+              strokeOpacity="0.65"
+              strokeWidth="1.4"
+              strokeDasharray="2 3"
+              points={pts}
+            />
+          ))}
 
-          {activeSunPos && activeSunHorizon && <line x1={activeSunPos.x} y1={activeSunPos.y} x2={activeSunHorizon.x} y2={activeSunHorizon.y} stroke="#f59e0b" strokeWidth="1" strokeDasharray="2 2" opacity="0.7" />}
-          {activeEarthPos && activeEarthHorizon && <line x1={activeEarthPos.x} y1={activeEarthPos.y} x2={activeEarthHorizon.x} y2={activeEarthHorizon.y} stroke="#38bdf8" strokeWidth="1" strokeDasharray="2 2" opacity="0.7" />}
+          {activeSunPos && activeSunHorizon && (
+            <line
+              x1={activeSunPos.x}
+              y1={activeSunPos.y}
+              x2={activeSunHorizon.x}
+              y2={activeSunHorizon.y}
+              stroke="#f59e0b"
+              strokeWidth="1"
+              strokeDasharray="2 2"
+              opacity="0.7"
+            />
+          )}
+          {activeEarthPos && activeEarthHorizon && (
+            <line
+              x1={activeEarthPos.x}
+              y1={activeEarthPos.y}
+              x2={activeEarthHorizon.x}
+              y2={activeEarthHorizon.y}
+              stroke="#38bdf8"
+              strokeWidth="1"
+              strokeDasharray="2 2"
+              opacity="0.7"
+            />
+          )}
 
           {timeseries.map((pt, idx) => {
             const sp = project(pt.sun_az_deg, pt.sun_elev_deg);
             const ep = project(pt.earth_az_deg, pt.earth_elev_deg);
             return (
               <g key={pt.timestamp_utc}>
-                <circle cx={sp.x} cy={sp.y} r={3.6} fill="#f59e0b" fillOpacity={idx === safeIdx ? 0.95 : 0.35} style={{ cursor: "pointer" }} onMouseEnter={() => setHovered(buildBodyReadout("Sun", pt, horizonProfile))} onMouseLeave={() => setHovered(null)} onClick={() => selectIndex(idx)} />
-                <circle cx={ep.x} cy={ep.y} r={3.2} fill="#38bdf8" fillOpacity={idx === safeIdx ? 0.95 : 0.35} style={{ cursor: "pointer" }} onMouseEnter={() => setHovered(buildBodyReadout("Earth", pt, horizonProfile))} onMouseLeave={() => setHovered(null)} onClick={() => selectIndex(idx)} />
+                <circle
+                  cx={sp.x}
+                  cy={sp.y}
+                  r={3.6}
+                  fill="#f59e0b"
+                  fillOpacity={idx === safeIdx ? 0.95 : 0.35}
+                  style={{ cursor: "pointer" }}
+                  onMouseEnter={() => setHovered(buildBodyReadout("Sun", pt, horizonProfile))}
+                  onMouseLeave={() => setHovered(null)}
+                  onClick={() => selectIndex(idx)}
+                />
+                <circle
+                  cx={ep.x}
+                  cy={ep.y}
+                  r={3.2}
+                  fill="#38bdf8"
+                  fillOpacity={idx === safeIdx ? 0.95 : 0.35}
+                  style={{ cursor: "pointer" }}
+                  onMouseEnter={() => setHovered(buildBodyReadout("Earth", pt, horizonProfile))}
+                  onMouseLeave={() => setHovered(null)}
+                  onClick={() => selectIndex(idx)}
+                />
               </g>
             );
           })}
