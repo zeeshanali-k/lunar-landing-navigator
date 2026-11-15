@@ -256,7 +256,7 @@
       "priority": "P0",
       "owner": "M2",
       "reviewer": "M1",
-      "status": "in_progress",
+      "status": "done",
       "depends_on": [
         "DOC-GATE"
       ],
@@ -334,12 +334,88 @@
           "ref": "bun run test"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "uv sync --python 3.12",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen ruff check .",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "bun install",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "bun run typecheck",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "bun run test",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "bun run lint",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "bun run format:check",
+          "exit": 0
+        },
+        {
+          "kind": "artifact",
+          "ref": "backend/uv.lock",
+          "sha256": "c262f501743f42d64785a435051b7cdb703fd62f5117a4c2241ec20dd1dd5541"
+        },
+        {
+          "kind": "artifact",
+          "ref": "frontend/bun.lock",
+          "sha256": "0aa15b7f30d09908db2732352778c0896c51af15dae48ae070468ad6b24d9979"
+        },
+        {
+          "kind": "artifact",
+          "ref": "backend/.python-version",
+          "sha256": "7b55f8e67b5623c4bef3fa691288da9437d79d3aba156de48d481db32ac7d16d"
+        },
+        {
+          "kind": "artifact",
+          "ref": "frontend/eslint.config.js",
+          "sha256": "c32cff83364a9a1e07d6c21313318c9c6791af1f1a145e8d38d8a53e7164484d"
+        },
+        {
+          "kind": "artifact",
+          "ref": "frontend/.prettierrc.json",
+          "sha256": "3fe845584c6fec09a528c438c4f1fe1e42be23cc95576866a0a48879ceb571a9"
+        },
+        {
+          "kind": "artifact",
+          "ref": "frontend/vitest.config.ts",
+          "sha256": "b5eadfafab650bf8644db295829fceeb8c3a9334085704bd14ec42c2dbe812dd"
+        },
+        {
+          "kind": "report",
+          "ref": "lockfile-policy",
+          "note": "no package-lock.json, yarn.lock, or pnpm-lock.yaml present; bun.lock is the only frontend lockfile"
+        },
+        {
+          "kind": "report",
+          "ref": "prettier-baseline-scope",
+          "note": "the one-time Prettier baseline touched frontend/src outside ARCH-001 write paths; it is required for bun run format:check to exit 0. printWidth 140 with objectWrap=preserve keeps every file under the 280-line hard limit."
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T10:34:01Z",
+      "completed_commit": "2dc501ae1e49e74f020807ab1c3758313d5f9ae0"
     },
     {
       "id": "ARCH-002",

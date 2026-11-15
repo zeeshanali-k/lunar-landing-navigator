@@ -117,10 +117,26 @@ approval evidence. `ARCH-001` becomes the next eligible task.
   holds six entries, including the now-removed `artemis-shackleton-ridge`; the registry must be
   rebuilt to the 16 `REQ-05` entries with a provenance URL each. No coordinate was invented.
 - `DOC-GATE` was closed on 2026-11-15 with recorded human approval; see the ledger task.
-- Uncommitted out-of-order artefacts remain in the tree (`backend/.python-version`,
-  `backend/uv.lock`, `data/downloads/`, `data/manifests/`, `scripts/fetch_horizons.py`).
-  `fetch_horizons.py` is in the wrong directory for `DATA-003`; `backend/src/cli/` is the only
-  permitted location.
+- Uncommitted out-of-order artefacts remain in the tree (`data/downloads/`,
+  `data/manifests/` except `.gitkeep`, `scripts/fetch_horizons.py`). `fetch_horizons.py` is in
+  the wrong directory for `DATA-003`; `backend/src/cli/` is the only permitted location.
+
+### ARCH-001 — pinned tooling (done)
+
+| Change | Files |
+|---|---|
+| Dev tools moved to `[dependency-groups]` so `uv sync` installs pytest/ruff/mypy | `backend/pyproject.toml` |
+| Python pinned to 3.12 with a lockfile | `backend/.python-version`, `backend/uv.lock` |
+| ESLint/Prettier/Vitest configs and scripts; lockfile updated | `frontend/` |
+| Stop ignoring `backend/data/site_packs/`; keep `/data/downloads/` ignored | `.gitignore` |
+| One-time Prettier baseline at `printWidth 140` + `objectWrap: preserve` | `frontend/src/**` |
+
+Note: the Prettier baseline edited `frontend/src` outside ARCH-001's write paths. It was required
+for `bun run format:check` to exit 0, and the chosen settings keep every file under the 280-line
+hard limit. Recorded as evidence `prettier-baseline-scope`.
+
+Verified: `uv sync`, `ruff check`, `bun install`, `typecheck`, `test`, `lint`, `format:check`,
+`build`, and `check_file_lengths` all exit 0.
 
 ---
 
@@ -178,8 +194,8 @@ Eight issues gate P0. None were introduced by the governance work; they are the 
 
 | Module | Next task | Blocked by |
 |---|---|---|
-| `M1` | `ARCH-001` pinned tooling, then `DATA-001` registry | `DOC-GATE` |
-| `M2` | `ARCH-002` contract generation | `ARCH-001` |
+| `M1` | `DATA-001` registry (16 sites with provenance) | ready |
+| `M2` | `ARCH-002` contract generation | ready |
 | `M3` | Open issues 3, 6, 7, 8, 9 above | corpus decision on P1 mounting |
 | `M4` | not startable | `P0-GATE` |
 | `M5` | needs an owner | — |
