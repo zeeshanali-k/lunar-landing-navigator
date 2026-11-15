@@ -793,7 +793,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DATA-003",
         "ARCH-002"
@@ -844,12 +844,24 @@
           "ref": "pytest tests/unit/test_ephemeris_pack.py"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_ephemeris_pack.py",
+          "exit": 0,
+          "note": "57 passed"
+        },
+        {
+          "kind": "report",
+          "ref": "ephemeris-packs-built",
+          "note": "16 packs at backend/data/site_packs/*/ephemeris.json, sample_count 26305 each, 17 MB total; rebuild is byte-identical; sha256 of the sorted per-pack hash list is 2bc802e2601c11041be6bafc65cf563ed0f24a9d59e04bea34b86dc50ab83639. Every raw response was verified against its manifest SHA-256 and row count before parsing, and every pack records source_manifest_sha256 over its two source manifests."
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T16:20:00Z",
+      "completed_commit": "b9a472de8ebe23ec1da6281a76b8982191a01bd8"
     },
     {
       "id": "DATA-005",
