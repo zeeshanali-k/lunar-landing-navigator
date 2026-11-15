@@ -1,12 +1,13 @@
 /** Interactive 3D local_enu Lunar Terrain Canvas with grazing crater shadows (F4.1 & F4.2). */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import type { SolarArrayType, TerrainPatch, TimeseriesPoint } from "../../types";
 import { createCelestialRig, disposeCelestialRig, updateCelestialRig, type CelestialRig } from "./CelestialLighting";
-import { buildTerrainGeometry, sampleCenterSurfaceYKm, updateTerrainGeometryColors, updateTerrainGeometryElevations } from "./meshBuilder";
+import { buildTerrainGeometry, sampleCenterSurfaceYKm, sampleSurfaceYKmAtXZ, updateTerrainGeometryColors, updateTerrainGeometryElevations } from "./meshBuilder";
 import { SURFACE_MODE_LABELS, type TerrainSurfaceMode } from "./terrainColors";
+import { prepareTerrainPatch } from "./terrainPatchUpsampler";
 
 export interface LunarTerrainCanvasProps {
   terrainPatch: TerrainPatch;
@@ -16,7 +17,7 @@ export interface LunarTerrainCanvasProps {
   solarArrayType?: SolarArrayType;
 }
 
-const DEFAULT_CAMERA_POS: [number, number, number] = [24, 18, 26];
+const DEFAULT_CAMERA_POS: [number, number, number] = [-18, 15.5, 22];
 const EXAGGERATIONS: readonly number[] = [1, 2, 3];
 const SURFACE_MODES: readonly TerrainSurfaceMode[] = ["regolith", "elevation", "slope", "psr"];
 
@@ -27,6 +28,7 @@ export function LunarTerrainCanvas({
   observerHeightM = 2.0,
   solarArrayType = "vertical_tracking",
 }: LunarTerrainCanvasProps) {
+  const preparedPatch = useMemo(() => prepareTerrainPatch(terrainPatch), [terrainPatch]);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const controlsRef = useRef<OrbitControls | null>(null);
@@ -51,7 +53,7 @@ export function LunarTerrainCanvas({
     }
 
     const initW = container.clientWidth || 640;
-    const initH = container.clientHeight || 380;
+    const initH = container.clientHeight || 430;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(initW, initH);
     renderer.shadowMap.enabled = true;
@@ -60,7 +62,7 @@ export function LunarTerrainCanvas({
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x04070e);
-    const camera = new THREE.PerspectiveCamera(45, initW / initH, 0.2, 220);
+    const camera = new THREE.PerspectiveCamera(44, initW / initH, 0.2, 220);
     camera.position.set(...DEFAULT_CAMERA_POS);
 
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -117,28 +119,30 @@ export function LunarTerrainCanvas({
     const mesh = terrainMeshRef.current;
     if (!mesh) return;
     const prevGeom = mesh.geometry;
-    mesh.geometry = buildTerrainGeometry(terrainPatch, surfaceMode, exaggeration);
+    mesh.geometry = buildTerrainGeometry(preparedPatch, surfaceMode, exaggeration);
     prevGeom.dispose();
-  }, [terrainPatch]);
+  }, [preparedPatch]);
 
   useEffect(() => {
     const mesh = terrainMeshRef.current;
     if (!mesh) return;
-    updateTerrainGeometryColors(mesh.geometry, terrainPatch, surfaceMode);
-  }, [terrainPatch, surfaceMode]);
+    updateTerrainGeometryColors(mesh.geometry, preparedPatch, surfaceMode);
+  }, [preparedPatch, surfaceMode]);
 
   useEffect(() => {
     const mesh = terrainMeshRef.current;
     if (!mesh) return;
-    updateTerrainGeometryElevations(mesh.geometry, terrainPatch, exaggeration);
-  }, [terrainPatch, exaggeration]);
+    updateTerrainGeometryElevations(mesh.geometry, preparedPatch, exaggeration);
+  }, [preparedPatch, exaggeration]);
 
   useEffect(() => {
     const rig = rigRef.current;
     if (!rig || !activePoint) return;
-    const centerY = sampleCenterSurfaceYKm(terrainPatch, exaggeration);
-    updateCelestialRig(rig, activePoint, centerY, observerHeightM, solarArrayType);
-  }, [terrainPatch, exaggeration, activePoint, observerHeightM, solarArrayType]);
+    const centerY = sampleCenterSurfaceYKm(preparedPatch, exaggeration);
+    updateCelestialRig(rig, activePoint, centerY, observerHeightM, solarArrayType, (xKm, zKm) =>
+      sampleSurfaceYKmAtXZ(preparedPatch, xKm, zKm, exaggeration),
+    );
+  }, [preparedPatch, exaggeration, activePoint, observerHeightM, solarArrayType]);
 
   const handleResetCamera = () => {
     if (!cameraRef.current || !controlsRef.current) return;
@@ -150,20 +154,17 @@ export function LunarTerrainCanvas({
   const sunStatus = !activePoint ? "NO DATA" : !activePoint.is_sunlit ? "SHADOW" : activePoint.sun_visible_fraction < 0.95 ? "GRAZING" : "SUNLIT";
 
   const pill = (active: boolean, accent: string): React.CSSProperties => ({
-    padding: "0.24rem 0.55rem",
-    fontSize: "0.75rem",
-    borderRadius: "0.35rem",
+    padding: "0.24rem 0.55rem", fontSize: "0.75rem", borderRadius: "0.35rem", cursor: "pointer",
     border: `1px solid ${active ? accent : "var(--border-subtle)"}`,
     background: active ? "rgba(255,255,255,0.08)" : "transparent",
     color: active ? "#f8fafc" : "var(--text-muted)",
-    cursor: "pointer",
   });
 
   return (
     <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: "0.75rem", overflow: "hidden" }}>
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "0.5rem", padding: "0.65rem 0.9rem", borderBottom: "1px solid var(--border-subtle)" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "0.5rem", padding: "0.6rem 0.85rem", borderBottom: "1px solid var(--border-subtle)" }}>
         <div style={{ display: "flex", gap: "0.35rem", flexWrap: "wrap", alignItems: "center" }}>
-          <strong style={{ fontSize: "0.85rem", marginRight: "0.35rem" }}>3D ENU Terrain</strong>
+          <strong style={{ fontSize: "0.85rem", marginRight: "0.35rem" }}>3D ENU Terrain ({preparedPatch.grid_size}×{preparedPatch.grid_size})</strong>
           {SURFACE_MODES.map((mode) => (
             <button key={mode} type="button" onClick={() => setSurfaceMode(mode)} style={pill(surfaceMode === mode, "#f59e0b")}>{SURFACE_MODE_LABELS[mode]}</button>
           ))}
@@ -172,18 +173,18 @@ export function LunarTerrainCanvas({
           {EXAGGERATIONS.map((ex) => (
             <button key={ex} type="button" onClick={() => setExaggeration(ex)} style={pill(exaggeration === ex, "#38bdf8")}>{ex}x Z</button>
           ))}
-          <button type="button" onClick={handleResetCamera} style={pill(false, "#94a3b8")}>Reset View</button>
+          <button type="button" onClick={handleResetCamera} style={pill(false, "#94a3b8")}>Reset</button>
         </div>
       </div>
 
-      <div ref={containerRef} style={{ position: "relative", width: "100%", height: "380px", background: "#04070e" }}>
+      <div ref={containerRef} style={{ position: "relative", width: "100%", height: "430px", background: "#04070e" }}>
         {webglError && <p style={{ padding: "1.5rem", color: "#fca5a5", margin: 0 }}>{webglError}</p>}
       </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "0.5rem", padding: "0.55rem 0.9rem", fontSize: "0.78rem", color: "var(--text-muted)", borderTop: "1px solid var(--border-subtle)" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "0.5rem", padding: "0.5rem 0.85rem", fontSize: "0.75rem", color: "var(--text-muted)", borderTop: "1px solid var(--border-subtle)" }}>
         <span>Sun: <strong style={{ color: activePoint?.is_sunlit ? "var(--accent-sun)" : "#94a3b8" }}>{sunStatus}</strong> {activePoint ? `(Az ${activePoint.sun_az_deg.toFixed(1)}°, El ${activePoint.sun_elev_deg.toFixed(2)}°)` : ""}</span>
         <span>Earth DTE: <strong style={{ color: activePoint?.is_dte_visible ? "var(--accent-dte)" : "#f43f5e" }}>{activePoint?.is_dte_visible ? "ACTIVE" : "BLOCKED"}</strong> {activePoint ? `(Az ${activePoint.earth_az_deg.toFixed(1)}°, El ${activePoint.earth_elev_deg.toFixed(2)}°)` : ""}</span>
-        <span>Frame: <code>+X East · +Y Up · -Z North</code> (Rings: 5/10/20 km)</span>
+        <span>Frame: <code>+X East · +Y Up · -Z North</code></span>
       </div>
     </div>
   );

@@ -83,15 +83,15 @@ export function PolarSkyDome({
   const activeEarth = earthPoints[safeIdx];
 
   return (
-    <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: "0.75rem", padding: "0.8rem 0.9rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem", marginBottom: "0.45rem" }}>
-        <strong style={{ fontSize: "0.85rem" }}>Polar Sky-Dome Radar</strong>
+    <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: "0.75rem", padding: "0.65rem 0.8rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem", marginBottom: "0.35rem" }}>
+        <strong style={{ fontSize: "0.84rem" }}>Polar Sky-Dome Radar</strong>
         <button
           type="button"
           onClick={() => setRimMagnified((prev) => !prev)}
           style={{
-            padding: "0.24rem 0.55rem",
-            fontSize: "0.73rem",
+            padding: "0.2rem 0.5rem",
+            fontSize: "0.72rem",
             borderRadius: "0.35rem",
             border: "1px solid #38bdf8",
             background: rimMagnified ? "rgba(56,189,248,0.16)" : "transparent",
@@ -103,7 +103,7 @@ export function PolarSkyDome({
         </button>
       </div>
 
-      <svg viewBox={`0 0 ${SIZE} ${SIZE}`} style={{ width: "100%", maxWidth: "360px", height: "auto", margin: "0 auto", display: "block", background: "#070c17", borderRadius: "0.5rem" }}>
+      <svg viewBox={`0 0 ${SIZE} ${SIZE}`} style={{ width: "100%", maxWidth: "240px", height: "auto", margin: "0 auto", display: "block", background: "#070c17", borderRadius: "0.5rem" }}>
         <circle cx={CX} cy={CY} r={MAX_R} fill="#0b1222" stroke="#334155" />
         <path d={terrainMaskPath} fill="rgba(71, 85, 105, 0.55)" fillRule="evenodd" stroke="#94a3b8" strokeWidth="1.2" />
 

@@ -97,3 +97,21 @@ export function computeCelestialSceneVectors(
     isDteVisible: point.is_dte_visible,
   };
 }
+
+/** Generate deterministic star positions on an upper lunar sky hemisphere. */
+export function generateStarfieldPositions(count = 220, radiusKm = 75.0): Float32Array {
+  const positions = new Float32Array(count * 3);
+  let seed = 42;
+  const rand = () => {
+    seed = (seed * 1664525 + 1013904223) % 4294967296;
+    return seed / 4294967296;
+  };
+  for (let i = 0; i < count; i += 1) {
+    const theta = rand() * Math.PI * 2;
+    const phi = Math.acos(0.08 + rand() * 0.92);
+    positions[i * 3] = radiusKm * Math.sin(phi) * Math.cos(theta);
+    positions[i * 3 + 1] = radiusKm * Math.cos(phi);
+    positions[i * 3 + 2] = radiusKm * Math.sin(phi) * Math.sin(theta);
+  }
+  return positions;
+}

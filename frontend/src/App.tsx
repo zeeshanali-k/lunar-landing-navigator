@@ -1,4 +1,4 @@
-/** Module 4 Fixture Preview Harness mounting all F4.1-F4.7 pure-prop visualizations. */
+/** Module 4 Synchronized Cockpit Preview mounting all F4.1-F4.7 pure-prop views. */
 
 import { useEffect, useMemo, useState } from "react";
 import { Moon, Pause, Play, SkipBack, SkipForward } from "lucide-react";
@@ -74,31 +74,42 @@ export function App() {
   };
 
   return (
-    <main style={{ minHeight: "100vh", padding: "1.25rem", maxWidth: "1360px", margin: "0 auto", display: "grid", gap: "1rem" }}>
-      <header style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "0.75rem", background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: "0.75rem", padding: "0.85rem 1rem" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.65rem" }}>
-          <Moon size={24} color="#f59e0b" />
+    <main style={{ minHeight: "100vh", padding: "0.75rem 1rem", maxWidth: "1440px", margin: "0 auto", display: "grid", gap: "0.65rem" }}>
+      <header style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "0.65rem", background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: "0.75rem", padding: "0.55rem 0.9rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.55rem" }}>
+          <Moon size={22} color="#f59e0b" />
           <div>
-            <h1 style={{ margin: 0, fontSize: "1.15rem" }}>Lunar Landing Site Navigator — Module 4 Preview</h1>
-            <p style={{ margin: "0.15rem 0 0", fontSize: "0.78rem", color: "var(--text-muted)" }}>
+            <h1 style={{ margin: 0, fontSize: "1.02rem" }}>Lunar Landing Site Navigator — Module 4 Cockpit</h1>
+            <p style={{ margin: 0, fontSize: "0.74rem", color: "var(--text-muted)" }}>
               {evaluation ? `${evaluation.site.name} (${evaluation.site.lat_deg}°, ${evaluation.site.lon_deg}°)` : "Loading sample fixtures..."}
             </p>
           </div>
         </div>
-        <div style={{ display: "flex", gap: "0.4rem" }}>
+
+        {totalSteps > 0 && (
+          <div style={{ display: "flex", flex: "1 1 360px", alignItems: "center", gap: "0.5rem", maxWidth: "560px" }}>
+            <button type="button" onClick={() => jumpToIndex((currentIndex - 1 + totalSteps) % totalSteps)} style={iconBtnStyle} title="Step Back"><SkipBack size={14} /></button>
+            <button type="button" onClick={() => setIsPlaying((p) => !p)} style={iconBtnStyle} title={isPlaying ? "Pause" : "Play"}>{isPlaying ? <Pause size={14} /> : <Play size={14} />}</button>
+            <button type="button" onClick={() => jumpToIndex((currentIndex + 1) % totalSteps)} style={iconBtnStyle} title="Step Forward"><SkipForward size={14} /></button>
+            <input type="range" min={0} max={maxIndex} value={currentIndex} onChange={(e) => jumpToIndex(Number(e.target.value))} style={{ flex: 1, accentColor: "#f59e0b" }} />
+            <code style={{ fontSize: "0.73rem", color: "var(--text-muted)", whiteSpace: "nowrap" }}>{currentIndex + 1}/{totalSteps} · {active?.timestamp_utc.slice(5, 16)}Z</code>
+          </div>
+        )}
+
+        <div style={{ display: "flex", gap: "0.35rem" }}>
           {(["planner", "explorer"] as const).map((mode) => (
             <button
               key={mode}
               type="button"
               onClick={() => setPersonaMode(mode)}
               style={{
-                padding: "0.35rem 0.7rem", fontSize: "0.78rem", borderRadius: "0.45rem", cursor: "pointer",
+                padding: "0.3rem 0.6rem", fontSize: "0.75rem", borderRadius: "0.4rem", cursor: "pointer",
                 border: `1px solid ${personaMode === mode ? "var(--accent-dte)" : "var(--border-subtle)"}`,
                 background: personaMode === mode ? "rgba(56, 189, 248, 0.16)" : "transparent",
                 color: personaMode === mode ? "#e0f2fe" : "var(--text-muted)",
               }}
             >
-              {mode === "planner" ? "Mission Planner" : "Explorer / Educator"}
+              {mode === "planner" ? "Mission Planner" : "Explorer"}
             </button>
           ))}
         </div>
@@ -108,25 +119,6 @@ export function App() {
 
       {terrain && evaluation && totalSteps > 0 && (
         <>
-          <section style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: "0.75rem", padding: "0.75rem 1rem", display: "grid", gap: "0.55rem" }}>
-            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "0.65rem" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                <button type="button" onClick={() => jumpToIndex((currentIndex - 1 + totalSteps) % totalSteps)} style={iconBtnStyle} title="Step Back"><SkipBack size={15} /></button>
-                <button type="button" onClick={() => setIsPlaying((p) => !p)} style={iconBtnStyle} title={isPlaying ? "Pause" : "Play"}>{isPlaying ? <Pause size={15} /> : <Play size={15} />}</button>
-                <button type="button" onClick={() => jumpToIndex((currentIndex + 1) % totalSteps)} style={iconBtnStyle} title="Step Forward"><SkipForward size={15} /></button>
-                <span style={{ fontSize: "0.8rem", marginLeft: "0.4rem" }}>
-                  Step <strong>{currentIndex + 1}</strong> / {totalSteps} · <code>{active?.timestamp_utc}</code>
-                </span>
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.9rem", fontSize: "0.78rem", color: "var(--text-muted)" }}>
-                <span>Sun El: <strong style={{ color: "var(--accent-sun)" }}>{active?.sun_elev_deg.toFixed(2)}°</strong></span>
-                <span>Earth El: <strong style={{ color: "var(--accent-dte)" }}>{active?.earth_elev_deg.toFixed(2)}°</strong></span>
-                <span>Power: <strong style={{ color: "var(--accent-ok)" }}>{active ? `${(active.solar_power_factor * 100).toFixed(1)}%` : "—"}</strong></span>
-              </div>
-            </div>
-            <input type="range" min={0} max={maxIndex} value={currentIndex} onChange={(e) => jumpToIndex(Number(e.target.value))} style={{ width: "100%", accentColor: "#f59e0b" }} />
-          </section>
-
           <SolarArraySelector
             timeseries={simulatedTimeseries}
             horizonProfile={evaluation.horizon_profile}
@@ -137,11 +129,30 @@ export function App() {
             onChangeObserverHeight={setObserverHeightM}
           />
 
-          <LunarTerrainCanvas terrainPatch={terrain} timeseries={simulatedTimeseries} currentIndex={currentIndex} observerHeightM={observerHeightM} solarArrayType={solarArrayType} />
-
-          <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.5fr) minmax(300px, 1fr)", gap: "1rem", alignItems: "start" }}>
-            <PanoramaHorizonChart horizonProfile={evaluation.horizon_profile} timeseries={simulatedTimeseries} currentIndex={currentIndex} observerHeightM={observerHeightM} onSelectIndex={jumpToIndex} />
-            <PolarSkyDome horizonProfile={evaluation.horizon_profile} timeseries={simulatedTimeseries} currentIndex={currentIndex} observerHeightM={observerHeightM} onSelectIndex={jumpToIndex} />
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.15fr) minmax(360px, 1fr)", gap: "0.7rem", alignItems: "start" }}>
+            <LunarTerrainCanvas
+              terrainPatch={terrain}
+              timeseries={simulatedTimeseries}
+              currentIndex={currentIndex}
+              observerHeightM={observerHeightM}
+              solarArrayType={solarArrayType}
+            />
+            <div style={{ display: "grid", gap: "0.7rem" }}>
+              <PanoramaHorizonChart
+                horizonProfile={evaluation.horizon_profile}
+                timeseries={simulatedTimeseries}
+                currentIndex={currentIndex}
+                observerHeightM={observerHeightM}
+                onSelectIndex={jumpToIndex}
+              />
+              <PolarSkyDome
+                horizonProfile={evaluation.horizon_profile}
+                timeseries={simulatedTimeseries}
+                currentIndex={currentIndex}
+                observerHeightM={observerHeightM}
+                onSelectIndex={jumpToIndex}
+              />
+            </div>
           </div>
 
           <MissionTimelinePanel timeseries={simulatedTimeseries} currentIndex={currentIndex} onSelectIndex={jumpToIndex} />
@@ -153,8 +164,8 @@ export function App() {
 }
 
 const iconBtnStyle: React.CSSProperties = {
-  display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "0.35rem 0.5rem",
-  borderRadius: "0.4rem", border: "1px solid var(--border-subtle)", background: "#0b1120", color: "var(--text-primary)", cursor: "pointer",
+  display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "0.3rem 0.45rem",
+  borderRadius: "0.38rem", border: "1px solid var(--border-subtle)", background: "#0b1120", color: "var(--text-primary)", cursor: "pointer",
 };
 
 export default App;

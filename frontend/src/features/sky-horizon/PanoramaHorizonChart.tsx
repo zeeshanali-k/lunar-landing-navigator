@@ -93,9 +93,9 @@ export function PanoramaHorizonChart({
   };
 
   return (
-    <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: "0.75rem", padding: "0.8rem 0.9rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem", marginBottom: "0.45rem" }}>
-        <strong style={{ fontSize: "0.85rem" }}>360° Panoramic Horizon Silhouette</strong>
+    <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: "0.75rem", padding: "0.65rem 0.8rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.4rem", marginBottom: "0.35rem" }}>
+        <strong style={{ fontSize: "0.84rem" }}>360° Panoramic Horizon Silhouette</strong>
         <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
           {readout
             ? `${readout.body}: Az ${readout.azDeg.toFixed(1)}° · El ${readout.elevDeg.toFixed(2)}° · Horizon ${readout.terrainDeg.toFixed(2)}° · Margin ${readout.clearanceDeg >= 0 ? "+" : ""}${readout.clearanceDeg.toFixed(2)}°`

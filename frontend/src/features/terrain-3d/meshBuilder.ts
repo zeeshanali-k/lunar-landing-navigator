@@ -114,30 +114,38 @@ export function updateTerrainGeometryColors(
   colorAttr.needsUpdate = true;
 }
 
+/** Bilinearly sample terrain surface Y (km) at arbitrary local ENU (xKm, zKm). */
+export function sampleSurfaceYKmAtXZ(
+  patch: TerrainPatch,
+  xKm: number,
+  zKm: number,
+  verticalExaggeration: number,
+): number {
+  const n = Math.max(2, patch.grid_size);
+  const spanKm = Math.max(1e-6, patch.patch_radius_km * 2.0);
+  const u = Math.max(0, Math.min(1, xKm / spanKm + 0.5));
+  const v = Math.max(0, Math.min(1, -zKm / spanKm + 0.5));
+  const colF = u * (n - 1);
+  const rowF = v * (n - 1);
+  const r0 = Math.floor(rowF);
+  const c0 = Math.floor(colF);
+  const r1 = Math.min(n - 1, r0 + 1);
+  const c1 = Math.min(n - 1, c0 + 1);
+  const dr = rowF - r0;
+  const dc = colF - c0;
+
+  const getElev = (r: number, c: number): number =>
+    patch.elevations_m_flat[r * n + c] ?? patch.center_elevation_m;
+
+  const eTop = getElev(r0, c0) + (getElev(r0, c1) - getElev(r0, c0)) * dc;
+  const eBot = getElev(r1, c0) + (getElev(r1, c1) - getElev(r1, c0)) * dc;
+  return elevationToYKm(eTop + (eBot - eTop) * dr, patch.center_elevation_m, verticalExaggeration);
+}
+
 /** Bilinearly sample exact terrain surface Y (km) at (x=0, z=0) so the lander sits flush. */
 export function sampleCenterSurfaceYKm(
   patch: TerrainPatch,
   verticalExaggeration: number,
 ): number {
-  const n = Math.max(2, patch.grid_size);
-  const mid = 0.5 * (n - 1);
-  const r0 = Math.floor(mid);
-  const c0 = Math.floor(mid);
-  const r1 = Math.min(n - 1, r0 + 1);
-  const c1 = Math.min(n - 1, c0 + 1);
-  const dr = mid - r0;
-  const dc = mid - c0;
-
-  const getElev = (r: number, c: number): number =>
-    patch.elevations_m_flat[r * n + c] ?? patch.center_elevation_m;
-
-  const e00 = getElev(r0, c0);
-  const e10 = getElev(r0, c1);
-  const e01 = getElev(r1, c0);
-  const e11 = getElev(r1, c1);
-
-  const eTop = e00 + (e10 - e00) * dc;
-  const eBot = e01 + (e11 - e01) * dc;
-  const centerElevM = eTop + (eBot - eTop) * dr;
-  return elevationToYKm(centerElevM, patch.center_elevation_m, verticalExaggeration);
+  return sampleSurfaceYKmAtXZ(patch, 0, 0, verticalExaggeration);
 }
