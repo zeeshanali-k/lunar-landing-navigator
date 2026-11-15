@@ -196,7 +196,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "human",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DOC-002"
       ],
@@ -236,12 +236,18 @@
           "ref": "DOC-GATE human sign-off"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "approval",
+          "ref": "DOC-GATE human sign-off",
+          "note": "Human (bauerceptor) approved the operative plan, P0 scope, the 16-site registry aligned to NASA's nine Artemis III regions (release 24-136), and 2026-01-01..2029-01-01 ephemeris coverage. Region anchors use IAU feature centres with provenance URLs."
+        }
+      ],
       "human_approval_required": true,
-      "approval": null,
+      "approval": "Approved 2026-11-15: operative plan and P0 scope confirmed, including the 16-site registry aligned to NASA's current nine Artemis III candidate regions and the 2026-01-01..2029-01-01 ephemeris window.",
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T10:15:36Z",
+      "completed_commit": "0d1ae62316884e5e251b32cf5a8ac32f4535a627"
     },
     {
       "id": "ARCH-001",

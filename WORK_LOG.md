@@ -97,6 +97,12 @@ definitions and docstrings, and a stale multi-line header wrote a literal newlin
 was weakened: bare interpreter commands and disallowed package-manager forms in documentation
 still fail.
 
+### DOC-GATE closed
+
+The human approved the operative plan and P0 scope in this session. `DOC-GATE` is now `done`
+with an `approval` string, `completed_at_utc`, `completed_commit` (`0d1ae62`), and the required
+approval evidence. `ARCH-001` becomes the next eligible task.
+
 ### Verification
 
 | Check | Result |
@@ -110,12 +116,11 @@ still fail.
 - `DATA-001` coordinate sourcing is **not** executed. `backend/config/curated_sites.yaml` still
   holds six entries, including the now-removed `artemis-shackleton-ridge`; the registry must be
   rebuilt to the 16 `REQ-05` entries with a provenance URL each. No coordinate was invented.
-- `DOC-GATE` is still `pending`. It is a human gate; the revision approval above is not the same
-  as closing it.
+- `DOC-GATE` was closed on 2026-11-15 with recorded human approval; see the ledger task.
 - Uncommitted out-of-order artefacts remain in the tree (`backend/.python-version`,
-  `backend/uv.lock`, `data/downloads/`, `data/manifests/`, `scripts/fetch_horizons.py`,
-  `docs/COORDINATE_SOURCING_GUIDE.md`). `fetch_horizons.py` is in the wrong directory for
-  `DATA-003`; `backend/src/cli/` is the only permitted location.
+  `backend/uv.lock`, `data/downloads/`, `data/manifests/`, `scripts/fetch_horizons.py`).
+  `fetch_horizons.py` is in the wrong directory for `DATA-003`; `backend/src/cli/` is the only
+  permitted location.
 
 ---
 
