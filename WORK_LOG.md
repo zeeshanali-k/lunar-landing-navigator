@@ -18,7 +18,7 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | `M3` frontend, P0 completeness | `PARTIAL` — M4 panels merged; `FE-001`/`FE-002`/`FE-003` remain (issues 5, 7, 8, 9, 14) | usairam |
 | `M1` data pipeline | `READY` — `DATA-001` done; `agent-alpha` takes `DATA-002`/`DATA-003`, `agent-beta` takes `DATA-004`–`DATA-006` | bauerceptor |
 | `M2` backend | `READY` — `agent-charlie` takes `ARCH-002` then `BE-001`–`BE-003` | bauerceptor |
-| Parallel session (revision 5) | `READY` — worktrees and branches defined; `agent-zeta` integrates | bauerceptor |
+| Parallel session (revision 5) | `READY` — worktrees/branches defined; zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
 | `M4` 3D | `PARTIAL` — M4 SVG horizon/timeline/contrast merged as `00f7e77`; `terrain-3d` remains `.gitkeep` and gated | devscion |
 | `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
 | **P0 release** | **`NOT SHIPPABLE` — 5 blockers remain (1, 5, 6, 7, 8)** | — |
@@ -291,22 +291,22 @@ The M1 raw data and packs do **not** block `FE-001` or `FE-002` directly: the fr
 responses and generated types. M1 becomes a hard blocker for `FE-003` through `DATA-006`, and M2
 blocks `FE-003` through `BE-003`. The immediate blocker for the first M3 task is **M2, not M1**.
 
-The unblock path is the Wave 1 gate: `agent-charlie` completes `ARCH-002` and `agent-zeta` merges
-it. `FE-001` then becomes eligible and can run in parallel with the rest of the data/backend
-pipeline. `FE-002` follows. `FE-003` waits for `BE-003` and `DATA-006`.
+The unblock path is the Wave 1 gate: `agent-charlie` completes `ARCH-002`, and `agent-zeta` merges
+**and pushes** it. `FE-001` then becomes eligible and can run in parallel with the rest of the
+data/backend pipeline. `FE-002` follows. `FE-003` waits for `BE-003` and `DATA-006`.
 
-Until `ARCH-002` is merged, usairam can prepare without starting a task: merge `bauerceptor` into
-`feat/module-3-frontend-core`, read the plan and ledger, review the merged M4 panels, and plan the
-`FE-001`/`FE-002` changes. Do not set a task `in_progress`, do not commit task work, and do not
-hand-roll a temporary contract.
+Until `ARCH-002` is merged and pushed, usairam can prepare without starting a task: merge
+`bauerceptor` into `feat/module-3-frontend-core`, read the plan and ledger, review the merged M4
+panels, and plan the `FE-001`/`FE-002` changes. Do not set a task `in_progress`, do not commit task
+work, and do not hand-roll a temporary contract.
 
 ### Who unblocks which M3 task
 
 | M3 task | Hard inputs | Agent signal | Final human message |
 |---|---|---|---|
-| `FE-001` | `ARCH-002` done and merged | Charlie: `M3 HANDOFF READY — ARCH-002 done and verified; waiting for zeta merge.`; zeta: `M3 UNBLOCK — tell usairam to start FE-001 now.` | Tell usairam to merge `bauerceptor` into `feat/module-3-frontend-core` and start `FE-001`. |
+| `FE-001` | `ARCH-002` done, merged, and pushed | Charlie: `M3 HANDOFF READY — ARCH-002 done and verified; waiting for zeta merge.`; zeta: `M3 UNBLOCK — tell usairam to start FE-001 now.` | Tell usairam only after zeta has merged **and pushed** `ARCH-002`; give him the pushed `origin/bauerceptor` commit. |
 | `FE-002` | `FE-001` done | none from M1/M2 | usairam proceeds after `FE-001`; no agent wait. |
-| `FE-003` | `FE-002` done + `DATA-006` (M1) + `BE-003` (M2) merged | Beta: `M3 FE-003 INPUT READY — DATA-006 merged; FE-003 still needs BE-003 and FE-002.`; zeta: `M3 FE-003 INPUT READY — DATA-006 and BE-003 merged; FE-003 still needs FE-002.` | Tell usairam to start `FE-003` only when `FE-002` is done and both input signals are true. |
+| `FE-003` | `FE-002` done + `DATA-006` (M1) + `BE-003` (M2) merged and pushed | Beta: `M3 FE-003 INPUT READY — DATA-006 merged; FE-003 still needs BE-003 and FE-002.`; zeta: `M3 FE-003 INPUT READY — DATA-006 and BE-003 merged; FE-003 still needs FE-002.` | Tell usairam to start `FE-003` only when `FE-002` is done and zeta has **pushed** both inputs; give him the pushed `origin/bauerceptor` commit. |
 
 `agent-alpha` does not directly unblock an M3 task. Its `DATA-002`/`DATA-003` unblock beta’s
 `DATA-004`/`DATA-005` and charlie’s `BE-001`/`BE-002`; it emits
@@ -319,6 +319,48 @@ must not claim the final unblock. Zeta emits the combined signal after `BE-003` 
 
 The exact Charlie and zeta handoff lines, including the “do not emit if the typecheck/barrel check
 failed” condition, are in `NEXT_SESSION.md` sections 9.1 and 10.7.
+
+### Integration control — zeta is the merge queue
+
+A/B/C do not merge or push `bauerceptor`. They commit their own branch and emit a `ZETA HANDOFF`;
+zeta is the only writer and pusher of `bauerceptor`.
+
+- Zeta starts in Wave 0, in parallel with alpha and charlie, and stays available as the merge queue.
+  It processes one handoff at a time; no final-only zeta and no batched merges.
+- Zeta merges only from a `ZETA HANDOFF` whose task is `done` or `blocked`. No handoff, no merge; an
+  `in_progress` task is sent back.
+- The handoff carries branch, worktree, commit, base `bauerceptor` commit, task status, exact
+  commands and exits, evidence refs/hashes, changed paths, artefacts, pre-merge checks, M3 impact,
+  and known risks.
+- Zeta checks that the branch contains the current `bauerceptor` tip. If not, it syncs
+  `bauerceptor` into the agent worktree, re-runs the task commands, and sends code conflicts back to
+  the agent.
+- Zeta merges with `--no-ff --no-commit`, resolves only ledger/digest/`WORK_LOG.md` conflicts,
+  refreshes the digest, runs the three validators, the task commands, and the frontend checks,
+  commits with `ALLOW_PROTECTED=1`, fetches, and pushes `origin/bauerceptor`.
+- Only after the push succeeds does zeta sync the next worktrees and emit an M3 signal. If a check
+  or the push fails, zeta does not push and does not unblock; it reports.
+- No force-push, no rebase, no squash, no agent-branch push. `completed_commit` hashes stay
+  resolvable.
+
+The handoff block is in `NEXT_SESSION.md` section 5.6:
+
+```text
+ZETA HANDOFF — <TASK-ID> ready to merge
+Branch: <branch>
+Worktree: <path>
+Commit: <hash>
+Task status: done|blocked
+Base: <bauerceptor commit you synced to>
+Commands: <cmd> exit 0; <cmd> exit 0
+Evidence: <refs, exit codes, sha256>
+Changed paths: <paths; must be within write_paths + ledger + digest + WORK_LOG>
+Artefacts: <paths and sha256>
+Pre-merge checks: <task tests, ruff/typecheck/extra checks you ran>
+M3 impact: none | FE-001 ready after merge | FE-003 input only
+Known risks: <none or exact>
+Do not merge if: <conditions, if any>
+```
 
 ### FE-001 — app shell, stores, canonical URL, typed client
 
@@ -437,3 +479,4 @@ Remaining:
 | Map and persona mode left in place, not deleted | Both are legitimate P1 work already written. Removing them would waste effort; the open issue is that they are mounted in the P0 cockpit, which is a routing fix, not a rewrite. |
 | `svgPointToLatLon` kept in the map module | Pure projection geometry for a P1 feature, not physics; removing it would break the map for no safety gain. |
 | Comparison store now passes a scenario key | The fallback contract requires one; typing it surfaced the missing P1 scenarios. |
+| Zeta is the only writer/pusher of `bauerceptor`; A/B/C hand off with `ZETA HANDOFF` | Concurrent merges and unpushed bases are the main failure mode. One merge at a time, push every green integration, then sync the next worktree. An M3 unblock is actionable only after the push. |
