@@ -35,7 +35,7 @@ import {
 } from "./urlSync";
 import { usePlaybackStore } from "./usePlaybackStore";
 
-const DEFAULT_SITE_ID = "artemis-shackleton-ridge";
+const DEFAULT_SITE_ID = "artemis-cabeus-peak";
 let offlineSubscribed = false;
 let activeRefreshSeq = 0;
 

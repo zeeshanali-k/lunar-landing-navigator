@@ -70,18 +70,18 @@ export const MISSION_CHALLENGES: MissionChallenge[] = [
     hint: "Load Chang'e-4 in the Cockpit, then switch the 2D Map to 'Global Moon' view and look at Earth clearance.",
     answer:
       "Von Karman Crater lies at 177.6°E on the lunar far side, permanently facing away from 0°E (Earth). Earth stays roughly 35° below the horizon at all times, forcing CNSA to communicate via the Queqiao relay satellite positioned at Earth–Moon L2.",
-    siteId: "change-4-von-karman",
+    siteId: "cnsa-change-4-von-karman",
     solarArrayType: "horizontal_fixed",
     observerHeightM: 2.0,
   },
   {
     id: "challenge-mast-vs-flat",
     title: "Challenge 2: Height Wins at the Poles",
-    question: "Why does a 10m vertical tracking solar mast beat a flat panel at Shackleton?",
-    hint: "Try Shackleton Ridge with a 10m Vertical Tracking array, then compare Solar Power Factor against Horizontal Fixed at 2m.",
+    question: "Why does a 10m vertical tracking solar mast beat a flat panel at Haworth crater?",
+    hint: "Try Haworth crater with a 10m Vertical Tracking array, then compare Solar Power Factor against Horizontal Fixed at 2m.",
     answer:
       "Two effects combine: first, raising the receiver to 10m lifts it higher above nearby crater rim shadows, increasing sunlit hours; second, tilting panels vertically faces the 1°–5° grazing Sun directly (~100% power factor vs. ~14% on flat panels).",
-    siteId: "artemis-shackleton-ridge",
+    siteId: "artemis-haworth",
     solarArrayType: "vertical_tracking",
     observerHeightM: 10.0,
   },
