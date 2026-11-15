@@ -16,9 +16,9 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | Human review gate | `DONE` — `DOC-GATE` closed 2026-11-15 with recorded approval | bauerceptor |
 | `M3` frontend corrected onto the plan | `DONE` (committed on `bauerceptor`, not yet merged to `main`) | bauerceptor |
 | `M3` frontend, P0 completeness | `PARTIAL` — issues 5–8 fixed on `feat/module-3-frontend-core` (`801aa0a`) and verified in a test merge; pending merge; #9 open | usairam |
-| `M1` data pipeline | `PARTIAL` — `DATA-001` and `DATA-002` done; `DATA-003` next; `agent-beta` takes `DATA-004`–`DATA-006` | bauerceptor |
+| `M1` data pipeline | `PARTIAL` — `DATA-001`, `DATA-002`, `DATA-003` done; acquisition complete; `agent-beta` takes `DATA-004`–`DATA-006` (also needs `ARCH-002`) | bauerceptor |
 | `M2` backend | `READY` — `agent-charlie` takes `ARCH-002` then `BE-001`–`BE-003` | bauerceptor |
-| Parallel session (revision 5) | `IN PROGRESS` — Wave 1: `DATA-002` merged and pushed at `876e758`; `ARCH-002` pending; zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
+| Parallel session (revision 5) | `IN PROGRESS` — Wave 2: `DATA-002` (`876e758`) and `DATA-003` (`4b9402d`) merged and pushed; `ARCH-002` pending; zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
 | `M4` 3D | `PARTIAL` — M4 SVG horizon/timeline/contrast merged as `00f7e77`; `terrain-3d` remains `.gitkeep` and gated | devscion |
 | `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
 | **P0 release** | **`NOT SHIPPABLE` — 5 blockers remain (1, 5, 6, 7, 8)** | — |
@@ -295,6 +295,8 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 | 17 | M3 branch lacks the `ARCH-001` toolchain; its `urlSync.test.ts` called the runner at import time and used the removed `artemis-shackleton-ridge` site | `frontend/package.json`, `frontend/src/__tests__/urlSync.test.ts` | MAJOR | `DONE IN INTEGRATION` — merge `bauerceptor` for the toolchain and use the Vitest `it` wiring/current site ID |
 | 18 | M3 branch is based on revision 3 / 6-site registry and must merge `bauerceptor` (revision 5 / 16-site) before closing | `DEVELOPMENT_PLAN.md`, `backend/config/curated_sites.yaml` | MAJOR | `OPEN` — merge `bauerceptor` after `ARCH-002` |
 | 19 | Compare and Landing Window P1 tabs remain visible as placeholders in the P0 top bar | `frontend/src/components/layout/TopCommandBar.tsx` | MINOR | `OPEN` — decide whether to gate them with the P1 route |
+| 20 | `SITE_COORD` altitude is `0.0 km` for all 16 sites because the registry has no `elevation_m`; each manifest records an explicit `altitude_source` | `data/manifests/horizons/*.json`, `DATA-003` | low | `RECORDED` — ≈1e-3° effect, inside the 0.05° tolerance; revisit if REQ-07 requires pack-derived altitudes |
+| 21 | REQ-07 needs interpolation error proven against frozen **off-grid** Horizons references, but no task owns an off-grid fetch; `BE-001`/`QA-001` have no download write paths | `data/manifests/references/horizons/`, `BE-001` | MAJOR | `OPEN` — only 24-hourly references exist; needs a small approved scope addition before `BE-001` |
 
 ### Deliberately not fixed
 
@@ -313,7 +315,7 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 
 | Module | Agent | Next tasks | Blocked by |
 |---|---|---|---|
-| `M1` | `agent-alpha` | `DATA-003` | ready |
+| `M1` | `agent-alpha` | — (complete: `DATA-002`, `DATA-003` done) | — |
 | `M1` | `agent-beta` | `DATA-004` → `DATA-005` → `DATA-006` | `DATA-004` needs `DATA-003` + `ARCH-002`; `DATA-005` needs `DATA-002` + `ARCH-002`; `DATA-006` needs both packs |
 | `M2` | `agent-charlie` | `ARCH-002` → `BE-001` → `BE-002` → `BE-003` | `BE-001` needs `DATA-004` + `ARCH-002`; `BE-002` needs `BE-001` + `DATA-005`; `BE-003` needs `BE-002` + `DATA-006` |
 | `M3` | usairam | Merge `feat/module-3-frontend-core` (`801aa0a`) with `bauerceptor` after `ARCH-002`; apply the integration fixes; close `FE-001`/`FE-002`; `FE-003` after `BE-003`/`DATA-006` | `ARCH-002`, `BE-003`, `DATA-006`; issue 9 human decision |
@@ -587,7 +589,7 @@ Do not merge if: the manifest or image hash differs, or any validator fails
 - Validators after digest refresh: `validate_task_ledger.py` exit 0 (28 tasks, 6 done); `check_planning_docs.py` exit 0; `check_file_lengths.py` exit 0 (0 violations).
 - Cleared a merge blocker: the main worktree carried an untracked out-of-order `data/manifests/lola/manifest.json` (reversed latitude bounds, no label hash). Preserved outside the tree in the session scratchpad, not reused.
 - Synced `bauerceptor` into the alpha worktree (fast-forward to `876e758`). Next: `agent-alpha` runs `DATA-003`; `ARCH-002` remains pending. No M3 signal (alpha does not unblock M3).
-- Proposed doc delta for human decision: `DEVELOPMENT_PLAN.md` REQ-04 omits `SCALING_FACTOR = 0.5` (elevation = DN × 0.5), which `DATA-005` needs. Not changed here.
+- Proposed doc delta withdrawn by alpha in `DATA-003`: `DEVELOPMENT_PLAN.md` REQ-04 omits `SCALING_FACTOR = 0.5`, but the live PDS label (byte-identical to the cache) states it and `read_elevations` reads it from the label, so no plan edit is needed.
 - Noted: `origin/feat/m5-comparison-qa-delivery` appeared on fetch; out of scope for this session and untouched.
 
 ---
@@ -621,3 +623,14 @@ M3 impact: none (this unblocks beta DATA-004/DATA-005 and charlie BE-001/BE-002 
 Known risks: two ledger tasks in a row on this branch (DATA-002 was integrated at 876e758); the raw cache is ignored and shared
 Do not merge if: any manifest is missing, a track's parsed_rows is not 26305, the manifest aggregate differs, or a validator fails
 ```
+
+### Wave 2 — DATA-003 integrated — agent-zeta
+
+- Merged `bauerceptor-alpha` @ `f693452` into `bauerceptor` as `4b9402d` with `--no-ff`; pushed `a43e602..4b9402d` to `origin/bauerceptor`.
+- Scope verified: `backend/src/cli/download_horizons.py`, `backend/src/cli/horizons_client.py`, `backend/tests/unit/test_horizons_parser.py`, `data/manifests/horizons/` (32), `data/manifests/references/horizons/` (32), plus ledger, digest, `WORK_LOG.md`. No out-of-scope path.
+- Re-ran `pytest tests/unit/test_horizons_parser.py -v` — exit 0 (14 passed). Verified 32 manifests and 32 references; every track `parsed_rows` is 26305. Reproduced the recorded aggregate `8aa65a34…` exactly as `sha256sum *.json | sort -k2 | sha256sum` inside the horizons directory.
+- Validators after digest refresh: `validate_task_ledger.py` exit 0 (28 tasks, 7 done); `check_planning_docs.py` exit 0; `check_file_lengths.py` exit 0 (0 violations).
+- Cleared a merge blocker: two untracked out-of-order Apollo 11 manifests under `data/manifests/horizons/` were preserved to the session scratchpad, then the merge added the tracked set.
+- `agent-alpha` has no further task. `DATA-004`/`DATA-005` still also require `ARCH-002`, which is pending, so beta stays standby.
+- Open issues added: #20 (`SITE_COORD` altitude 0.0 km, recorded per manifest) and #21 (no task owns a frozen off-grid Horizons reference, which `BE-001` needs).
+- Noted: `origin/feat/m5-comparison-qa-delivery` advanced to `d0d0c54`; out of scope for this session and untouched.
