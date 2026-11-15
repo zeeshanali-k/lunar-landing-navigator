@@ -1,752 +1,2346 @@
 {
-  "site": {
-    "id": "artemis-shackleton-ridge",
-    "name": "Shackleton Connecting Ridge",
-    "lat_deg": -89.45,
-    "lon_deg": 135.2,
-    "elevation_m": 1240.0,
-    "mean_slope_deg": 4.8
-  },
-  "summary": {
-    "feasibility_score": 84.5,
-    "sub_scores": {
-      "power_score": 88.0,
-      "thermal_score": 82.0,
-      "comms_score": 79.0,
-      "terrain_score": 91.0
-    },
-    "sunlit_hours": 268.0,
-    "sunlit_fraction": 0.798,
-    "longest_dark_streak_hours": 38.0,
-    "dte_comms_hours": 212.0,
-    "dte_fraction": 0.631,
-    "overlap_sun_and_dte_hours": 176.0,
-    "mean_solar_power_factor": 0.76,
-    "mean_irradiance_w_m2": 1034.4,
-    "risk_warnings": [
-      "38h continuous shadow period requires thermal survival battery sizing."
-    ],
-    "next_events_from_start": {
-      "hours_to_sunset": 114.0,
-      "hours_to_sunrise": null,
-      "hours_to_earthset": 162.0,
-      "hours_to_earthrise": null
-    }
-  },
   "horizon_profile": [
     {
-      "azimuth_deg": 0,
-      "terrain_elev_deg": 2.4,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 0.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 10,
-      "terrain_elev_deg": 2.87,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 1.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 20,
-      "terrain_elev_deg": 3.26,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 2.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 30,
-      "terrain_elev_deg": 3.53,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 3.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 40,
-      "terrain_elev_deg": 3.64,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 4.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 50,
-      "terrain_elev_deg": 3.56,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 5.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 60,
-      "terrain_elev_deg": 3.31,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 6.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 70,
-      "terrain_elev_deg": 2.91,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 7.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 80,
-      "terrain_elev_deg": 2.38,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 8.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 90,
-      "terrain_elev_deg": 1.8,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 9.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 100,
-      "terrain_elev_deg": 1.22,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 10.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 110,
-      "terrain_elev_deg": 0.69,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 11.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 120,
-      "terrain_elev_deg": 0.29,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 12.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 130,
-      "terrain_elev_deg": 0.04,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 13.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 140,
-      "terrain_elev_deg": -0.04,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 14.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 150,
-      "terrain_elev_deg": 0.07,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 15.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 160,
-      "terrain_elev_deg": 0.34,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 16.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 170,
-      "terrain_elev_deg": 0.73,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 17.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 180,
-      "terrain_elev_deg": 1.2,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 18.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 190,
-      "terrain_elev_deg": 1.69,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 19.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 200,
-      "terrain_elev_deg": 2.14,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 20.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 210,
-      "terrain_elev_deg": 2.49,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 21.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 220,
-      "terrain_elev_deg": 2.72,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 22.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 230,
-      "terrain_elev_deg": 2.79,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 23.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 240,
-      "terrain_elev_deg": 2.71,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 24.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 250,
-      "terrain_elev_deg": 2.49,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 25.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 260,
-      "terrain_elev_deg": 2.17,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 26.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 270,
-      "terrain_elev_deg": 1.8,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 27.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 280,
-      "terrain_elev_deg": 1.43,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 28.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 290,
-      "terrain_elev_deg": 1.11,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 29.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 300,
-      "terrain_elev_deg": 0.89,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 30.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 310,
-      "terrain_elev_deg": 0.81,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 31.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 320,
-      "terrain_elev_deg": 0.88,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 32.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 330,
-      "terrain_elev_deg": 1.11,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 33.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 340,
-      "terrain_elev_deg": 1.46,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 34.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     },
     {
-      "azimuth_deg": 350,
-      "terrain_elev_deg": 1.91,
-      "geometric_limb_deg": -0.08
+      "azimuth_deg": 35.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 36.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 37.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 38.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 39.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 40.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 41.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 42.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 43.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 44.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 45.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 46.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 47.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 48.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 49.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 50.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 51.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 52.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 53.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 54.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 55.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 56.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 57.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 58.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 59.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 60.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 61.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 62.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 63.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 64.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 65.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 66.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 67.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 68.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 69.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 70.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 71.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 72.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 73.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 74.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 75.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 76.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 77.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 78.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 79.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 80.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 81.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 82.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 83.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 84.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 85.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 86.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 87.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 88.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 89.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 90.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 91.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 92.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 93.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 94.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 95.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 96.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 97.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 98.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 99.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 100.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 101.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 102.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 103.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 104.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 105.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 106.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 107.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 108.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 109.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 110.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 111.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 112.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 113.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 114.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 115.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 116.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 117.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 118.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 119.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 120.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 121.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 122.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 123.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 124.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 125.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 126.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 127.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 128.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 129.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 130.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 131.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 132.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 133.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 134.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 135.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 136.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 137.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 138.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 139.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 140.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 141.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 142.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 143.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 144.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 145.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 146.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 147.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 148.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 149.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 150.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 151.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 152.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 153.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 154.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 155.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 156.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 157.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 158.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 159.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 160.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 161.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 162.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 163.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 164.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 165.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 166.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 167.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 168.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 169.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 170.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 171.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 172.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 173.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 174.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 175.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 176.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 177.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 178.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 179.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 180.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 181.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 182.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 183.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 184.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 185.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 186.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 187.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 188.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 189.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 190.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 191.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 192.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 193.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 194.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 195.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 196.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 197.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 198.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 199.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 200.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 201.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 202.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 203.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 204.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 205.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 206.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 207.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 208.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 209.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 210.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 211.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 212.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 213.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 214.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 215.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 216.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 217.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 218.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 219.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 220.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 221.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 222.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 223.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 224.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 225.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 226.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 227.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 228.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 229.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 230.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 231.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 232.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 233.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 234.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 235.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 236.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 237.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 238.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 239.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 240.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 241.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 242.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 243.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 244.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 245.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 246.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 247.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 248.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 249.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 250.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 251.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 252.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 253.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 254.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 255.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 256.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 257.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 258.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 259.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 260.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 261.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 262.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 263.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 264.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 265.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 266.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 267.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 268.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 269.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 270.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 271.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 272.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 273.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 274.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 275.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 276.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 277.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 278.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 279.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 280.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 281.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 282.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 283.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 284.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 285.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 286.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 287.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 288.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 289.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 290.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 291.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 292.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 293.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 294.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 295.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 296.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 297.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 298.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 299.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 300.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 301.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 302.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 303.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 304.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 305.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 306.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 307.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 308.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 309.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 310.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 311.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 312.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 313.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 314.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 315.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 316.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 317.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 318.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 319.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 320.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 321.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 322.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 323.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 324.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 325.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 326.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 327.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 328.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 329.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 330.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 331.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 332.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 333.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 334.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 335.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 336.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 337.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 338.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 339.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 340.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 341.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 342.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 343.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 344.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 345.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 346.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 347.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 348.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 349.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 350.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 351.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 352.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 353.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 354.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 355.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 356.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 357.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 358.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
+    },
+    {
+      "azimuth_deg": 359.0,
+      "geometric_limb_deg": 0.0,
+      "terrain_elev_deg": 0.0
     }
   ],
+  "site": {
+    "category": "artemis_iii",
+    "elevation_m": null,
+    "has_precomputed_terrain": false,
+    "id": "artemis-cabeus-peak",
+    "lat_deg": -82.26,
+    "lon_deg": -54.58,
+    "mean_slope_deg": null,
+    "name": "Peak near Cabeus B"
+  },
+  "summary": {
+    "dte_comms_hours": 0.0,
+    "dte_fraction": 0.0,
+    "feasibility_score": null,
+    "longest_comms_blackout_hours": 0.0,
+    "longest_dark_streak_hours": 0.0,
+    "mean_irradiance_w_m2": 0.0,
+    "mean_solar_power_factor": 0.0,
+    "next_events_from_start": {
+      "hours_to_earthrise": null,
+      "hours_to_earthset": null,
+      "hours_to_sunrise": null,
+      "hours_to_sunset": null
+    },
+    "overlap_fraction": 0.0,
+    "overlap_sun_and_dte_hours": 0.0,
+    "risk_warnings": [],
+    "sub_scores": {
+      "comms_score": 0.0,
+      "power_score": 0.0,
+      "terrain_score": null,
+      "thermal_score": 0.0
+    },
+    "sunlit_fraction": 0.0,
+    "sunlit_hours": 0.0
+  },
   "timeseries": [
     {
-      "timestamp_utc": "2027-11-01T00:00:00Z",
-      "sun_az_deg": 42.1,
-      "sun_elev_deg": 3.4,
-      "sun_horizon_elev_deg": 3.62,
-      "sun_visible_fraction": 0.088,
-      "is_sunlit": true,
-      "solar_power_factor": 0.088,
-      "earth_az_deg": 118.4,
-      "earth_elev_deg": 2.3,
-      "earth_horizon_elev_deg": 0.35,
-      "earth_clearance_deg": 1.95,
-      "is_dte_visible": false,
-      "sun_earth_sep_deg": 76.3,
-      "hours_to_next_sunset": 114.0,
-      "hours_to_next_sunrise": null,
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
       "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": 48.0
-    },
-    {
-      "timestamp_utc": "2027-11-01T12:00:00Z",
-      "sun_az_deg": 54.3,
-      "sun_elev_deg": 2.68,
-      "sun_horizon_elev_deg": 3.45,
-      "sun_visible_fraction": 0.0,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
       "is_sunlit": false,
       "solar_power_factor": 0.0,
-      "earth_az_deg": 120.63,
-      "earth_elev_deg": 2.42,
-      "earth_horizon_elev_deg": 0.27,
-      "earth_clearance_deg": 2.15,
-      "is_dte_visible": false,
-      "sun_earth_sep_deg": 66.33,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": 38.0,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": 48.0
+      "sun_az_deg": 0.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T00:00:00Z"
     },
     {
-      "timestamp_utc": "2027-11-02T00:00:00Z",
-      "sun_az_deg": 66.5,
-      "sun_elev_deg": 2.02,
-      "sun_horizon_elev_deg": 3.05,
-      "sun_visible_fraction": 0.0,
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
       "is_sunlit": false,
       "solar_power_factor": 0.0,
-      "earth_az_deg": 122.59,
-      "earth_elev_deg": 2.77,
-      "earth_horizon_elev_deg": 0.23,
-      "earth_clearance_deg": 2.54,
-      "is_dte_visible": false,
-      "sun_earth_sep_deg": 56.09,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": 38.0,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": 48.0
+      "sun_az_deg": 15.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T01:00:00Z"
     },
     {
-      "timestamp_utc": "2027-11-02T12:00:00Z",
-      "sun_az_deg": 78.7,
-      "sun_elev_deg": 1.46,
-      "sun_horizon_elev_deg": 2.45,
-      "sun_visible_fraction": 0.0,
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
       "is_sunlit": false,
       "solar_power_factor": 0.0,
-      "earth_az_deg": 124.04,
-      "earth_elev_deg": 3.32,
-      "earth_horizon_elev_deg": 0.19,
-      "earth_clearance_deg": 3.13,
-      "is_dte_visible": false,
-      "sun_earth_sep_deg": 45.34,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": 38.0,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": 48.0
+      "sun_az_deg": 30.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T02:00:00Z"
     },
     {
-      "timestamp_utc": "2027-11-03T00:00:00Z",
-      "sun_az_deg": 90.9,
-      "sun_elev_deg": 1.06,
-      "sun_horizon_elev_deg": 1.75,
-      "sun_visible_fraction": 0.0,
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
       "is_sunlit": false,
       "solar_power_factor": 0.0,
-      "earth_az_deg": 124.81,
-      "earth_elev_deg": 4.05,
-      "earth_horizon_elev_deg": 0.17,
-      "earth_clearance_deg": 3.88,
-      "is_dte_visible": false,
-      "sun_earth_sep_deg": 33.91,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": 38.0,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": 48.0
-    },
-    {
-      "timestamp_utc": "2027-11-03T12:00:00Z",
-      "sun_az_deg": 103.1,
-      "sun_elev_deg": 0.84,
-      "sun_horizon_elev_deg": 1.06,
-      "sun_visible_fraction": 0.088,
-      "is_sunlit": true,
-      "solar_power_factor": 0.088,
-      "earth_az_deg": 124.8,
-      "earth_elev_deg": 4.9,
-      "earth_horizon_elev_deg": 0.17,
-      "earth_clearance_deg": 4.73,
-      "is_dte_visible": false,
-      "sun_earth_sep_deg": 21.7,
-      "hours_to_next_sunset": 54.0,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": 48.0
-    },
-    {
-      "timestamp_utc": "2027-11-04T00:00:00Z",
-      "sun_az_deg": 115.3,
-      "sun_elev_deg": 0.82,
-      "sun_horizon_elev_deg": 0.48,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 1.0,
-      "earth_az_deg": 124.01,
-      "earth_elev_deg": 5.83,
-      "earth_horizon_elev_deg": 0.19,
-      "earth_clearance_deg": 5.64,
-      "is_dte_visible": true,
-      "sun_earth_sep_deg": 8.71,
-      "hours_to_next_sunset": 42.0,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": 90.0,
-      "hours_to_next_earthrise": null
-    },
-    {
-      "timestamp_utc": "2027-11-04T12:00:00Z",
-      "sun_az_deg": 127.5,
-      "sun_elev_deg": 0.99,
-      "sun_horizon_elev_deg": 0.1,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 1.0,
-      "earth_az_deg": 122.55,
-      "earth_elev_deg": 6.78,
-      "earth_horizon_elev_deg": 0.23,
-      "earth_clearance_deg": 6.55,
-      "is_dte_visible": true,
-      "sun_earth_sep_deg": 4.95,
-      "hours_to_next_sunset": 30.0,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": 78.0,
-      "hours_to_next_earthrise": null
-    },
-    {
-      "timestamp_utc": "2027-11-05T00:00:00Z",
-      "sun_az_deg": 139.7,
-      "sun_elev_deg": 1.36,
-      "sun_horizon_elev_deg": -0.04,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 1.0,
-      "earth_az_deg": 120.58,
-      "earth_elev_deg": 7.68,
-      "earth_horizon_elev_deg": 0.28,
-      "earth_clearance_deg": 7.4,
-      "is_dte_visible": true,
-      "sun_earth_sep_deg": 19.12,
-      "hours_to_next_sunset": 18.0,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": 66.0,
-      "hours_to_next_earthrise": null
-    },
-    {
-      "timestamp_utc": "2027-11-05T12:00:00Z",
-      "sun_az_deg": 151.9,
-      "sun_elev_deg": 1.89,
-      "sun_horizon_elev_deg": 0.12,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 0.999,
-      "earth_az_deg": 118.35,
-      "earth_elev_deg": 8.49,
-      "earth_horizon_elev_deg": 0.36,
-      "earth_clearance_deg": 8.13,
-      "is_dte_visible": true,
-      "sun_earth_sep_deg": 33.55,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": 54.0,
-      "hours_to_next_earthrise": null
-    },
-    {
-      "timestamp_utc": "2027-11-06T00:00:00Z",
-      "sun_az_deg": 164.1,
-      "sun_elev_deg": 2.53,
-      "sun_horizon_elev_deg": 0.5,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 0.999,
-      "earth_az_deg": 116.12,
-      "earth_elev_deg": 9.14,
-      "earth_horizon_elev_deg": 0.45,
-      "earth_clearance_deg": 8.69,
-      "is_dte_visible": true,
-      "sun_earth_sep_deg": 47.98,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": 42.0,
-      "hours_to_next_earthrise": null
-    },
-    {
-      "timestamp_utc": "2027-11-06T12:00:00Z",
-      "sun_az_deg": 176.3,
-      "sun_elev_deg": 3.24,
-      "sun_horizon_elev_deg": 1.03,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 0.998,
-      "earth_az_deg": 114.17,
-      "earth_elev_deg": 9.61,
-      "earth_horizon_elev_deg": 0.52,
-      "earth_clearance_deg": 9.09,
-      "is_dte_visible": true,
-      "sun_earth_sep_deg": 62.13,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": 30.0,
-      "hours_to_next_earthrise": null
-    },
-    {
-      "timestamp_utc": "2027-11-07T00:00:00Z",
-      "sun_az_deg": 188.5,
-      "sun_elev_deg": 3.96,
-      "sun_horizon_elev_deg": 1.62,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 0.998,
-      "earth_az_deg": 112.73,
-      "earth_elev_deg": 9.86,
-      "earth_horizon_elev_deg": 0.58,
-      "earth_clearance_deg": 9.28,
-      "is_dte_visible": true,
-      "sun_earth_sep_deg": 75.77,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": 18.0,
-      "hours_to_next_earthrise": null
-    },
-    {
-      "timestamp_utc": "2027-11-07T12:00:00Z",
-      "sun_az_deg": 200.7,
-      "sun_elev_deg": 4.64,
-      "sun_horizon_elev_deg": 2.16,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 0.997,
-      "earth_az_deg": 111.99,
-      "earth_elev_deg": 9.88,
-      "earth_horizon_elev_deg": 0.61,
-      "earth_clearance_deg": 9.27,
-      "is_dte_visible": true,
-      "sun_earth_sep_deg": 88.71,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": null
-    },
-    {
-      "timestamp_utc": "2027-11-08T00:00:00Z",
-      "sun_az_deg": 212.9,
-      "sun_elev_deg": 5.23,
-      "sun_horizon_elev_deg": 2.56,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 0.996,
-      "earth_az_deg": 112.01,
-      "earth_elev_deg": 9.66,
-      "earth_horizon_elev_deg": 0.61,
-      "earth_clearance_deg": 9.05,
-      "is_dte_visible": true,
-      "sun_earth_sep_deg": 100.89,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": null
-    },
-    {
-      "timestamp_utc": "2027-11-08T12:00:00Z",
-      "sun_az_deg": 225.1,
-      "sun_elev_deg": 5.67,
-      "sun_horizon_elev_deg": 2.76,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 0.995,
-      "earth_az_deg": 112.82,
-      "earth_elev_deg": 9.22,
-      "earth_horizon_elev_deg": 0.58,
-      "earth_clearance_deg": 8.64,
-      "is_dte_visible": true,
-      "sun_earth_sep_deg": 112.28,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": null
-    },
-    {
-      "timestamp_utc": "2027-11-09T00:00:00Z",
-      "sun_az_deg": 237.3,
-      "sun_elev_deg": 5.93,
-      "sun_horizon_elev_deg": 2.73,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 0.995,
-      "earth_az_deg": 114.3,
-      "earth_elev_deg": 8.58,
-      "earth_horizon_elev_deg": 0.52,
-      "earth_clearance_deg": 8.06,
-      "is_dte_visible": true,
-      "sun_earth_sep_deg": 123.0,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": null
-    },
-    {
-      "timestamp_utc": "2027-11-09T12:00:00Z",
-      "sun_az_deg": 249.5,
-      "sun_elev_deg": 6.0,
-      "sun_horizon_elev_deg": 2.5,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 0.995,
-      "earth_az_deg": 116.27,
-      "earth_elev_deg": 7.8,
-      "earth_horizon_elev_deg": 0.44,
-      "earth_clearance_deg": 7.36,
-      "is_dte_visible": true,
-      "sun_earth_sep_deg": 133.23,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": null
-    },
-    {
-      "timestamp_utc": "2027-11-10T00:00:00Z",
-      "sun_az_deg": 261.7,
-      "sun_elev_deg": 5.86,
-      "sun_horizon_elev_deg": 2.11,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 0.995,
-      "earth_az_deg": 118.51,
-      "earth_elev_deg": 6.9,
-      "earth_horizon_elev_deg": 0.35,
-      "earth_clearance_deg": 6.55,
-      "is_dte_visible": true,
-      "sun_earth_sep_deg": 143.19,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": null
-    },
-    {
-      "timestamp_utc": "2027-11-10T12:00:00Z",
-      "sun_az_deg": 273.9,
-      "sun_elev_deg": 5.53,
-      "sun_horizon_elev_deg": 1.66,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 0.995,
-      "earth_az_deg": 120.73,
-      "earth_elev_deg": 5.96,
-      "earth_horizon_elev_deg": 0.27,
-      "earth_clearance_deg": 5.69,
-      "is_dte_visible": true,
-      "sun_earth_sep_deg": 153.17,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": null
-    },
-    {
-      "timestamp_utc": "2027-11-11T00:00:00Z",
-      "sun_az_deg": 286.1,
-      "sun_elev_deg": 5.04,
-      "sun_horizon_elev_deg": 1.23,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 0.996,
-      "earth_az_deg": 122.67,
-      "earth_elev_deg": 5.02,
-      "earth_horizon_elev_deg": 0.22,
-      "earth_clearance_deg": 4.8,
-      "is_dte_visible": false,
-      "sun_earth_sep_deg": 163.43,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": 48.0
-    },
-    {
-      "timestamp_utc": "2027-11-11T12:00:00Z",
-      "sun_az_deg": 298.3,
-      "sun_elev_deg": 4.42,
-      "sun_horizon_elev_deg": 0.93,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 0.997,
-      "earth_az_deg": 124.09,
-      "earth_elev_deg": 4.15,
-      "earth_horizon_elev_deg": 0.19,
-      "earth_clearance_deg": 3.96,
-      "is_dte_visible": false,
-      "sun_earth_sep_deg": 174.21,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": 48.0
-    },
-    {
-      "timestamp_utc": "2027-11-12T00:00:00Z",
-      "sun_az_deg": 310.5,
-      "sun_elev_deg": 3.72,
-      "sun_horizon_elev_deg": 0.81,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 0.998,
-      "earth_az_deg": 124.82,
-      "earth_elev_deg": 3.41,
-      "earth_horizon_elev_deg": 0.17,
-      "earth_clearance_deg": 3.24,
-      "is_dte_visible": false,
-      "sun_earth_sep_deg": 174.32,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": 48.0
-    },
-    {
-      "timestamp_utc": "2027-11-12T12:00:00Z",
-      "sun_az_deg": 322.7,
-      "sun_elev_deg": 2.99,
-      "sun_horizon_elev_deg": 0.94,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 0.999,
-      "earth_az_deg": 124.78,
-      "earth_elev_deg": 2.83,
-      "earth_horizon_elev_deg": 0.17,
-      "earth_clearance_deg": 2.66,
-      "is_dte_visible": false,
-      "sun_earth_sep_deg": 162.08,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": 48.0
-    },
-    {
-      "timestamp_utc": "2027-11-13T00:00:00Z",
-      "sun_az_deg": 334.9,
-      "sun_elev_deg": 2.3,
-      "sun_horizon_elev_deg": 1.28,
-      "sun_visible_fraction": 1.0,
-      "is_sunlit": true,
-      "solar_power_factor": 0.999,
-      "earth_az_deg": 123.95,
-      "earth_elev_deg": 2.45,
-      "earth_horizon_elev_deg": 0.19,
-      "earth_clearance_deg": 2.26,
-      "is_dte_visible": false,
-      "sun_earth_sep_deg": 149.05,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": 48.0
-    },
-    {
-      "timestamp_utc": "2027-11-13T12:00:00Z",
-      "sun_az_deg": 347.1,
-      "sun_elev_deg": 1.69,
-      "sun_horizon_elev_deg": 1.78,
-      "sun_visible_fraction": 0.331,
-      "is_sunlit": true,
-      "solar_power_factor": 0.331,
-      "earth_az_deg": 122.46,
-      "earth_elev_deg": 2.3,
-      "earth_horizon_elev_deg": 0.23,
-      "earth_clearance_deg": 2.07,
-      "is_dte_visible": false,
-      "sun_earth_sep_deg": 135.36,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": null,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": 48.0
-    },
-    {
-      "timestamp_utc": "2027-11-14T00:00:00Z",
-      "sun_az_deg": 359.3,
-      "sun_elev_deg": 1.22,
-      "sun_horizon_elev_deg": 2.37,
+      "sun_az_deg": 45.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
       "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T03:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
       "is_sunlit": false,
       "solar_power_factor": 0.0,
-      "earth_az_deg": 120.47,
-      "earth_elev_deg": 2.39,
-      "earth_horizon_elev_deg": 0.28,
-      "earth_clearance_deg": 2.11,
-      "is_dte_visible": false,
-      "sun_earth_sep_deg": 121.17,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": 38.0,
-      "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": 48.0
+      "sun_az_deg": 60.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T04:00:00Z"
     },
     {
-      "timestamp_utc": "2027-11-14T12:00:00Z",
-      "sun_az_deg": 11.5,
-      "sun_elev_deg": 0.91,
-      "sun_horizon_elev_deg": 2.93,
-      "sun_visible_fraction": 0.0,
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
       "is_sunlit": false,
       "solar_power_factor": 0.0,
-      "earth_az_deg": 118.24,
-      "earth_elev_deg": 2.71,
-      "earth_horizon_elev_deg": 0.36,
-      "earth_clearance_deg": 2.35,
-      "is_dte_visible": false,
-      "sun_earth_sep_deg": 106.74,
-      "hours_to_next_sunset": null,
-      "hours_to_next_sunrise": 38.0,
+      "sun_az_deg": 75.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T05:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
       "hours_to_next_earthset": null,
-      "hours_to_next_earthrise": 48.0
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 90.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T06:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 105.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T07:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 120.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T08:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 135.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T09:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 150.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T10:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 165.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T11:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 180.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T12:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 195.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T13:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 210.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T14:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 225.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T15:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 240.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T16:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 255.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T17:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 270.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T18:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 285.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T19:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 300.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T20:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 315.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T21:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 330.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T22:00:00Z"
+    },
+    {
+      "earth_az_deg": 0.0,
+      "earth_clearance_deg": 0.0,
+      "earth_elev_deg": 0.0,
+      "earth_horizon_elev_deg": 0.0,
+      "hours_to_next_earthrise": null,
+      "hours_to_next_earthset": null,
+      "hours_to_next_sunrise": null,
+      "hours_to_next_sunset": null,
+      "is_dte_geometric": false,
+      "is_dte_visible": false,
+      "is_solar_conjunction": false,
+      "is_sunlit": false,
+      "solar_power_factor": 0.0,
+      "sun_az_deg": 345.0,
+      "sun_earth_sep_deg": 90.0,
+      "sun_elev_deg": 0.0,
+      "sun_horizon_elev_deg": 0.0,
+      "sun_visible_fraction": 0.0,
+      "timestamp_utc": "2027-11-01T23:00:00Z"
     }
   ]
 }

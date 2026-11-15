@@ -635,3 +635,30 @@ Do not merge if: any manifest is missing, a track's parsed_rows is not 26305, th
 - `agent-alpha` has no further task. `DATA-004`/`DATA-005` still also require `ARCH-002`, which is pending, so beta stays standby.
 - Open issues added: #20 (`SITE_COORD` altitude 0.0 km, recorded per manifest) and #21 (no task owns a frozen off-grid Horizons reference, which `BE-001` needs).
 - Noted: `origin/feat/m5-comparison-qa-delivery` advanced to `d0d0c54`; out of scope for this session and untouched.
+
+### ARCH-002 — done — agent-charlie
+
+- Branch/commit: `bauerceptor-charlie` @ `f03d00c` (task work); the ledger closure is the branch tip.
+- Changed: closed the Pydantic request/response models (`extra=forbid`, REQ-06 allowlists, nullable Class B terrain fields, required `site_id`); added `backend/src/cli/export_openapi.py`, `backend/src/api/schemas/enums.py`, `backend/src/api/schemas/fixture_synth.py`, and `backend/tests/integration/test_contract_parity.py`; generated `contracts/openapi.json` and `frontend/src/types/api.generated.ts`; regenerated `contracts/fixtures`; removed `contracts/openapi-draft.yaml` and the hand-written wire interfaces; rewired `frontend/src/types/index.ts` to the generated types; made the P0 store and site explorer curated-only (Class B null rendering, no custom-coordinate pinning).
+- Commands: `uv run --python 3.12 --frozen python -m src.cli.export_openapi` — exit 0; `uv run --python 3.12 --frozen pytest tests/integration/test_contract_parity.py -v` — exit 0 (14 passed, 1 skipped).
+- Evidence: `contracts/openapi.json` sha256 `5c00c4aedf228d390f2c7a12b18d526cbe1600c5b2ac8c0878fe220406f6c5ea`; `frontend/src/types/api.generated.ts` sha256 `f312f1a2fd0c686d21423a2499095a6e0584ac30a2c0e30c65c46a9dc3bbb529`.
+- Post-check: `bun run typecheck` exit 0; `bun run lint` exit 0; `bun run format:check` exit 0; `bun run test` exit 0 (2 passed).
+- Open issues: none. The four consumer write_paths (`index.ts`, `useMissionStore.ts`, `SiteCard.tsx`, `SiteExplorerDrawer.tsx`) were added to `ARCH-002` with human approval.
+- Proposed doc deltas: none.
+
+```text
+ZETA HANDOFF — ARCH-002 ready to merge
+Branch: bauerceptor-charlie
+Worktree: /home/red/Projects/lunar-landing-charlie
+Commit: bauerceptor-charlie tip after this closure commit; task work commit f03d00c
+Task status: done
+Base: 7c3b3a9 (bauerceptor tip before task work)
+Commands: uv run --python 3.12 --frozen python -m src.cli.export_openapi exit 0; uv run --python 3.12 --frozen pytest tests/integration/test_contract_parity.py -v exit 0
+Evidence: contracts/openapi.json sha256 5c00c4aedf228d390f2c7a12b18d526cbe1600c5b2ac8c0878fe220406f6c5ea; frontend/src/types/api.generated.ts sha256 f312f1a2fd0c686d21423a2499095a6e0584ac30a2c0e30c65c46a9dc3bbb529; parity 14 passed 1 skipped
+Changed paths: backend/src/api/schemas/*, backend/src/cli/export_openapi.py, backend/tests/integration/test_contract_parity.py, contracts/openapi.json, contracts/fixtures/*, contracts/openapi-draft.yaml (deleted), frontend/src/types/api.generated.ts, frontend/src/types/index.ts, frontend/src/types/{comparison,evaluation,site,windows}.ts (deleted), frontend/src/state/useMissionStore.ts, frontend/src/features/site-explorer/SiteCard.tsx, frontend/src/features/site-explorer/SiteExplorerDrawer.tsx, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: contracts/openapi.json sha256 5c00c4aedf228d390f2c7a12b18d526cbe1600c5b2ac8c0878fe220406f6c5ea; frontend/src/types/api.generated.ts sha256 f312f1a2fd0c686d21423a2499095a6e0584ac30a2c0e30c65c46a9dc3bbb529
+Pre-merge checks: parity 14 passed; bun run typecheck/lint/format:check/test all exit 0; validate_task_ledger.py and check_planning_docs.py exit 0
+M3 impact: FE-001 ready after merge
+Known risks: none
+Do not merge if: either artifact hash differs, the parity test fails, or bun run typecheck fails
+```

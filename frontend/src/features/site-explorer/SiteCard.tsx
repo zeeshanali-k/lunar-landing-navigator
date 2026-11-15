@@ -77,10 +77,9 @@ export function SiteCard({ site, isSelected, isPinned, onSelect, onPinToggle }: 
           </span>
           <span style={{ display: "inline-flex", alignItems: "center", gap: "0.2rem" }}>
             <Mountain size={11} />
-            {site.elevation_m >= 0 ? "+" : ""}
-            {site.elevation_m.toFixed(0)}m
+            {site.elevation_m === null ? "—" : `${site.elevation_m >= 0 ? "+" : ""}${site.elevation_m.toFixed(0)}m`}
           </span>
-          <span>Slope {site.mean_slope_deg.toFixed(1)}°</span>
+          <span>Slope {site.mean_slope_deg === null ? "—" : `${site.mean_slope_deg.toFixed(1)}°`}</span>
         </div>
 
         <button
