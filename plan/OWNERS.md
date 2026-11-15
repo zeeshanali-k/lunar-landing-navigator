@@ -25,6 +25,7 @@ Three humans, three machines, three different agents. This file is the **only** 
 5. A PR is mergeable only when `scripts/validate_task_ledger.py`, `scripts/check_planning_docs.py`, and `scripts/check_file_lengths.py` all pass, plus the module's declared commands.
 6. Nobody rebases, rewrites, or force-pushes another person's branch.
 7. `main` changes reach a worker only by merging `main` into their branch; never by resetting it.
+8. A push happens only when the human whose branch it is asks for one, in that moment. An agent commits locally and stops there.
 
 ## Write boundaries
 

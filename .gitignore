@@ -72,3 +72,5 @@ npm-debug.log*
 .agent-state/
 .agent-cache/
 
+# Local session handoff — personal starting notes, not shared.
+NEXT_SESSION.md

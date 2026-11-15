@@ -20,7 +20,7 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | `M2` backend | `BLOCKED` — depends on `M1` packs | bauerceptor |
 | `M4` 3D | `BLOCKED` — gated behind `P0-GATE` | devscion |
 | `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
-| **P0 release** | **`NOT SHIPPABLE` — 6 blockers open, see below** | — |
+| **P0 release** | **`NOT SHIPPABLE` — 7 blockers open, all now encoded in ledger acceptance | — |
 
 ---
 
@@ -75,33 +75,36 @@ Reviewed before merge: 13 blockers, all in two classes — client-side fabricate
 
 ### P0 blockers — the release cannot ship until these are closed
 
-Six issues gate P0. None were introduced by the governance work; they are the gap between what module 3 shipped and what REQ-11 requires. Numbers refer to the table below.
+Seven issues gate P0. None were introduced by the governance work; they are the gap between what module 3 shipped and what REQ-11 requires. Numbers refer to the table below.
 
-| # | Blocker | Owner module | Why it blocks P0 |
+**Status as of this revision: all seven are now explicit ledger acceptance criteria.** They were previously implicit — living in this file but absent from the ledger — which meant an agent could satisfy `FE-002` while leaving P0 broken. The acceptance lists now name each one, so a task cannot be marked done with the gap open.
+
+| # | Blocker | Ledger requirement | Why it blocks P0 |
 |---|---|---|---|
-| 1 | No fixture generator, so offline mode has nothing to read | `M1` (`DATA-006`) | P0 promises a demo with no network; fixtures were deleted as duplicates and their replacement does not exist yet |
-| 3 | No test runner or `test` script | `M3` (`FE-001`) | Three ledger acceptance commands (`bun run test`) cannot execute, so those tasks cannot be marked done |
-| 6 | Horizon silhouette and timeline are placeholders | `M3` (`FE-002`) | These are the two visualisations REQ-11 names as the P0 core; today they render a count and a fake slot |
-| 7 | No Class B badge, spherical-limb notice, or provenance footer | `M3` (`FE-002`) | A limb-only site would display as if it had measured terrain, which REQ-05 forbids |
-| 8 | No `step`, `array_az`, or `min_comms` controls | `M3` (`FE-002`) | Three of the eight canonical scenario fields exist in state and URL but no UI writes them |
-| 10 | Registry holds 6 sites, not 14 | `M1` (`DATA-001`) | REQ-05 requires exactly 14; the demo would show less than half the curated set |
+| 1 | No fixture generator, so offline mode has nothing to read | `DATA-006` acceptance; `FE-003` depends on it | P0 promises a demo with no network; fixtures were deleted as duplicates and their replacement does not exist yet |
+| 3 | No test runner or `test` script | `ARCH-001` acceptance (new: `bun run test` must execute and pass); `FE-002` evidence requires it | Three ledger acceptance commands (`bun run test`) could not execute, so those tasks could never legitimately be marked done |
+| 5 | 2D map and persona mode are P1 but mounted in the P0 cockpit | `FE-001` acceptance (new: P0 cockpit mounts no P1 feature) | Ships P1 surface area as if it were P0 and invites the fabricated-data path back |
+| 6 | Horizon silhouette and timeline are placeholders | `FE-002` acceptance, items 4–6 (new) | These are the two visualisations REQ-11 names as the P0 core; today they render a count and a fake slot |
+| 7 | No Class B badge, spherical-limb notice, or provenance footer | `FE-002` acceptance, items 1–3 and 9 (new) | A limb-only site would display as if it had measured terrain, which REQ-05 forbids |
+| 8 | No `step`, `array_az`, or `min_comms` controls | `FE-002` acceptance, item 8 (new) | Three of the eight canonical scenario fields exist in state and URL but no UI writes them |
+| 10 | Registry holds 6 sites, not 14 | `DATA-001` acceptance | REQ-05 requires exactly 14; the demo would show less than half the curated set |
 
 ### Full list
 
 | # | Issue | Where | Severity | Status |
 |---|---|---|---|---|
-| 1 | Fixtures deleted but no generator exists yet, so offline mode has nothing to read | `frontend/public/data/fixtures/` (absent), `DATA-006` | `BLOCKED` on `M1` | open |
+| 1 | Fixtures deleted but no generator exists yet, so offline mode has nothing to read | `frontend/public/data/fixtures/` (absent), `DATA-006` | `BLOCKED` on `M1` | in `DATA-006` acceptance |
 | 2 | `evaluateScenario`/`compareScenarios`/`scanWindows` now require a scenario key; comparison and windows callers are typed but their scenarios are P1 | `frontend/src/services/`, `P1-COMPARE`, `P1-WINDOWS` | low | open |
-| 3 | No test runner or `test` script, so three ledger acceptance commands cannot run | `frontend/package.json`, `frontend/vitest.config.ts` | `BLOCKED` — no runner | open |
-| 4 | Wire types are hand-maintained; `api.generated.ts` does not exist | `frontend/src/types/`, `ARCH-002` | MAJOR | open |
-| 5 | 2D map and persona mode are built but are P1, mounted unconditionally in the cockpit | `frontend/src/features/lunar-map-2d/`, `frontend/src/features/persona-mode/` | MAJOR | open |
-| 6 | Horizon silhouette and timeline are placeholders, the two P0 visualisations REQ-11 requires | `frontend/src/components/layout/AppShell.tsx` | BLOCKER for P0 | open |
-| 7 | No Class B badge, spherical-limb notice, or provenance footer in the UI | `frontend/src/components/`, `frontend/src/features/` | MAJOR | open |
-| 8 | No `step`, `array_az`, or `min_comms` controls; values exist in state and URL but no UI writes them | `frontend/src/features/time-controls/` | MAJOR | open |
+| 3 | No test runner or `test` script, so three ledger acceptance commands cannot run | `frontend/package.json`, `frontend/vitest.config.ts` | BLOCKER for P0 | in `ARCH-001` acceptance |
+| 4 | Wire types are hand-maintained; `api.generated.ts` does not exist | `frontend/src/types/`, `ARCH-002` | MAJOR | in `ARCH-002` acceptance |
+| 5 | 2D map and persona mode are built but are P1, mounted unconditionally in the cockpit | `frontend/src/features/lunar-map-2d/`, `frontend/src/features/persona-mode/` | MAJOR | in `FE-001` acceptance |
+| 6 | Horizon silhouette and timeline are placeholders, the two P0 visualisations REQ-11 requires | `frontend/src/components/layout/AppShell.tsx` | BLOCKER for P0 | in `FE-002` acceptance |
+| 7 | No Class B badge, spherical-limb notice, or provenance footer in the UI | `frontend/src/components/`, `frontend/src/features/` | BLOCKER for P0 | in `FE-002` acceptance |
+| 8 | No `step`, `array_az`, or `min_comms` controls; values exist in state and URL but no UI writes them | `frontend/src/features/time-controls/` | BLOCKER for P0 | in `FE-002` acceptance |
 | 9 | Educational glossary asserts unsourced science (1.54° tilt, 40 K, ±6.5° libration, "uninterrupted" DTE) and generates narrative from booleans | `frontend/src/features/persona-mode/educationalGlossary.ts` | MAJOR | open — deliberately deferred, see below |
-| 10 | Registry holds 6 sites, not the 14 REQ-05 requires | `backend/config/curated_sites.yaml` | `BLOCKED` on `DATA-001` | open |
-| 11 | `contracts/openapi-draft.yaml` still hand-maintained alongside Pydantic | `contracts/` | MAJOR | open |
-| 12 | `backend/uv.lock` absent, pytest not installed, so no Python check can run | `backend/` | `BLOCKED` on `ARCH-001` | open |
+| 10 | Registry holds 6 sites, not the 14 REQ-05 requires | `backend/config/curated_sites.yaml` | BLOCKER for P0 | in `DATA-001` acceptance |
+| 11 | `contracts/openapi-draft.yaml` still hand-maintained alongside Pydantic | `contracts/` | MAJOR | in `ARCH-002` acceptance |
+| 12 | `backend/uv.lock` absent, pytest not installed, so no Python check can run | `backend/` | BLOCKER for P0 | in `ARCH-001` acceptance |
 | 13 | Fixture `terrain.sample.json` is 16×16; production contract is 128×128 | `contracts/fixtures/` | MINOR | open |
 
 ### Deliberately not fixed

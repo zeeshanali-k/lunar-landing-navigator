@@ -4,7 +4,7 @@ You are an implementation agent. Follow this file exactly. Do not improvise.
 
 ## Authorities
 
-Read [`NEXT_SESSION.md`](NEXT_SESSION.md) first for the current starting point, then in this order before any edit:
+Read, in this order, before any edit:
 
 1. `AGENTS.md` (this file) — how you behave.
 2. `DEVELOPMENT_PLAN.md` — what to build, and the science.
@@ -46,6 +46,7 @@ You may not change `scope`, `priority`, `depends_on`, `requirement_ids`, `read_p
 - Do not invent coordinates, provenance URLs, hashes, reference values, constants, or field defaults.
 - Do not tune physics or scoring constants to reach an expected percentage.
 - Do not do opportunistic refactors, dependency upgrades, or cleanup.
+- Do not run `git push`, or any command that publishes to a remote, unless the human explicitly asks for a push. Commits stay local by default.
 
 ## Tooling — the only allowed forms
 

@@ -309,6 +309,8 @@
         ".python-version contains exactly 3.12",
         "backend/uv.lock and frontend/bun.lock are committed; no other lockfile exists",
         "eslint.config.js, .prettierrc.json, and vitest.config.ts exist and scripts typecheck, lint, format:check, test, build are defined",
+        "bun run test executes and reports a passing suite; vitest is a declared devDependency",
+        "bun run lint and bun run format:check both exit 0 on the committed tree",
         ".gitignore ignores /data/downloads/ and no longer ignores backend/data/site_packs/",
         "package-lock.json is removed with the removal recorded in the task evidence"
       ],
@@ -320,6 +322,10 @@
         {
           "kind": "command",
           "ref": "bun run typecheck"
+        },
+        {
+          "kind": "command",
+          "ref": "bun run test"
         }
       ],
       "evidence": [],
@@ -1073,12 +1079,14 @@
       "acceptance": [
         "mission, playback, and comparison stores are separate",
         "URL keys are exactly site,start,days,step,array,array_az,mast,min_comms and round-trip canonically",
-        "invalid values fall back to documented defaults and surface a notice",
+        "invalid values fall back to documented defaults and surface a notice in the UI",
         "custom-coordinate keys are rejected",
         "the client uses generated types, native fetch, and AbortController",
         "coordinates.ts is reduced to degToRad, radToDeg, and normalizeAzimuthDeg; MOON_RADIUS_KM, POLE_LAT_CLAMP_DEG, clampLunarLatitude, and azElevToThreeXYZ are removed",
-        "no physical constant literal appears under frontend/src",
-        "no Tailwind, chart library, Axios, or 3D renderer is imported"
+        "no physical constant literal appears under frontend/src; the lunar radius is read from GET /api/v1/health",
+        "no Tailwind, chart library, Axios, or 3D renderer is imported",
+        "the P0 cockpit mounts no P1 feature: the 2D map and persona mode are reachable only from a P1-gated route, not the default workspace",
+        "the scenario notices from URL parsing are rendered, not discarded"
       ],
       "required_evidence": [
         {
@@ -1113,12 +1121,15 @@
         "frontend/src/state"
       ],
       "write_paths": [
-        "frontend/src/features/site-explorer",
-        "frontend/src/features/time-controls",
+        "frontend/src/__tests__/horizonMath.test.ts",
+        "frontend/src/__tests__/timelineSegments.test.ts",
+        "frontend/src/components/layout",
+        "frontend/src/components/ui",
         "frontend/src/features/mission-kpis",
-        "frontend/src/features/sky-horizon",
         "frontend/src/features/mission-timeline",
-        "frontend/src/__tests__/horizonMath.test.ts"
+        "frontend/src/features/site-explorer",
+        "frontend/src/features/sky-horizon",
+        "frontend/src/features/time-controls"
       ],
       "inputs": [
         "frontend/src/types/api.generated.ts"
@@ -1139,17 +1150,26 @@
         }
       ],
       "acceptance": [
-        "site selector groups by category and badges Class B sites",
-        "horizon silhouette is SVG and separates terrain from the geometric limb",
-        "timeline renders solar, DTE, and elevation tracks and a scrubbing playhead",
-        "KPI strip shows feasibility with sub-scores, solar status, and sunset/earthset countdowns",
-        "Class B sites display the spherical-limb-only notice and a null feasibility score",
-        "playback state is isolated so scrubbing does not re-render the shell"
+        "site selector groups by category and badges every Class B site",
+        "a Class B site shows a persistent spherical-limb-only notice wherever a terrain value would appear, and never renders a numeric elevation, slope, or feasibility score for it",
+        "a terrain request returning 409 TERRAIN_NOT_AVAILABLE renders the unavailable state, not an error banner and not another site's data",
+        "horizon silhouette is SVG, draws terrain from terrain_elev_deg and a separate dashed geometric limb from geometric_limb_deg, marks the active Sun and Earth, and shows azimuth, body elevation, horizon elevation, and clearance on hover",
+        "the horizon component renders nothing but the limb when horizon_profile is empty",
+        "timeline renders three tracks: solar (sunlit / grazing / dark), DTE (available / blocked), and elevation; a draggable playhead scrubs the active sample",
+        "KPI strip shows feasibility with sub-scores, solar elevation and status, and hours to sunset and earthset, rendering N/A rather than a number when a value is null",
+        "controls exist for step_minutes (10 or 60), fixed_array_azimuth_deg, and min_comms_elev_deg, and changing any of them writes the store and the canonical URL",
+        "a persistent data-provenance footer cites LOLA, JPL Horizons, QuickMap, Moon Trek, and CSA, and states whether the active site uses measured terrain or the spherical limb",
+        "playback state is isolated so scrubbing does not re-render the shell",
+        "an automated test covers horizon and timeline geometry; it fails if the number of rendered tracks or azimuth samples changes"
       ],
       "required_evidence": [
         {
           "kind": "command",
           "ref": "bun run typecheck"
+        },
+        {
+          "kind": "command",
+          "ref": "bun run test"
         }
       ],
       "evidence": [],
