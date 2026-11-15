@@ -8,6 +8,7 @@ import { MissionTimelinePanel, SolarArraySelector } from "../../features/mission
 import { ExplorerCalloutBanner, GuidedChallengesView } from "../../features/persona-mode";
 import { SiteExplorerDrawer } from "../../features/site-explorer";
 import { PanoramaHorizonChart, PolarSkyDome } from "../../features/sky-horizon";
+import { LunarTerrainCanvas } from "../../features/terrain-3d";
 import { DateAndDurationBar, PlaybackScrubber } from "../../features/time-controls";
 import { WindowHeatmapView } from "../../features/window-finder";
 import { useMissionStore } from "../../state";
@@ -16,6 +17,7 @@ import { TopCommandBar } from "./TopCommandBar";
 export function AppShell() {
   const activeTab = useMissionStore((s) => s.activeTab);
   const evaluationData = useMissionStore((s) => s.evaluationData);
+  const terrainPatch = useMissionStore((s) => s.terrainPatch);
   const terrainUnavailable = useMissionStore((s) => s.terrainUnavailable);
   const solarArrayType = useMissionStore((s) => s.solarArrayType);
   const observerHeightM = useMissionStore((s) => s.observerHeightM);
@@ -66,6 +68,15 @@ export function AppShell() {
               <div className="cockpit-visual-grid">
                 <SouthPoleMap />
                 <PolarSkyDome horizonProfile={horizonProfile} timeseries={timeseries} />
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <LunarTerrainCanvas
+                    terrainPatch={terrainPatch}
+                    terrainUnavailable={isSphericalLimbOnly}
+                    timeseries={timeseries}
+                    observerHeightM={observerHeightM}
+                    solarArrayType={solarArrayType}
+                  />
+                </div>
                 <div style={{ gridColumn: "1 / -1" }}>
                   <PanoramaHorizonChart horizonProfile={horizonProfile} timeseries={timeseries} />
                 </div>
