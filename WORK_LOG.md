@@ -15,11 +15,11 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | Governance (single plan, ownership, anti-tamper guards) | `DONE` — ledger `DOC-001`, `DOC-002`, `DOC-GATE`, `ARCH-001` closed with evidence | bauerceptor |
 | Human review gate | `DONE` — `DOC-GATE` closed 2026-11-15 with recorded approval | bauerceptor |
 | `M3` frontend corrected onto the plan | `DONE` (committed on `bauerceptor`, not yet merged to `main`) | bauerceptor |
-| `M3` frontend, P0 completeness | `BLOCKED` — 5 issues open (5, 6, 7, 8, 9) | bauerceptor |
+| `M3` frontend, P0 completeness | `PARTIAL` — M4 panels merged; `FE-001`/`FE-002`/`FE-003` remain (issues 5, 7, 8, 9, 14) | usairam |
 | `M1` data pipeline | `READY` — `DATA-001` done; `agent-alpha` takes `DATA-002`/`DATA-003`, `agent-beta` takes `DATA-004`–`DATA-006` | bauerceptor |
 | `M2` backend | `READY` — `agent-charlie` takes `ARCH-002` then `BE-001`–`BE-003` | bauerceptor |
 | Parallel session (revision 5) | `READY` — worktrees and branches defined; `agent-zeta` integrates | bauerceptor |
-| `M4` 3D | `BLOCKED` — gated behind `P0-GATE` | devscion |
+| `M4` 3D | `PARTIAL` — M4 SVG horizon/timeline/contrast merged as `00f7e77`; `terrain-3d` remains `.gitkeep` and gated | devscion |
 | `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
 | **P0 release** | **`NOT SHIPPABLE` — 5 blockers remain (1, 5, 6, 7, 8)** | — |
 
@@ -175,6 +175,32 @@ are in `NEXT_SESSION.md`; this entry records the decisions only.
 Assignments: `agent-alpha` — `DATA-002`, `DATA-003`; `agent-beta` — `DATA-004`, `DATA-005`,
 `DATA-006`; `agent-charlie` — `ARCH-002`, `BE-001`, `BE-002`, `BE-003`; `agent-zeta` — integration.
 
+### M4 merge reconciliation (2026-11-15)
+
+`origin/main` merged `feat/m4-3d-terrain` as `ebf8a23`. The merge did not update the plan, ledger,
+`plan/OWNERS.md`, or the registry on `main`; those were still revision 3, the 14-site ledger, and
+the 6-site registry. This branch's revision 5 and DATA-001 are newer and were preserved when
+`origin/main` was merged into `bauerceptor` as `00f7e77`.
+
+| Finding | Detail |
+|---|---|
+| What merged | SVG horizon/sky-dome, mission-timeline, Earth/Moon contrast, solar-array/mast selector, two test files, and the `AppShell` integration |
+| What did not merge | `frontend/src/features/terrain-3d/` is still `.gitkeep`; no Three.js/R3F/WebGL/shadow-engine dependency; no frontend physical constants |
+| Classification | The SVG horizon and timeline are P0 visualization inputs for `FE-002`, not the deferred 3D terrain. No ledger task is marked done; M4 remains gated |
+| Test integrity | The merged tests initially collected zero tests: they exported runner functions but registered no Vitest test. They are now wired into `it(...)`; `bun run test` reports 2 passing tests |
+| Formatting and build | Applied the repository Prettier baseline to the merged files; `typecheck`, `lint`, `format:check`, `test`, and `build` pass |
+| Type risk | The panels import from `frontend/src/types`; `ARCH-002` deletes the hand-written modules but the barrel `frontend/src/types/index.ts` is outside its `write_paths`. See open issue 14 |
+| P0 cockpit | The M4 `AppShell` still mounts `SouthPoleMap` and persona mode, so open issue 5 remains. The spherical-limb notice is added; the Class B badge and provenance footer remain with `FE-002` |
+
+### Coordinate source of record — IAU
+
+The `DATA-001` registry uses IAU/USGS Gazetteer of Planetary Nomenclature named-feature centres as
+the source of record (`https://planetarynames.wr.usgs.gov/Feature/<id>`). QuickMap is a documented
+fallback only when the gazetteer has no suitable feature or is unavailable; Wikipedia, blogs, and
+eyeballed map images are never a source. The 16-site registry records the feature URL per entry, and
+no later task re-sources or invents a coordinate. This policy is now in `DEVELOPMENT_PLAN.md`
+REQ-05.
+
 ### Next session
 
 Dispatch the three agents and zeta using `NEXT_SESSION.md`. The first wave is `agent-alpha` on
@@ -187,9 +213,9 @@ contracts merge.
 
 ### P0 blockers — the release cannot ship until these are closed
 
-Five issues gate P0 (issue 10 was closed by `DATA-001`). None were introduced by the governance work; they are the gap between what module 3 shipped and what REQ-11 requires. Numbers refer to the table below.
+Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially addresses 6, 7, and 8; they stay open until `FE-002` records the acceptance evidence. None were introduced by the governance work; they are the gap between what module 3 shipped and what REQ-11 requires. Numbers refer to the table below.
 
-**Status as of this revision: all five are explicit ledger acceptance criteria.** They were previously implicit — living in this file but absent from the ledger — which meant an agent could satisfy `FE-002` while leaving P0 broken. The acceptance lists now name each one, so a task cannot be marked done with the gap open. Issue 3 (test runner) and issue 12 (`uv.lock`) were closed by `ARCH-001`; issue 10 (registry) was closed by `DATA-001`.
+**Status as of this revision: all five are explicit ledger acceptance criteria.** They were previously implicit — living in this file but absent from the ledger — which meant an agent could satisfy `FE-002` while leaving P0 broken. The acceptance lists now name each one, so a task cannot be marked done with the gap open. Issue 3 (test runner) and issue 12 (`uv.lock`) were closed by `ARCH-001`; issue 10 (registry) was closed by `DATA-001`. The M4 SVG horizon/timeline panels merged as `00f7e77` but do not close `FE-002` until its evidence is recorded.
 
 | # | Blocker | Ledger requirement | Why it blocks P0 |
 |---|---|---|---|
@@ -209,14 +235,17 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). None were introduced by
 | 3 | No test runner or `test` script, so three ledger acceptance commands cannot run | `frontend/package.json`, `frontend/vitest.config.ts` | BLOCKER for P0 | `DONE` — closed by `ARCH-001` |
 | 4 | Wire types are hand-maintained; `api.generated.ts` does not exist | `frontend/src/types/`, `ARCH-002` | MAJOR | in `ARCH-002` acceptance |
 | 5 | 2D map and persona mode are built but are P1, mounted unconditionally in the cockpit | `frontend/src/features/lunar-map-2d/`, `frontend/src/features/persona-mode/` | MAJOR | in `FE-001` acceptance |
-| 6 | Horizon silhouette and timeline are placeholders, the two P0 visualisations REQ-11 requires | `frontend/src/components/layout/AppShell.tsx` | BLOCKER for P0 | in `FE-002` acceptance |
-| 7 | No Class B badge, spherical-limb notice, or provenance footer in the UI | `frontend/src/components/`, `frontend/src/features/` | BLOCKER for P0 | in `FE-002` acceptance |
-| 8 | No `step`, `array_az`, or `min_comms` controls; values exist in state and URL but no UI writes them | `frontend/src/features/time-controls/` | BLOCKER for P0 | in `FE-002` acceptance |
+| 6 | Horizon silhouette and timeline were placeholders, the two P0 visualisations REQ-11 requires | `frontend/src/components/layout/AppShell.tsx` | BLOCKER for P0 | `PARTIAL` — M4 SVG panels merged as `00f7e77`; `FE-002` must verify acceptance |
+| 7 | No Class B badge, spherical-limb notice, or provenance footer in the UI | `frontend/src/components/`, `frontend/src/features/` | BLOCKER for P0 | `PARTIAL` — M4 spherical-limb notice added; badge and footer still open |
+| 8 | No `step`, `array_az`, or `min_comms` controls; values exist in state and URL but no UI writes them | `frontend/src/features/time-controls/` | BLOCKER for P0 | `PARTIAL` — M4 array/mast selector added; step and `min_comms` still open |
 | 9 | Educational glossary asserts unsourced science (1.54° tilt, 40 K, ±6.5° libration, "uninterrupted" DTE) and generates narrative from booleans | `frontend/src/features/persona-mode/educationalGlossary.ts` | MAJOR | open — deliberately deferred, see below |
 | 10 | Registry holds 6 sites, not the 16 REQ-05 requires | `backend/config/curated_sites.yaml` | BLOCKER for P0 | `DONE` — closed by `DATA-001` |
 | 11 | `contracts/openapi-draft.yaml` still hand-maintained alongside Pydantic | `contracts/` | MAJOR | in `ARCH-002` acceptance |
 | 12 | `backend/uv.lock` absent, pytest not installed, so no Python check can run | `backend/` | BLOCKER for P0 | `DONE` — closed by `ARCH-001` |
 | 13 | Fixture `terrain.sample.json` is 16×16; production contract is 128×128 | `contracts/fixtures/` | MINOR | open |
+| 14 | `ARCH-002` deletes hand-written wire types but `frontend/src/types/index.ts` is outside its `write_paths`; the merged M4 panels import from that barrel | `frontend/src/types/index.ts`, `ARCH-002` | BLOCKER for `ARCH-002` | open — needs a human-approved ledger revision or `FE-001` ownership |
+| 15 | M4 test files exported runner functions but registered no Vitest tests, so they collected zero tests | `frontend/src/__tests__/` | MAJOR | `DONE` — wired into Vitest; 2 tests pass |
+| 16 | M4 code was merged to `main` without a ledger task or plan/registry update; `main` still carried revision 3, the 14-site ledger, and the 6-site registry | `frontend/src/features/sky-horizon/`, `frontend/src/features/mission-timeline/`, `frontend/src/features/earth-moon-contrast/`, `DEVELOPMENT_PLAN.md` | governance | `RECORDED` — Appendix F; M4 remains gated, no ledger task |
 
 ### Deliberately not fixed
 
@@ -238,9 +267,126 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). None were introduced by
 | `M1` | `agent-alpha` | `DATA-002` → `DATA-003` | ready |
 | `M1` | `agent-beta` | `DATA-004` → `DATA-005` → `DATA-006` | `DATA-004` needs `DATA-003` + `ARCH-002`; `DATA-005` needs `DATA-002` + `ARCH-002`; `DATA-006` needs both packs |
 | `M2` | `agent-charlie` | `ARCH-002` → `BE-001` → `BE-002` → `BE-003` | `BE-001` needs `DATA-004` + `ARCH-002`; `BE-002` needs `BE-001` + `DATA-005`; `BE-003` needs `BE-002` + `DATA-006` |
-| `M3` | usairam | Open issues 3, 6, 7, 8, 9 above | corpus decision on P1 mounting |
+| `M3` | usairam | `FE-001` → `FE-002` → `FE-003`; see “M3 remaining work — handoff to usairam” | `ARCH-002`, `BE-003`, `DATA-006`; issue 9 human decision |
 | `M4` | devscion | not startable | `P0-GATE` |
 | `M5` | — | needs an owner | — |
+
+---
+
+## M3 remaining work — handoff to usairam
+
+Owner: usairam. Branch: `feat/module-3-frontend-core`. Module: M3. Read `AGENTS.md`,
+`DEVELOPMENT_PLAN.md` (revision 5), `plan/OWNERS.md`, and `plan/task-ledger.json` before starting.
+The ledger acceptance is authoritative; the summary below is the remaining-work checklist.
+
+Dependency order: `ARCH-002` → `FE-001` → `FE-002` → `FE-003`. `FE-003` also needs `BE-003` and
+`DATA-006`. Do not start a task before every `depends_on` entry is `done` and merged.
+
+### FE-001 — app shell, stores, canonical URL, typed client
+
+Dependencies: `ARCH-002`. Write paths: `frontend/src/components/layout`, `frontend/src/state`,
+`frontend/src/services`, `frontend/src/App.tsx`, `frontend/src/types/coordinates.ts`,
+`frontend/src/types/index.ts`, `frontend/src/__tests__/urlSync.test.ts`.
+
+Remaining:
+
+- Replace the hand-written wire imports with the generated types from `ARCH-002`. Update
+  `frontend/src/types/index.ts` to re-export the generated types (the merged M4 panels import from
+  `../../types`); stop using `site.ts`, `evaluation.ts`, `comparison.ts`, and `windows.ts`.
+- Keep `coordinates.ts` to `degToRad`, `radToDeg`, and `normalizeAzimuthDeg`; remove
+  `MOON_RADIUS_KM`, `POLE_LAT_CLAMP_DEG`, `clampLunarLatitude`, and `azElevToThreeXYZ`. No physical
+  constant literal may remain under `frontend/src`; the lunar radius comes from
+  `GET /api/v1/health`.
+- Verify the canonical URL keys are exactly `site,start,days,step,array,array_az,mast,min_comms` in
+  that order, round-trip deterministically, fall back to documented defaults with a rendered
+  notice, and reject custom-coordinate keys.
+- Keep mission, playback, and comparison stores separate; scrubbing must not re-render the shell.
+- The client uses generated types, native `fetch`, and `AbortController`; no Axios.
+- The P0 cockpit must not mount a P1 feature. The merged M4 `AppShell` still mounts `SouthPoleMap`
+  and the persona-mode views; gate them behind a P1 route or remove them from the default cockpit.
+  Open issue 5.
+- Mount the merged M4 horizon/timeline/contrast panels as P0 inputs; do not treat M4 as a second
+  feature set. They are already in `AppShell`.
+- Tests: `frontend/src/__tests__/urlSync.test.ts`; run `bun run test`. Evidence: `bun run test`.
+
+### FE-002 — controls, KPI strip, horizon silhouette, timeline
+
+Dependencies: `FE-001`. Write paths: `frontend/src/components/layout`, `frontend/src/components/ui`,
+`frontend/src/features/mission-kpis`, `frontend/src/features/mission-timeline`,
+`frontend/src/features/site-explorer`, `frontend/src/features/sky-horizon`,
+`frontend/src/features/time-controls`, `frontend/src/__tests__/horizonMath.test.ts`,
+`frontend/src/__tests__/timelineSegments.test.ts`.
+
+Remaining:
+
+- Site selector: group by category; badge every Class B site; show the persistent “Terrain model
+  unavailable — spherical limb only” notice wherever a terrain value would appear; never render a
+  numeric elevation, slope, or feasibility score for Class B; render 409 `TERRAIN_NOT_AVAILABLE`
+  as the unavailable state, not an error banner and not another site’s data. Open issue 7.
+- Horizon: use the merged M4 `PolarSkyDome`/`PanoramaHorizonChart` as the base. It must draw the
+  solid terrain silhouette from `terrain_elev_deg`, a separate dashed geometric limb from
+  `geometric_limb_deg`, and the active Sun/Earth markers; hover shows azimuth, body elevation,
+  horizon elevation, and clearance; an empty `horizon_profile` renders only the limb.
+- Timeline: use the merged M4 `MissionTimelinePanel`/`timelineSegments` as the base. It must render
+  three tracks — solar (sunlit/grazing/dark), DTE (available/blocked), and elevation — with a
+  draggable playhead that scrubs the active sample.
+- KPI strip: feasibility with sub-scores, solar elevation and status, hours to sunset/sunrise,
+  Earth clearance and DTE status, hours to earthset/earthrise; render `N/A` for null values;
+  highlight countdowns under 12 h. Open issue 6.
+- Add controls for `step_minutes` (10 or 60), `fixed_array_azimuth_deg`, and `min_comms_elev_deg`;
+  changing any writes the store and the canonical URL. The M4 `SolarArraySelector` covers array
+  type and mast height; step and minimum comms elevation are still missing. Open issue 8.
+- Add the persistent provenance footer: LOLA, JPL Horizons, QuickMap, Moon Trek, CSA; state whether
+  the active site uses measured terrain or the spherical limb.
+- Extend `frontend/src/__tests__/horizonMath.test.ts` and `timelineSegments.test.ts` to assert the
+  three tracks and the azimuth sample count; do not delete or weaken the existing M4 tests. Add
+  component/geometry coverage for the new controls and the Class B state.
+- The `frontend/src/features/earth-moon-contrast` card is mounted in `AppShell` but is outside
+  `FE-002`’s write paths. It is display-only; if it needs a change, request a human-approved ledger
+  revision instead of editing it.
+- Commands: `bun run typecheck`, `bun run test`; evidence both.
+
+### FE-003 — real API and exact offline fixture behaviour
+
+Dependencies: `FE-002`, `BE-003`, `DATA-006`. Write paths: `frontend/src/services`,
+`frontend/public/data/fixtures`, `frontend/src/__tests__/offlineFallback.test.ts`,
+`frontend/.env.example`.
+
+Remaining:
+
+- Wire the real API for sites, terrain, and evaluate; use generated types; no fixture substitution
+  on a 4xx contract error.
+- Fallback only on network failure or a 5xx, and only when the canonical scenario key matches a
+  generated fixture manifest exactly. Show a persistent “Offline fixture” badge. An unmatched
+  scenario shows `OFFLINE_FIXTURE_UNAVAILABLE`. Never reuse a fixture across sites or dates.
+- The fixtures come from `DATA-006`; do not hand-edit `contracts/fixtures` or
+  `frontend/public/data/fixtures`.
+- Commands: `bun run test`, `bun run build`; evidence both.
+
+### Cross-cutting M3 items
+
+- Issue 5: P1 map/persona mounts in the P0 cockpit; `FE-001` owns the routing fix.
+- Issue 7: Class B badge, notice, and provenance footer; `FE-002`.
+- Issue 8: step and min-comms controls; `FE-002`.
+- Issue 9: the educational glossary’s unsourced science needs a human decision (supply citations or
+  approve deleting the numeric claims); it is P1 persona-mode work, not a P0 blocker.
+- Issue 14: `ARCH-002` deletes the hand-written types but `frontend/src/types/index.ts` is outside
+  its write paths. `FE-001` owns the barrel; after `ARCH-002`, re-export the generated types and run
+  `bun run typecheck`. The merged M4 panels import from `../../types`.
+- Issue 15: the M4 tests were vacuous; they are now wired into Vitest and must stay at least 2
+  passing tests. `FE-002` owns their extension.
+- Issue 16: the M4 merge is reconciled in `DEVELOPMENT_PLAN.md` Appendix F; the panels are P0
+  visualization inputs for `FE-002`, not the deferred 3D terrain.
+
+### Verification and guardrails
+
+- `bun run typecheck`, `bun run lint`, `bun run test`, `rm -rf dist && bun run format:check`,
+  `bun run build`, and the three planning validators from the repository root.
+- No Tailwind, chart library, Axios, 3D/Three.js/R3F, or frontend physics constant. No hand-edited
+  generated types or fixtures. No test deletion, skip, tautology, or widened tolerance. No
+  `README.md` or protected-file edits. No push, rebase, or force-push.
+- Work on `feat/module-3-frontend-core`; merge `main` (or the integrated `bauerceptor` after the
+  parallel session) into it. Never reset or rewrite the branch.
 
 ---
 

@@ -9,10 +9,12 @@ Three humans, three machines, three different agents. This file is the **only** 
 | `M1` | Data, LOLA topography, ephemeris, raycast | bauerceptor | `bauerceptor` | active |
 | `M2` | Backend API, physics, scoring, contracts | bauerceptor | `bauerceptor` | active |
 | `M3` | Frontend core, site selection, 2D map, KPIs | usairam | `feat/module-3-frontend-core` | in review |
-| `M4` | 3D terrain, sky-dome, advanced visualizations | devscion | `feat/m4-3d-terrain` | gated behind `P0-GATE` |
+| `M4` | 3D terrain, sky-dome, advanced visualizations | devscion | `feat/m4-3d-terrain` | partial — SVG horizon/timeline/contrast merged; `terrain-3d` remains `.gitkeep` and gated |
 | `M5` | Comparison, window finder, delivery | **unassigned** | — | blocked |
 
 `M5` is the remaining gap: QA, comparison, windows, and delivery have no owner.
+
+The merged M4 SVG horizon/timeline/contrast panels are P0 visualization inputs for `FE-002`, not the deferred 3D terrain. `frontend/src/features/terrain-3d/` remains `.gitkeep`; actual 3D terrain still needs a human-approved revision after `P0-GATE`. See `DEVELOPMENT_PLAN.md` Appendix F.
 
 `M1` and `M2` are both held by bauerceptor because they are tightly coupled: `M1` produces the packs and `M2` is the only consumer that can serve them, so one owner avoids a handoff stall on the critical path. Split `M2` out when a third backend person joins.
 

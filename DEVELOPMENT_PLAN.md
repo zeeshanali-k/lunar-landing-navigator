@@ -3,7 +3,7 @@
 **Status:** OPERATIVE. This is the single plan and the only technical authority for implementation.
 **Challenge:** [NASA Space Apps 2026 — Lunar Landing Site Navigator](https://www.spaceappschallenge.org/2026/challenges/lunar-landing-site-navigator/)
 **Team:** three modules owned by three people; see [`plan/OWNERS.md`](plan/OWNERS.md).
-**Revision:** 5. Revision 3 merged the former `HACKATHON_BUILD_PLAN.md` (revision 2) into this document and superseded both earlier files. Revision 4 aligns the registry to NASA's nine current Artemis III candidate regions and extends ephemeris coverage to 2026-01-01…2029-01-01; see Appendix D. Revision 5 defines the parallel agent execution model, branch-per-worktree policy, and integration protocol without changing any science, contract, or acceptance rule; see Appendix E.
+**Revision:** 5. Revision 3 merged the former `HACKATHON_BUILD_PLAN.md` (revision 2) into this document and superseded both earlier files. Revision 4 aligns the registry to NASA's nine current Artemis III candidate regions and extends ephemeris coverage to 2026-01-01…2029-01-01; see Appendix D. Revision 5 defines the parallel agent execution model, branch-per-worktree policy, and integration protocol without changing any science, contract, or acceptance rule; see Appendix E. Revision 5 also reconciles the M4 frontend merge from `main` and records the IAU coordinate source of record; see Appendices E and F.
 
 This plan replaces every earlier plan in this repository. `plan/00`–`plan/05` remain as historical design context and are not executable.
 
@@ -326,6 +326,7 @@ Rules:
 
 1. The `artemis_iii` nine are NASA's current Artemis III candidate landing regions, announced 2024-10-28 ([NASA release 24-136](https://www.nasa.gov/news-release/nasa-provides-update-on-artemis-iii-moon-landing-regions/)). They replaced the original 2022 set of thirteen; Shackleton Connecting Ridge and Faustini Rim A were excluded in that downselect and are not in the registry.
 2. Every entry carries a `coordinate_source_url` recording where its `lat_deg`/`lon_deg` came from. **An agent must never invent a coordinate.** If a provenance URL cannot be captured, `DATA-001` is `blocked`.
+   The source of record is the IAU/USGS Gazetteer of Planetary Nomenclature feature centre (`https://planetarynames.wr.usgs.gov/Feature/<id>`). A QuickMap pinned URL is the documented fallback only when the gazetteer has no suitable feature or is unavailable; Wikipedia, blogs, and eyeballed map images are never a source. This is the coordinate policy for the registry; no later task re-sources or invents a coordinate.
 3. `Mons Mouton` and `Mons Mouton Plateau` are two distinct Artemis III regions on the same massif, not a duplicate. Secondary mission associations live in `summary`, not in extra categories.
 4. `elevation_m` and `mean_slope_deg` are derived from the generated site pack, never hand-entered.
 5. `has_precomputed_terrain` reflects actual pack presence, not registry intent.
@@ -930,3 +931,67 @@ For each finished branch, `agent-zeta`:
    normative change, never for routine progress.
 7. Commits with `ALLOW_PROTECTED=1` and no trailer, then merges `bauerceptor` into the remaining
    active agent worktrees before the next wave.
+
+---
+
+## Appendix F — M4 merge reconciliation (revision 5)
+
+`origin/main` merged `feat/m4-3d-terrain` (merge `ebf8a23`) before this revision was written. That
+merge did not update this plan, the ledger, `plan/OWNERS.md`, or the registry on `main`; they were
+still revision 3, the 14-site ledger, and the 6-site registry. This branch's revision 5 and the
+DATA-001 16-site registry are newer and were preserved when `origin/main` was merged into
+`bauerceptor` as `00f7e77`. This appendix reconciles the merged code with the operative plan.
+
+### What merged
+
+The M4 merge adds SVG/CSS frontend panels and their tests:
+
+- `frontend/src/features/sky-horizon/` — 360° horizon silhouette, sky-dome projection, and horizon
+  math.
+- `frontend/src/features/mission-timeline/` — multi-day timeline, solar-array and mast-height
+  selector, and timeline segment grouping.
+- `frontend/src/features/earth-moon-contrast/` — Earth/Moon geometry contrast card.
+- `frontend/src/__tests__/` — `horizonMath.test.ts` and `timelineSegments.test.ts`.
+- `frontend/src/components/layout/AppShell.tsx` — mounts the panels in place of the previous
+  placeholder slots.
+
+### What did not merge
+
+`frontend/src/features/terrain-3d/` remains only `.gitkeep`. The merge adds no `three`,
+`@react-three/fiber`, `@react-three/drei`, WebGL, or shadow-engine dependency, and no frontend
+physical constant. The deferred 3D terrain and shadow engine are still prohibited. The `.gitkeep`
+placeholder is not approval for 3D work; a future implementation needs a new human-approved
+revision after `P0-GATE`.
+
+### Status and classification
+
+- The merged SVG horizon and timeline panels are **P0 visualization inputs for `FE-002`**. They do
+  not make any ledger task done; the ledger remains the task authority, and the M4 merge created no
+  task. `FE-002` must review the panels and record the acceptance evidence before `P0-GATE`.
+- The P0 cockpit must not mount P1 features. `SouthPoleMap` and persona mode remain P1 and are
+  still an open issue for `FE-001`/`FE-002`. The M4 `AppShell` keeps them mounted; the routing fix
+  remains with those tasks.
+- The merged panels add the spherical-limb notice, solar-array/mast controls, and the horizon and
+  timeline visualizations. The Class B badge, provenance footer, and remaining `FE-002` acceptance
+  items are still open until that task closes.
+- No task was marked done by the merge, and no M4 task is added by this revision. M4 remains gated
+  behind `P0-GATE`.
+
+### Type-contract risk for `ARCH-002`
+
+The merged panels import `HorizonProfilePoint`, `TimeseriesPoint`, `EvaluateResponse`,
+`EvaluationSummary`, `SolarArrayType`, and `ObserverHeightM` from `frontend/src/types`.
+`ARCH-002` deletes the hand-written `site`, `evaluation`, `comparison`, and `windows` modules, but
+`frontend/src/types/index.ts` is outside its current `write_paths`. The barrel must re-export the
+generated types, or the panels must import the generated types directly.
+
+`ARCH-002` must run `bun run typecheck` after generating the contracts. If the barrel or a merged
+panel fails, set `ARCH-002` blocked and report. A human-approved ledger revision must add
+`frontend/src/types/index.ts` to `ARCH-002`'s `write_paths` or assign the barrel to `FE-001`. Do not
+hand-edit the generated types.
+
+### Coordinate source of record
+
+The registry remains the DATA-001 16-site registry, sourced from IAU/USGS Gazetteer named-feature
+centres. QuickMap is a documented fallback only. The M4 merge does not change the registry, and no
+task in this revision re-sources a coordinate.
