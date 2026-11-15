@@ -1,12 +1,13 @@
 /** Responsive aerospace command-center workspace shell connecting all modules (F3.1). */
 
 import { Trash2, X } from "lucide-react";
+import { EarthMoonContrastCard } from "../../features/earth-moon-contrast";
 import { SouthPoleMap } from "../../features/lunar-map-2d";
 import { OperationalKpiStrip } from "../../features/mission-kpis";
-import { MissionTimelineChart } from "../../features/mission-timeline";
+import { MissionTimelinePanel, SolarArraySelector } from "../../features/mission-timeline";
 import { ExplorerCalloutBanner, GuidedChallengesView } from "../../features/persona-mode";
 import { SiteExplorerDrawer } from "../../features/site-explorer";
-import { HorizonProfileChart } from "../../features/sky-horizon";
+import { PanoramaHorizonChart, PolarSkyDome } from "../../features/sky-horizon";
 import { DateAndDurationBar, PlaybackScrubber } from "../../features/time-controls";
 import { useComparisonStore, useMissionStore } from "../../state";
 import { DataProvenanceFooter } from "./DataProvenanceFooter";
@@ -18,16 +19,24 @@ export function AppShell() {
   const selectedSite = useMissionStore((s) => s.selectedSite);
   const evaluationData = useMissionStore((s) => s.evaluationData);
   const terrainUnavailable = useMissionStore((s) => s.terrainUnavailable);
+  const solarArrayType = useMissionStore((s) => s.solarArrayType);
+  const observerHeightM = useMissionStore((s) => s.observerHeightM);
+  const personaMode = useMissionStore((s) => s.personaMode);
+  const loading = useMissionStore((s) => s.loading);
   const notices = useMissionStore((s) => s.notices);
   const dismissNotices = useMissionStore((s) => s.dismissNotices);
   const error = useMissionStore((s) => s.error);
+  const setHardwareConfig = useMissionStore((s) => s.setHardwareConfig);
 
   const pinnedScenarios = useComparisonStore((s) => s.pinnedScenarios);
   const unpinScenario = useComparisonStore((s) => s.unpinScenario);
 
-  const hasTerrain =
-    (evaluationData?.site.has_precomputed_terrain ?? selectedSite?.has_precomputed_terrain ?? true) &&
-    !terrainUnavailable;
+  const isSphericalLimbOnly =
+    terrainUnavailable ||
+    evaluationData?.site.has_precomputed_terrain === false ||
+    selectedSite?.has_precomputed_terrain === false;
+  const horizonProfile = evaluationData?.horizon_profile ?? [];
+  const timeseries = evaluationData?.timeseries ?? [];
 
   return (
     <div className="app-shell">
@@ -37,16 +46,13 @@ export function AppShell() {
           <div
             className="panel-card"
             data-testid="url-notices-banner"
-            style={{
-              borderColor: "var(--accent-dte)",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "0.75rem",
-              fontSize: "0.82rem",
-            }}
+            style={{ borderColor: "var(--accent-warn)", color: "#fde68a", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.75rem" }}
           >
-            <span>URL fallback: {notices.join(" ")}</span>
+            <div style={{ display: "grid", gap: "0.25rem", fontSize: "0.82rem" }}>
+              {notices.map((notice) => (
+                <div key={notice}>{notice}</div>
+              ))}
+            </div>
             <button type="button" onClick={dismissNotices} className="btn-surface" aria-label="Dismiss notices">
               <X size={13} /> Dismiss
             </button>
@@ -59,13 +65,9 @@ export function AppShell() {
           </div>
         )}
 
-        {!hasTerrain && (
-          <div
-            className="panel-card"
-            data-testid="class-b-banner"
-            style={{ borderColor: "var(--accent-sun)", color: "var(--accent-sun)", fontSize: "0.84rem" }}
-          >
-            Class B Site Notice: Terrain model unavailable — spherical limb only. Feasibility and terrain slope scores are withheld.
+        {isSphericalLimbOnly && (
+          <div className="panel-card" data-testid="class-b-banner" style={{ borderColor: "var(--accent-warn)", color: "#fde68a", padding: "0.65rem 1rem" }}>
+            <strong style={{ fontSize: "0.82rem" }}>Terrain model unavailable — spherical limb only</strong>
           </div>
         )}
 
@@ -77,8 +79,26 @@ export function AppShell() {
               <SiteExplorerDrawer />
 
               <div className="cockpit-visual-grid">
-                <HorizonProfileChart />
-                <MissionTimelineChart />
+                <PolarSkyDome horizonProfile={horizonProfile} timeseries={timeseries} />
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <PanoramaHorizonChart horizonProfile={horizonProfile} timeseries={timeseries} />
+                </div>
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <MissionTimelinePanel timeseries={timeseries} />
+                </div>
+                {evaluationData && (
+                  <div style={{ gridColumn: "1 / -1" }}>
+                    <SolarArraySelector
+                      summary={evaluationData.summary}
+                      timeseries={timeseries}
+                      solarArrayType={solarArrayType}
+                      observerHeightM={observerHeightM}
+                      loading={loading}
+                      onChangeArrayType={(nextType) => void setHardwareConfig(nextType, observerHeightM)}
+                      onChangeObserverHeight={(nextHeight) => void setHardwareConfig(solarArrayType, nextHeight)}
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
@@ -97,6 +117,7 @@ export function AppShell() {
         ) : activeTab === "explorer" ? (
           <>
             <ExplorerCalloutBanner />
+            {evaluationData && <EarthMoonContrastCard evaluation={evaluationData} personaMode={personaMode} />}
             <GuidedChallengesView />
           </>
         ) : (

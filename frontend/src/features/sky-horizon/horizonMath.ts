@@ -1,129 +1,161 @@
-/** Pure SVG geometry and azimuth-lookup helpers for the 360° Horizon Silhouette (FE-002). */
+/** Pure horizon interpolation, panoramic projection, and polar sky-dome math (F4.3 & F4.4). */
 
-import { normalizeAzimuthDeg, type HorizonProfilePoint } from "../../types";
+import {
+  degToRad,
+  normalizeAzimuthDeg,
+  type HorizonProfilePoint,
+} from "../../types";
 
-export interface HorizonBounds {
-  minElev: number;
-  maxElev: number;
-}
-
-export interface SvgPoint {
+export interface SVGPoint {
   x: number;
   y: number;
 }
 
-export const HORIZON_PAD_X = 36;
-export const HORIZON_PAD_TOP = 16;
-export const HORIZON_PAD_BOTTOM = 24;
+export interface TrajectoryPointInput {
+  azDeg: number;
+  elevDeg: number;
+  index: number;
+}
 
-export function computeHorizonBounds(
-  profile: readonly HorizonProfilePoint[],
-  extraElevs: readonly (number | null | undefined)[] = [],
-): HorizonBounds {
-  let minVal = -4;
-  let maxVal = 12;
-  for (const pt of profile) {
-    if (pt.terrain_elev_deg < minVal) minVal = pt.terrain_elev_deg;
-    if (pt.geometric_limb_deg < minVal) minVal = pt.geometric_limb_deg;
-    if (pt.terrain_elev_deg > maxVal) maxVal = pt.terrain_elev_deg;
-    if (pt.geometric_limb_deg > maxVal) maxVal = pt.geometric_limb_deg;
+/** Linearly interpolate terrain & limb elevation at any azimuth with 360->0 wrap-around. */
+export function interpolateHorizonElevDeg(
+  profile: HorizonProfilePoint[],
+  azDeg: number,
+): { terrainElevDeg: number; geometricLimbDeg: number } {
+  if (profile.length === 0) {
+    return { terrainElevDeg: 0, geometricLimbDeg: 0 };
   }
-  for (const elev of extraElevs) {
-    if (elev !== null && elev !== undefined && Number.isFinite(elev)) {
-      if (elev < minVal) minVal = elev;
-      if (elev > maxVal) maxVal = elev;
+  const sorted = [...profile].sort((a, b) => a.azimuth_deg - b.azimuth_deg);
+  const az = normalizeAzimuthDeg(azDeg);
+
+  if (sorted.length === 1) {
+    return {
+      terrainElevDeg: sorted[0].terrain_elev_deg,
+      geometricLimbDeg: sorted[0].geometric_limb_deg,
+    };
+  }
+
+  for (let i = 0; i < sorted.length; i += 1) {
+    const curr = sorted[i];
+    const next = sorted[(i + 1) % sorted.length];
+    const startAz = curr.azimuth_deg;
+    const endAz = i === sorted.length - 1 ? next.azimuth_deg + 360.0 : next.azimuth_deg;
+    const queryAz = az < sorted[0].azimuth_deg ? az + 360.0 : az;
+
+    if (queryAz >= startAz && queryAz <= endAz) {
+      const span = Math.max(1e-6, endAz - startAz);
+      const t = (queryAz - startAz) / span;
+      return {
+        terrainElevDeg: curr.terrain_elev_deg + (next.terrain_elev_deg - curr.terrain_elev_deg) * t,
+        geometricLimbDeg:
+          curr.geometric_limb_deg + (next.geometric_limb_deg - curr.geometric_limb_deg) * t,
+      };
     }
   }
+
   return {
-    minElev: Math.floor(minVal - 2),
-    maxElev: Math.ceil(maxVal + 2),
+    terrainElevDeg: sorted[0].terrain_elev_deg,
+    geometricLimbDeg: sorted[0].geometric_limb_deg,
   };
 }
 
-export function azElevToSvgCoord(
+/** Project (azimuthDeg, elevationDeg) into panoramic SVG coordinates. */
+export function azElevToPanoramaSVG(
   azDeg: number,
   elevDeg: number,
   width: number,
   height: number,
   minElev: number,
   maxElev: number,
-): SvgPoint {
-  const usableW = Math.max(1, width - HORIZON_PAD_X - 12);
-  const usableH = Math.max(1, height - HORIZON_PAD_TOP - HORIZON_PAD_BOTTOM);
-  const az = normalizeAzimuthDeg(azDeg);
-  const span = Math.max(1, maxElev - minElev);
+): SVGPoint {
+  const x = (Math.max(0, Math.min(360, azDeg)) / 360.0) * width;
   const clampedElev = Math.max(minElev, Math.min(maxElev, elevDeg));
-  const x = HORIZON_PAD_X + (az / 360) * usableW;
-  const y = HORIZON_PAD_TOP + (1 - (clampedElev - minElev) / span) * usableH;
+  const normY = (clampedElev - minElev) / Math.max(1e-6, maxElev - minElev);
+  const y = height - normY * height;
   return { x, y };
 }
 
-export function xCoordToAzimuthDeg(svgX: number, width: number): number {
-  const usableW = Math.max(1, width - HORIZON_PAD_X - 12);
-  const norm = Math.max(0, Math.min(1, (svgX - HORIZON_PAD_X) / usableW));
-  return norm * 360;
-}
-
-export function buildTerrainAreaPath(
-  profile: readonly HorizonProfilePoint[],
+/** Build SVG path strings for terrain silhouette polygon, ridge line, and geometric limb. */
+export function buildPanoramaHorizonPaths(
+  profile: HorizonProfilePoint[],
   width: number,
   height: number,
   minElev: number,
   maxElev: number,
-): { areaPath: string; strokePath: string } {
-  if (profile.length === 0) {
-    return { areaPath: "", strokePath: "" };
-  }
-  const sorted = [...profile].sort((a, b) => a.azimuth_deg - b.azimuth_deg);
-  const coords = sorted.map((p) => azElevToSvgCoord(p.azimuth_deg, p.terrain_elev_deg, width, height, minElev, maxElev));
-  const lastWrap = azElevToSvgCoord(360, sorted[0].terrain_elev_deg, width, height, minElev, maxElev);
-  // Treat az=360 identically to az=0 so the polar silhouette wraps continuously.
-  const pts = sorted[sorted.length - 1].azimuth_deg < 360
-    ? [...coords, { x: HORIZON_PAD_X + Math.max(1, width - HORIZON_PAD_X - 12), y: lastWrap.y }]
-    : coords;
+): { areaPath: string; ridgeLinePath: string; limbLinePath: string } {
+  const samples = 73;
+  const limbPts: SVGPoint[] = [];
 
-  const strokePath = pts.map((p, idx) => `${idx === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
-  const yBase = (height - HORIZON_PAD_BOTTOM).toFixed(1);
-  const areaPath = `${strokePath} L${pts[pts.length - 1].x.toFixed(1)},${yBase} L${pts[0].x.toFixed(1)},${yBase} Z`;
-  return { areaPath, strokePath };
+  if (profile.length === 0) {
+    for (let i = 0; i < samples; i += 1) {
+      const az = (i / (samples - 1)) * 360.0;
+      limbPts.push(azElevToPanoramaSVG(az, 0, width, height, minElev, maxElev));
+    }
+    const limbLinePath = limbPts
+      .map((p, idx) => `${idx === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`)
+      .join(" ");
+    return { areaPath: "", ridgeLinePath: "", limbLinePath };
+  }
+
+  const ridgePts: SVGPoint[] = [];
+  for (let i = 0; i < samples; i += 1) {
+    const az = (i / (samples - 1)) * 360.0;
+    const { terrainElevDeg, geometricLimbDeg } = interpolateHorizonElevDeg(
+      profile,
+      az === 360.0 ? 0.0 : az,
+    );
+    ridgePts.push(azElevToPanoramaSVG(az, terrainElevDeg, width, height, minElev, maxElev));
+    limbPts.push(azElevToPanoramaSVG(az, geometricLimbDeg, width, height, minElev, maxElev));
+  }
+
+  const ridgeLinePath = ridgePts
+    .map((p, idx) => `${idx === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`)
+    .join(" ");
+  const limbLinePath = limbPts
+    .map((p, idx) => `${idx === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`)
+    .join(" ");
+  const areaPath = `${ridgeLinePath} L${width.toFixed(1)},${height.toFixed(1)} L0,${height.toFixed(1)} Z`;
+
+  return { areaPath, ridgeLinePath, limbLinePath };
 }
 
-export function buildLimbLinePath(
-  profile: readonly HorizonProfilePoint[],
-  width: number,
-  height: number,
-  minElev: number,
-  maxElev: number,
-  fallbackLimbDeg: number = 0,
-): string {
-  const xEnd = HORIZON_PAD_X + Math.max(1, width - HORIZON_PAD_X - 12);
-  if (profile.length === 0) {
-    const start = azElevToSvgCoord(0, fallbackLimbDeg, width, height, minElev, maxElev);
-    return `M${start.x.toFixed(1)},${start.y.toFixed(1)} L${xEnd.toFixed(1)},${start.y.toFixed(1)}`;
+/** Split trajectory points into contiguous segments when azimuth wraps across 360 <-> 0 deg. */
+export function splitWrappedTrajectorySegments<T extends TrajectoryPointInput>(
+  points: T[],
+): T[][] {
+  if (points.length === 0) {
+    return [];
   }
-  const sorted = [...profile].sort((a, b) => a.azimuth_deg - b.azimuth_deg);
-  const pts = sorted.map((p) => azElevToSvgCoord(p.azimuth_deg, p.geometric_limb_deg, width, height, minElev, maxElev));
-  if (sorted[sorted.length - 1].azimuth_deg < 360) {
-    pts.push({ x: xEnd, y: pts[0].y });
-  }
-  return pts.map((p, idx) => `${idx === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
-}
-
-export function findNearestHorizonPoint(
-  profile: readonly HorizonProfilePoint[],
-  azDeg: number,
-): HorizonProfilePoint | null {
-  if (profile.length === 0) return null;
-  const target = normalizeAzimuthDeg(azDeg);
-  let best = profile[0];
-  let bestDelta = 360;
-  for (const pt of profile) {
-    const raw = Math.abs(normalizeAzimuthDeg(pt.azimuth_deg) - target);
-    const delta = Math.min(raw, 360 - raw);
-    if (delta < bestDelta) {
-      bestDelta = delta;
-      best = pt;
+  const segments: T[][] = [[points[0]]];
+  for (let i = 1; i < points.length; i += 1) {
+    const prev = points[i - 1];
+    const curr = points[i];
+    if (Math.abs(curr.azDeg - prev.azDeg) > 180.0) {
+      segments.push([curr]);
+    } else {
+      segments[segments.length - 1].push(curr);
     }
   }
-  return best;
+  return segments;
+}
+
+/** Project (azDeg, elevDeg) to polar sky-dome SVG coords (0=N top, 90=E right). */
+export function azElevToSkyDomeSVG(
+  azDeg: number,
+  elevDeg: number,
+  cx: number,
+  cy: number,
+  maxR: number,
+  rimMagnified: boolean,
+): SVGPoint {
+  const minElev = -5.0;
+  const maxElev = rimMagnified ? 25.0 : 90.0;
+  const clampedElev = Math.max(minElev, Math.min(maxElev, elevDeg));
+  const rNorm = (maxElev - clampedElev) / (maxElev - minElev);
+  const r = rNorm * maxR;
+  const azRad = degToRad(azDeg);
+  return {
+    x: cx + r * Math.sin(azRad),
+    y: cy - r * Math.cos(azRad),
+  };
 }

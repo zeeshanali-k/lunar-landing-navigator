@@ -1,16 +1,19 @@
-/** Barrel exports for 3-Track SVG Mission Timeline (FE-002). */
+/** Barrel exports for synchronized mission timeline & solar array selector (F4.5–F4.6). */
 
-export { MissionTimelineChart } from "./MissionTimelineChart";
 export {
-  buildElevationPolyline,
-  buildTrackSegments,
-  classifyDteState,
-  classifySolarState,
-  computeElevationBounds,
-  elevToSvgY,
-  xCoordToSampleIndex,
-  type DteTrackState,
-  type SolarTrackState,
-  type TimelineElevationBounds,
-  type TrackSegment,
+  MissionTimelinePanel,
+  type MissionTimelinePanelProps,
+} from "./MissionTimelinePanel";
+export {
+  SolarArraySelector,
+  type SolarArraySelectorProps,
+} from "./SolarArraySelector";
+export {
+  buildCommsSegments,
+  buildPowerSegments,
+  classifyPowerState,
+  inferStepHours,
+  type CommsSegmentState,
+  type PowerSegmentState,
+  type TimelineSegment,
 } from "./timelineSegments";

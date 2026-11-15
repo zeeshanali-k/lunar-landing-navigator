@@ -1,4 +1,4 @@
-/** Unit tests for canonical P0 URL sync, parameter validation, and notices (FE-001). */
+/** Unit tests for canonical P0 URL sync, parameter validation, and notices. */
 
 import {
   buildShareableScenarioUrl,
@@ -6,7 +6,12 @@ import {
   scenarioKey,
   type ScenarioUrlParams,
 } from "../state/urlSync";
-import { describe, expect, it } from "./testHarness";
+
+function assert(condition: boolean, message: string): void {
+  if (!condition) {
+    throw new Error(`Assertion failed: ${message}`);
+  }
+}
 
 const VALID_PARAMS: ScenarioUrlParams = {
   siteId: "artemis-shackleton-ridge",
@@ -20,51 +25,42 @@ const VALID_PARAMS: ScenarioUrlParams = {
   personaMode: "planner",
 };
 
-describe("urlSync canonical keys and validation", () => {
-  it("serializes all 8 P0 scenario keys in canonical order without mode", () => {
-    const key = scenarioKey(VALID_PARAMS);
-    const keys = [...new URLSearchParams(key).keys()];
-    expect.deepEqual(keys, [
-      "site",
-      "start",
-      "days",
-      "step",
-      "array",
-      "array_az",
-      "mast",
-      "min_comms",
-    ]);
-    expect.truthy(buildShareableScenarioUrl(VALID_PARAMS).includes("array_az=45"));
-  });
+export function runUrlSyncTests(): void {
+  // 1. Canonical key ordering (8 P0 keys, no mode param)
+  const key = scenarioKey(VALID_PARAMS);
+  const keys = [...new URLSearchParams(key).keys()];
+  const expectedKeys = ["site", "start", "days", "step", "array", "array_az", "mast", "min_comms"];
+  assert(
+    JSON.stringify(keys) === JSON.stringify(expectedKeys),
+    `expected canonical key order ${expectedKeys.join(",")}, got ${keys.join(",")}`,
+  );
+  assert(buildShareableScenarioUrl(VALID_PARAMS).includes("array_az=45"), "shareable URL should include array_az=45");
 
-  it("parses valid query parameters cleanly with no notices", () => {
-    const qs = `?${scenarioKey(VALID_PARAMS)}`;
-    const parsed = parseScenarioFromUrl(qs);
-    expect.equal(parsed.notices.length, 0);
-    expect.equal(parsed.params.siteId, "artemis-shackleton-ridge");
-    expect.equal(parsed.params.durationDays, 14);
-    expect.equal(parsed.params.stepMinutes, 60);
-    expect.equal(parsed.params.solarArrayType, "vertical_tracking");
-    expect.equal(parsed.params.fixedArrayAzimuthDeg, 45);
-    expect.equal(parsed.params.observerHeightM, 2);
-    expect.equal(parsed.params.minCommsElevDeg, 5);
-  });
+  // 2. Round-trip parse of valid parameters produces zero notices
+  const valid = parseScenarioFromUrl(`?${key}`);
+  assert(valid.notices.length === 0, `expected 0 notices, got ${valid.notices.length}`);
+  assert(valid.params.siteId === "artemis-shackleton-ridge", "siteId mismatch");
+  assert(valid.params.durationDays === 14, "durationDays mismatch");
+  assert(valid.params.stepMinutes === 60, "stepMinutes mismatch");
+  assert(valid.params.solarArrayType === "vertical_tracking", "solarArrayType mismatch");
+  assert(valid.params.fixedArrayAzimuthDeg === 45, "fixedArrayAzimuthDeg mismatch");
+  assert(valid.params.observerHeightM === 2, "observerHeightM mismatch");
+  assert(valid.params.minCommsElevDeg === 5, "minCommsElevDeg mismatch");
 
-  it("rejects out-of-range and legacy parameters with explicit notices", () => {
-    const qs = "?lat=-89&lon=10&days=21&step=15&array=tilted&array_az=360&mast=5&min_comms=60";
-    const parsed = parseScenarioFromUrl(qs);
-    expect.equal(parsed.params.durationDays, undefined);
-    expect.equal(parsed.params.stepMinutes, undefined);
-    expect.equal(parsed.params.solarArrayType, undefined);
-    expect.equal(parsed.params.fixedArrayAzimuthDeg, undefined);
-    expect.equal(parsed.params.observerHeightM, undefined);
-    expect.equal(parsed.params.minCommsElevDeg, undefined);
-    expect.truthy(parsed.notices.length >= 8);
-  });
+  // 3. Invalid allowlist entries and custom coords emit explicit fallback notices
+  const rejected = parseScenarioFromUrl("?lat=-89&lon=10&days=21&step=15&array=tilted&array_az=360&mast=5&min_comms=60");
+  assert(rejected.params.durationDays === undefined, "invalid durationDays should be undefined");
+  assert(rejected.params.stepMinutes === undefined, "invalid stepMinutes should be undefined");
+  assert(rejected.params.solarArrayType === undefined, "invalid solarArrayType should be undefined");
+  assert(rejected.params.fixedArrayAzimuthDeg === undefined, "out-of-range array_az should be undefined");
+  assert(rejected.params.observerHeightM === undefined, "invalid mast should be undefined");
+  assert(rejected.params.minCommsElevDeg === undefined, "out-of-range min_comms should be undefined");
+  assert(rejected.notices.length >= 8, `expected >= 8 notices, got ${rejected.notices.length}`);
 
-  it("flags unparseable start date with notice and falls back", () => {
-    const parsed = parseScenarioFromUrl("?start=not-a-timestamp");
-    expect.equal(parsed.params.startUtc, undefined);
-    expect.truthy(parsed.notices.some((msg) => msg.includes("start date")));
-  });
-});
+  // 4. Unparseable start timestamp emits notice
+  const badStart = parseScenarioFromUrl("?start=not-a-timestamp");
+  assert(badStart.params.startUtc === undefined, "unparseable startUtc should be undefined");
+  assert(badStart.notices.some((msg) => msg.includes("start date")), "expected start date notice");
+}
+
+runUrlSyncTests();
