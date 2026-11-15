@@ -4,6 +4,7 @@ export {
   API_BASE_URL,
   FORCE_OFFLINE_FALLBACK,
   cancelPendingRequest,
+  describeApiError,
   isAbortError,
   isOfflineFallbackActive,
   requestJson,

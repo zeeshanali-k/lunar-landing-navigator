@@ -62,6 +62,15 @@ export function isAbortError(error: unknown): boolean {
   return typeof error === "object" && error !== null && "name" in error && (error as { name: unknown }).name === "AbortError";
 }
 
+/** Map a raw API error to a user-facing message, replacing "not implemented" 404s with a friendly note. */
+export function describeApiError(error: unknown, fallback: string): string {
+  const message = error instanceof Error ? error.message : fallback;
+  if (/API 404/.test(message)) {
+    return "This feature isn't available in the current build — it's a P1 capability that ships in a later release.";
+  }
+  return message;
+}
+
 /** A generated fixture-manifest entry. Keys are canonical scenario keys (REQ-11). */
 interface FixtureManifest {
   [scenarioKey: string]: { file: string };

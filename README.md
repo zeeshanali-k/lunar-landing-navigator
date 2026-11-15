@@ -1,48 +1,78 @@
 # Lunar Landing Site Navigator
 
-**NASA Space Apps 2026 Challenge** — Interactive mission planning and educational visualization cockpit for lunar landing sites across the South Pole and equatorial regions.
+**NASA Space Apps 2026 — "Lunar Trailblazer: Mission Planning for the South Pole"**
 
-## Architecture Overview
+> Mission planners, educators, and the public need to compare lunar landing sites and dates fast — so we turn JPL Horizons ephemeris and NASA LOLA topography into an interactive cockpit that shows, at a glance, how the Sun and Earth sit relative to a site's horizon to size solar power and direct-to-Earth comms windows.
 
-- **Unified Python Backend (`backend/src/`)**: Clean Architecture (Hexagonal Ports & Adapters) shared across offline data/CLI pipelines and FastAPI endpoints:
-  - `domain/`: Pure physics, geometry, solar power, DTE comms, countdown detection, and feasibility scoring (zero external framework dependencies).
-  - `application/`: Use cases and abstract `Protocol` ports.
-  - `infrastructure/`: NASA LOLA DEM tiling, `<12ms` vectorized 360° horizon raycaster, SPICE/Horizons ephemeris, and caching.
-  - `cli/`: Precomputation and JPL Horizons accuracy validation runners.
-  - `api/`: Thin FastAPI REST delivery layer serving Contracts A–E.
-- **Modular Frontend (`frontend/src/`)**: React + TypeScript (strict) + Vite + Three.js (`@react-three/fiber`), Zustand stores with shareable URL sync, 2D South Pole stereographic map, 3D `local_enu` shadow simulation, and multi-scenario comparison tools.
-- **Shared Contracts (`contracts/`)**: Locked JSON schemas and sample fixtures (`Contracts A–E`) shared between backend and frontend.
+![Lunar Landing Site Navigator cockpit](docs/screenshot.png)
 
-## Coordinate Conventions (`local_enu`)
+## What it does
 
-- **Selenographic Coordinates**: East-positive longitude `lon_deg` in `[-180, +180]`, latitude `lat_deg` in `[-90, +90]`.
-- **Pole Singularity Guard**: Latitudes with `|lat_deg| > 89.9999°` clamp to `±89.9999°` so meridian North remains well-defined.
-- **Topocentric Azimuth**: `0° = Local North`, `90° = Local East`, `180° = Local South`, `270° = Local West`.
-- **Three.js Axes**: `+X = East`, `+Y = Up`, `-Z = North`.
+- **Interactive site selection** across a curated registry of 16 notable landing sites (Artemis III South Pole candidates, CLPS commercial targets, Apollo and Chang'e-4 historic sites, Chandrayaan-3, and more).
+- **Sun & Earth position visualization**: a 360° panoramic horizon silhouette (solid measured LOLA terrain profile vs. dashed geometric limb), a polar sky-dome, and a 2D South Pole stereographic map.
+- **Power and communications assessment**: solar elevation, power factor, hours-to-sunset/sunrise, Earth clearance, direct-to-Earth (DTE) visibility, and countdowns — all computed from a closed physics model (no client-side physics).
+- **Temporal dynamics**: a multi-day mission timeline you can scrub, with synchronized horizon/timeline views across a 29.5-day lunar cycle.
+- **Side-by-side comparison**, landing-window finder, and launch-delay sensitivity tools for agile mission replanning.
+- **3D `local_enu` terrain viewer** with grazing crater-shadow simulation for the nine terrain-backed sites.
 
-## Quickstart & Quality Gates
+## Architecture
 
-### File-Size Gate (Hard Ceiling: 280 lines)
-```bash
-python3 scripts/check_file_lengths.py
-```
+- **Backend** (`backend/src/`) — Clean Architecture (domain → application → infrastructure → API). Pure Python physics (solar power, DTE comms, horizon raycasting, feasibility scoring) served by a thin FastAPI layer with the P0 endpoints: `GET /api/v1/health`, `GET /api/v1/sites`, `GET /api/v1/sites/{site_id}/terrain`, `POST /api/v1/evaluate`. No download client or network access at runtime — all data ships as committed packs.
+- **Frontend** (`frontend/src/`) — React + TypeScript (strict) + Vite + Three.js, Zustand stores with shareable URL sync, multi-theme UI with six navigation screens and contextual help.
+- **Shared contracts** (`contracts/`) — generated OpenAPI spec and synthetic-labeled fixtures shared by both sides.
 
-### Backend (Python 3.12 + FastAPI)
+## Quickstart
+
+Requirements: **Python 3.12** (via `uv`) and **Bun**. No other package managers.
+
+### Backend
+
 ```bash
 cd backend
-.venv/bin/pytest -v
-.venv/bin/uvicorn src.api.main:app --reload --port 8000
+uv sync --python 3.12 --frozen
+uv run --python 3.12 --frozen uvicorn src.api.main:app --port 8000
 ```
 
-### Frontend (TypeScript + Vite)
+### Frontend
+
 ```bash
 cd frontend
-npm run typecheck
-npm run build
-npm run dev
+bun install --frozen-lockfile
+bun run dev
 ```
 
-### Smoke Test
+Open http://localhost:5173. The Vite dev server proxies `/api` to the backend on port 8000.
+
+### Quality gates
+
 ```bash
-./scripts/smoke_test.sh
+cd backend && uv run --python 3.12 --frozen pytest -v
+cd backend && uv run --python 3.12 --frozen ruff check .
+cd backend && uv run --python 3.12 --frozen mypy src tests
+cd frontend && bun run typecheck && bun run lint && bun run test && bun run build
 ```
+
+See [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) for a 3-minute guided walkthrough.
+
+## Data resources
+
+| Resource | Use |
+|---|---|
+| **NASA LRO LOLA** (`ldem_80s_80m`) | 80 m/pixel south-polar digital elevation model for terrain packs and horizon raycasting |
+| **JPL Horizons** (`MOON_ME`) | Sun and Earth azimuth/elevation tracks for all 16 sites, 2026–2029 |
+| **LRO QuickMap** | Site coordinate cross-checking and contextual imagery |
+| **NASA Moon Trek** | Site coordinate cross-checking and contextual imagery |
+| **CSA (Canadian Space Agency)** | Artemis partner context for mobility and robotics planning |
+
+Coordinates are sourced with provenance; see [`docs/COORDINATE_SOURCING_GUIDE.md`](docs/COORDINATE_SOURCING_GUIDE.md).
+
+## Terrain model — Class A vs. Class B (honest disclosure)
+
+The `ldem_80s_80m` product covers the south polar region only. We classify sites honestly rather than fabricating topography:
+
+- **Class A** (9 sites, all south-polar): a real 128 × 128 terrain patch with a 360° horizon profile, so the horizon silhouette reflects actual crater rims and ridge shadows. Terrain and feasibility scores are computed.
+- **Class B** (7 sites, equatorial/far-side): no terrain model is available, so the UI shows **"Terrain model unavailable — spherical limb only"**, sets terrain and feasibility scores to `null`, and draws only the geometric limb. No topography is ever synthesized.
+
+## License
+
+MIT License.

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { CollapsibleSection, ScreenHeader } from "../../components/ui";
-import { isAbortError, scanWindows } from "../../services";
+import { describeApiError, isAbortError, scanWindows } from "../../services";
 import { useComparisonStore, useMissionStore } from "../../state";
 import type { DurationDays, SolarArrayType, CandidateWindow, WindowsResponse } from "../../types";
 import { TopWindowsList } from "./TopWindowsList";
@@ -43,7 +43,7 @@ export function WindowHeatmapView() {
       .catch((err: unknown) => {
         if (isAbortError(err)) return;
         setLoading(false);
-        setError(err instanceof Error ? err.message : "Failed to load landing windows.");
+        setError(describeApiError(err, "Failed to load landing windows."));
       });
     return () => controller.abort();
   }, [siteId, year, scanDuration, scanArray]);
