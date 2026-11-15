@@ -1,10 +1,13 @@
 /** Responsive aerospace command-center workspace shell connecting all modules (F3.1). */
 
-import { Layers, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import { EarthMoonContrastCard } from "../../features/earth-moon-contrast";
 import { SouthPoleMap } from "../../features/lunar-map-2d";
 import { OperationalKpiStrip } from "../../features/mission-kpis";
+import { MissionTimelinePanel, SolarArraySelector } from "../../features/mission-timeline";
 import { ExplorerCalloutBanner, GuidedChallengesView } from "../../features/persona-mode";
 import { SiteExplorerDrawer } from "../../features/site-explorer";
+import { PanoramaHorizonChart, PolarSkyDome } from "../../features/sky-horizon";
 import { DateAndDurationBar, PlaybackScrubber } from "../../features/time-controls";
 import { useComparisonStore, useMissionStore } from "../../state";
 import { TopCommandBar } from "./TopCommandBar";
@@ -13,11 +16,22 @@ export function AppShell() {
   const activeTab = useMissionStore((s) => s.activeTab);
   const selectedSiteId = useMissionStore((s) => s.selectedSiteId);
   const evaluationData = useMissionStore((s) => s.evaluationData);
-  const terrainPatch = useMissionStore((s) => s.terrainPatch);
+  const terrainUnavailable = useMissionStore((s) => s.terrainUnavailable);
+  const solarArrayType = useMissionStore((s) => s.solarArrayType);
+  const observerHeightM = useMissionStore((s) => s.observerHeightM);
+  const personaMode = useMissionStore((s) => s.personaMode);
+  const loading = useMissionStore((s) => s.loading);
+  const notices = useMissionStore((s) => s.notices);
   const error = useMissionStore((s) => s.error);
+  const setHardwareConfig = useMissionStore((s) => s.setHardwareConfig);
 
   const pinnedScenarios = useComparisonStore((s) => s.pinnedScenarios);
   const unpinScenario = useComparisonStore((s) => s.unpinScenario);
+
+  const isSphericalLimbOnly =
+    terrainUnavailable || evaluationData?.site.has_precomputed_terrain === false;
+  const horizonProfile = evaluationData?.horizon_profile ?? [];
+  const timeseries = evaluationData?.timeseries ?? [];
 
   return (
     <div className="app-shell">
@@ -29,32 +43,57 @@ export function AppShell() {
           </div>
         )}
 
+        {notices.length > 0 && (
+          <div className="panel-card" style={{ borderColor: "var(--accent-warn)", color: "#fde68a", gap: "0.35rem" }}>
+            {notices.map((notice) => (
+              <div key={notice} style={{ fontSize: "0.82rem" }}>
+                {notice}
+              </div>
+            ))}
+          </div>
+        )}
+
         {activeTab === "cockpit" ? (
           <>
             <OperationalKpiStrip />
             <ExplorerCalloutBanner />
+
+            {isSphericalLimbOnly && (
+              <div className="panel-card" style={{ borderColor: "var(--accent-warn)", color: "#fde68a", padding: "0.65rem 1rem" }}>
+                <strong style={{ fontSize: "0.82rem" }}>Terrain model unavailable — spherical limb only</strong>
+              </div>
+            )}
 
             <div className="cockpit-layout">
               <SiteExplorerDrawer />
 
               <div className="cockpit-visual-grid">
                 <SouthPoleMap />
-                <section className="panel-card" style={{ minHeight: "230px" }}>
-                  <h2 className="panel-title"><span><Layers size={13} /> 3D local_enu Terrain Slot (F4.1–F4.2)</span></h2>
-                  <p style={{ margin: 0, color: "var(--text-muted)", fontSize: "0.86rem" }}>
-                    Patch: {terrainPatch ? `${terrainPatch.grid_size}×${terrainPatch.grid_size} (${terrainPatch.frame})` : "Loading..."}
-                  </p>
-                </section>
-                <section className="panel-card" style={{ minHeight: "200px" }}>
-                  <h2 className="panel-title"><span>360° Horizon &amp; Sky-Dome Slot (F4.3–F4.4)</span></h2>
-                  <p style={{ margin: 0, color: "var(--text-muted)", fontSize: "0.86rem" }}>Horizon samples: {evaluationData?.horizon_profile.length ?? 0}</p>
-                </section>
-                <section className="panel-card" style={{ minHeight: "200px" }}>
-                  <h2 className="panel-title"><span>Power &amp; DTE Timeline Slot (F4.5–F4.6)</span></h2>
-                  <p style={{ margin: 0, color: "var(--text-muted)", fontSize: "0.86rem" }}>
-                    Sunlit: {evaluationData?.summary.sunlit_hours ?? "—"}h | DTE: {evaluationData?.summary.dte_comms_hours ?? "—"}h
-                  </p>
-                </section>
+                <PolarSkyDome horizonProfile={horizonProfile} timeseries={timeseries} />
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <PanoramaHorizonChart horizonProfile={horizonProfile} timeseries={timeseries} />
+                </div>
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <MissionTimelinePanel timeseries={timeseries} />
+                </div>
+                {evaluationData && (
+                  <>
+                    <div style={{ gridColumn: "1 / -1" }}>
+                      <SolarArraySelector
+                        summary={evaluationData.summary}
+                        timeseries={timeseries}
+                        solarArrayType={solarArrayType}
+                        observerHeightM={observerHeightM}
+                        loading={loading}
+                        onChangeArrayType={(nextType) => void setHardwareConfig(nextType, observerHeightM)}
+                        onChangeObserverHeight={(nextHeight) => void setHardwareConfig(solarArrayType, nextHeight)}
+                      />
+                    </div>
+                    <div style={{ gridColumn: "1 / -1" }}>
+                      <EarthMoonContrastCard evaluation={evaluationData} personaMode={personaMode} />
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
