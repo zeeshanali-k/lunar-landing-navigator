@@ -424,7 +424,7 @@
       "priority": "P0",
       "owner": "M2",
       "reviewer": "M1",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "ARCH-001"
       ],
@@ -445,6 +445,10 @@
         "contracts/openapi.json",
         "contracts/fixtures",
         "frontend/src/types/api.generated.ts",
+        "frontend/src/types/index.ts",
+        "frontend/src/state/useMissionStore.ts",
+        "frontend/src/features/site-explorer/SiteCard.tsx",
+        "frontend/src/features/site-explorer/SiteExplorerDrawer.tsx",
         "frontend/package.json",
         "backend/tests/integration/test_contract_parity.py"
       ],
@@ -488,12 +492,34 @@
           "ref": "frontend/src/types/api.generated.ts"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen python -m src.cli.export_openapi",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen pytest tests/integration/test_contract_parity.py -v",
+          "exit": 0,
+          "note": "14 passed, 1 skipped (frontend fixture mirror is DATA-006)"
+        },
+        {
+          "kind": "artifact",
+          "ref": "contracts/openapi.json",
+          "sha256": "5c00c4aedf228d390f2c7a12b18d526cbe1600c5b2ac8c0878fe220406f6c5ea"
+        },
+        {
+          "kind": "artifact",
+          "ref": "frontend/src/types/api.generated.ts",
+          "sha256": "f312f1a2fd0c686d21423a2499095a6e0584ac30a2c0e30c65c46a9dc3bbb529"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T15:38:07Z",
+      "completed_commit": "f03d00c"
     },
     {
       "id": "DATA-001",
