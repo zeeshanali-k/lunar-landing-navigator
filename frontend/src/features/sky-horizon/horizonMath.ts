@@ -3,7 +3,6 @@
 import {
   degToRad,
   normalizeAzimuthDeg,
-  radToDeg,
   type HorizonProfilePoint,
 } from "../../types";
 
@@ -18,34 +17,20 @@ export interface TrajectoryPointInput {
   index: number;
 }
 
-const DEFAULT_OBSERVER_M = 2.0;
-const EFFECTIVE_RIDGE_DIST_M = 600.0;
-
-/** Adjust terrain horizon angle for observer mast height relative to 2.0m baseline. */
-export function adjustTerrainElevForMast(
-  terrainElevDeg: number,
-  observerHeightM: number,
-): number {
-  const deltaM = observerHeightM - DEFAULT_OBSERVER_M;
-  const depressionDeg = radToDeg(Math.atan2(deltaM, EFFECTIVE_RIDGE_DIST_M));
-  return terrainElevDeg - depressionDeg;
-}
-
 /** Linearly interpolate terrain & limb elevation at any azimuth with 360->0 wrap-around. */
 export function interpolateHorizonElevDeg(
   profile: HorizonProfilePoint[],
   azDeg: number,
-  observerHeightM = DEFAULT_OBSERVER_M,
 ): { terrainElevDeg: number; geometricLimbDeg: number } {
   if (profile.length === 0) {
-    return { terrainElevDeg: 0, geometricLimbDeg: -0.08 };
+    return { terrainElevDeg: 0, geometricLimbDeg: 0 };
   }
   const sorted = [...profile].sort((a, b) => a.azimuth_deg - b.azimuth_deg);
   const az = normalizeAzimuthDeg(azDeg);
 
   if (sorted.length === 1) {
     return {
-      terrainElevDeg: adjustTerrainElevForMast(sorted[0].terrain_elev_deg, observerHeightM),
+      terrainElevDeg: sorted[0].terrain_elev_deg,
       geometricLimbDeg: sorted[0].geometric_limb_deg,
     };
   }
@@ -60,17 +45,16 @@ export function interpolateHorizonElevDeg(
     if (queryAz >= startAz && queryAz <= endAz) {
       const span = Math.max(1e-6, endAz - startAz);
       const t = (queryAz - startAz) / span;
-      const rawTerrain = curr.terrain_elev_deg + (next.terrain_elev_deg - curr.terrain_elev_deg) * t;
-      const limb = curr.geometric_limb_deg + (next.geometric_limb_deg - curr.geometric_limb_deg) * t;
       return {
-        terrainElevDeg: adjustTerrainElevForMast(rawTerrain, observerHeightM),
-        geometricLimbDeg: limb,
+        terrainElevDeg: curr.terrain_elev_deg + (next.terrain_elev_deg - curr.terrain_elev_deg) * t,
+        geometricLimbDeg:
+          curr.geometric_limb_deg + (next.geometric_limb_deg - curr.geometric_limb_deg) * t,
       };
     }
   }
 
   return {
-    terrainElevDeg: adjustTerrainElevForMast(sorted[0].terrain_elev_deg, observerHeightM),
+    terrainElevDeg: sorted[0].terrain_elev_deg,
     geometricLimbDeg: sorted[0].geometric_limb_deg,
   };
 }
@@ -98,18 +82,27 @@ export function buildPanoramaHorizonPaths(
   height: number,
   minElev: number,
   maxElev: number,
-  observerHeightM = DEFAULT_OBSERVER_M,
 ): { areaPath: string; ridgeLinePath: string; limbLinePath: string } {
   const samples = 73;
-  const ridgePts: SVGPoint[] = [];
   const limbPts: SVGPoint[] = [];
 
+  if (profile.length === 0) {
+    for (let i = 0; i < samples; i += 1) {
+      const az = (i / (samples - 1)) * 360.0;
+      limbPts.push(azElevToPanoramaSVG(az, 0, width, height, minElev, maxElev));
+    }
+    const limbLinePath = limbPts
+      .map((p, idx) => `${idx === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`)
+      .join(" ");
+    return { areaPath: "", ridgeLinePath: "", limbLinePath };
+  }
+
+  const ridgePts: SVGPoint[] = [];
   for (let i = 0; i < samples; i += 1) {
     const az = (i / (samples - 1)) * 360.0;
     const { terrainElevDeg, geometricLimbDeg } = interpolateHorizonElevDeg(
       profile,
       az === 360.0 ? 0.0 : az,
-      observerHeightM,
     );
     ridgePts.push(azElevToPanoramaSVG(az, terrainElevDeg, width, height, minElev, maxElev));
     limbPts.push(azElevToPanoramaSVG(az, geometricLimbDeg, width, height, minElev, maxElev));

@@ -1,64 +1,64 @@
-/** Solar Array Orientation & Mast Height Trade-Off Simulator (F4.6). */
+/** Solar Array Orientation & Mast Height Selector backed by API evaluation metrics (F4.6). */
 
-import { useMemo } from "react";
-import type { HorizonProfilePoint, SolarArrayType, TimeseriesPoint } from "../../types";
-import { computeArrayComparisonMetrics } from "./timelineSegments";
+import { usePlaybackStore } from "../../state";
+import type {
+  EvaluationSummary,
+  ObserverHeightM,
+  SolarArrayType,
+  TimeseriesPoint,
+} from "../../types";
 
 export interface SolarArraySelectorProps {
+  summary: EvaluationSummary;
   timeseries: TimeseriesPoint[];
-  horizonProfile: HorizonProfilePoint[];
-  currentIndex: number;
   solarArrayType: SolarArrayType;
-  observerHeightM: number;
+  observerHeightM: ObserverHeightM;
+  loading?: boolean;
   onChangeArrayType: (type: SolarArrayType) => void;
-  onChangeObserverHeight: (heightM: number) => void;
+  onChangeObserverHeight: (heightM: ObserverHeightM) => void;
+  currentIndex?: number;
 }
 
 const ARRAY_OPTIONS: { id: SolarArrayType; label: string; sub: string }[] = [
   { id: "horizontal_fixed", label: "Horizontal Deck", sub: "Flat panel" },
-  { id: "vertical_fixed", label: "Fixed Vertical", sub: "South-facing" },
+  { id: "vertical_fixed", label: "Fixed Vertical", sub: "Fixed azimuth" },
   { id: "vertical_tracking", label: "Sun-Tracking Mast", sub: "360° yaw" },
 ];
 
-const MAST_OPTIONS: { heightM: number; label: string }[] = [
+const MAST_OPTIONS: { heightM: ObserverHeightM; label: string }[] = [
   { heightM: 1.5, label: "1.5m Rover" },
   { heightM: 2.0, label: "2.0m Lander" },
   { heightM: 10.0, label: "10.0m Tall Tower" },
 ];
 
 export function SolarArraySelector({
+  summary,
   timeseries,
-  horizonProfile,
-  currentIndex,
   solarArrayType,
   observerHeightM,
+  loading = false,
   onChangeArrayType,
   onChangeObserverHeight,
+  currentIndex,
 }: SolarArraySelectorProps) {
-  const safeIdx = Math.min(Math.max(0, currentIndex), Math.max(0, timeseries.length - 1));
+  const storeIndex = usePlaybackStore((s) => s.currentIndex);
+  const activeIdx = currentIndex ?? storeIndex;
+  const safeIdx = Math.min(Math.max(0, activeIdx), Math.max(0, timeseries.length - 1));
   const activePt = timeseries[safeIdx];
 
-  const comparison = useMemo(
-    () => computeArrayComparisonMetrics(timeseries, horizonProfile, solarArrayType, observerHeightM),
-    [timeseries, horizonProfile, solarArrayType, observerHeightM],
-  );
-
-  const liveWatts = activePt ? Math.round(activePt.solar_power_factor * 1361.0) : 0;
-  const baselinePct = (comparison.baseline.meanPowerFactor * 100).toFixed(1);
-  const activePct = (comparison.active.meanPowerFactor * 100).toFixed(1);
-  const deltaGain = comparison.powerGainPct;
-  const darkDeltaH = comparison.active.longestDarkStreakHours - comparison.baseline.longestDarkStreakHours;
+  const stepPowerPct = Math.round((activePt?.solar_power_factor ?? summary.mean_solar_power_factor) * 100);
+  const meanPowerPct = (summary.mean_solar_power_factor * 100).toFixed(1);
 
   return (
-    <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: "0.75rem", padding: "0.55rem 0.85rem", display: "grid", gap: "0.45rem" }}>
+    <section className="panel-card" style={{ padding: "0.75rem 0.9rem", gap: "0.5rem" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.4rem" }}>
-        <strong style={{ fontSize: "0.82rem" }}>Solar Array &amp; Mast Height Simulator</strong>
-        <span style={{ fontSize: "0.75rem", color: "var(--accent-sun)", fontWeight: 600 }}>
-          Live Output: {liveWatts} W/m² ({activePt ? `${Math.round(activePt.solar_power_factor * 100)}%` : "0%"})
+        <strong style={{ fontSize: "0.84rem" }}>Solar Array &amp; Mast Height Configuration</strong>
+        <span style={{ fontSize: "0.75rem", color: "var(--accent-sun)", fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>
+          Mean Irradiance: {summary.mean_irradiance_w_m2.toFixed(0)} W/m² · Step Power: {stepPowerPct}%
         </span>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "0.5rem" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "0.5rem" }}>
         <div style={{ display: "flex", gap: "0.35rem", flexWrap: "wrap" }}>
           {ARRAY_OPTIONS.map((opt) => {
             const selected = opt.id === solarArrayType;
@@ -66,6 +66,7 @@ export function SolarArraySelector({
               <button
                 key={opt.id}
                 type="button"
+                disabled={loading}
                 onClick={() => onChangeArrayType(opt.id)}
                 style={{
                   flex: "1 1 90px", padding: "0.32rem 0.5rem", borderRadius: "0.4rem", textAlign: "left", cursor: "pointer",
@@ -88,6 +89,7 @@ export function SolarArraySelector({
               <button
                 key={opt.heightM}
                 type="button"
+                disabled={loading}
                 onClick={() => onChangeObserverHeight(opt.heightM)}
                 style={{
                   flex: "1 1 85px", padding: "0.36rem 0.5rem", borderRadius: "0.4rem", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer",
@@ -103,20 +105,14 @@ export function SolarArraySelector({
         </div>
       </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "0.5rem", padding: "0.38rem 0.65rem", borderRadius: "0.45rem", background: "rgba(16, 185, 129, 0.08)", border: "1px solid rgba(16, 185, 129, 0.3)", fontSize: "0.74rem" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "0.5rem", padding: "0.38rem 0.65rem", borderRadius: "0.45rem", background: "rgba(16, 185, 129, 0.08)", border: "1px solid rgba(16, 185, 129, 0.3)", fontSize: "0.74rem", fontVariantNumeric: "tabular-nums" }}>
         <span>
-          Viability Delta vs. 2m Horizontal Deck: <strong>{baselinePct}%</strong> →{" "}
-          <strong style={{ color: "var(--accent-ok)" }}>{activePct}%</strong> mean power{" "}
-          <span style={{ color: deltaGain >= 0 ? "var(--accent-ok)" : "#fda4af" }}>
-            ({deltaGain >= 0 ? "+" : ""}{deltaGain.toFixed(1)} pts)
-          </span>
+          Mean Power Factor: <strong style={{ color: "var(--accent-ok)" }}>{meanPowerPct}%</strong> ({summary.mean_irradiance_w_m2.toFixed(0)} W/m²)
         </span>
         <span style={{ color: "var(--text-muted)" }}>
-          Sunlit: <strong>{comparison.active.sunlitHours.toFixed(0)}h</strong> · Max Dark:{" "}
-          <strong>{comparison.active.longestDarkStreakHours.toFixed(0)}h</strong>
-          {darkDeltaH !== 0 ? ` (${darkDeltaH > 0 ? "+" : ""}${darkDeltaH.toFixed(0)}h)` : ""}
+          Sunlit: <strong>{summary.sunlit_hours.toFixed(0)}h</strong> · Max Dark: <strong>{summary.longest_dark_streak_hours.toFixed(0)}h</strong>
         </span>
       </div>
-    </div>
+    </section>
   );
 }

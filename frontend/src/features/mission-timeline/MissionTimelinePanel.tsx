@@ -1,6 +1,7 @@
 /** Synchronized Multi-Day Power, DTE Comms Gantt & Elevation Timeline (F4.5). */
 
 import { useMemo, useRef, useState } from "react";
+import { usePlaybackStore } from "../../state";
 import type { TimeseriesPoint } from "../../types";
 import {
   buildCommsSegments,
@@ -11,8 +12,8 @@ import {
 
 export interface MissionTimelinePanelProps {
   timeseries: TimeseriesPoint[];
-  currentIndex: number;
-  onSelectIndex: (index: number) => void;
+  currentIndex?: number;
+  onSelectIndex?: (index: number) => void;
 }
 
 const SVG_W = 800;
@@ -37,45 +38,55 @@ function formatShortDate(iso: string): string {
   return `${d.toISOString().slice(5, 10)} ${d.toISOString().slice(11, 16)}Z`;
 }
 
+function toElevY(elev: number): number {
+  const clamped = Math.max(MIN_ELEV, Math.min(MAX_ELEV, elev));
+  return SVG_H - ((clamped - MIN_ELEV) / (MAX_ELEV - MIN_ELEV)) * SVG_H;
+}
+
 export function MissionTimelinePanel({
   timeseries,
   currentIndex,
   onSelectIndex,
 }: MissionTimelinePanelProps) {
+  const storeIndex = usePlaybackStore((s) => s.currentIndex);
+  const jumpToIndex = usePlaybackStore((s) => s.jumpToIndex);
+  const activeIdx = currentIndex ?? storeIndex;
+  const selectIndex = onSelectIndex ?? jumpToIndex;
+
   const trackRef = useRef<HTMLDivElement | null>(null);
   const [dragging, setDragging] = useState(false);
   const n = timeseries.length;
-  const safeIdx = Math.min(Math.max(0, currentIndex), Math.max(0, n - 1));
+  const safeIdx = Math.min(Math.max(0, activeIdx), Math.max(0, n - 1));
   const active = timeseries[safeIdx];
 
   const powerSegments = useMemo(() => buildPowerSegments(timeseries), [timeseries]);
   const commsSegments = useMemo(() => buildCommsSegments(timeseries), [timeseries]);
+
+  const { sunLine, earthLine, powerLine } = useMemo(() => {
+    const toX = (i: number) => ((i + 0.5) / Math.max(1, n)) * SVG_W;
+    const toPowerY = (factor: number) => SVG_H - Math.max(0, Math.min(1, factor)) * (SVG_H - 8) - 4;
+    return {
+      sunLine: timeseries.map((pt, i) => `${toX(i).toFixed(1)},${toElevY(pt.sun_elev_deg).toFixed(1)}`).join(" "),
+      earthLine: timeseries.map((pt, i) => `${toX(i).toFixed(1)},${toElevY(pt.earth_elev_deg).toFixed(1)}`).join(" "),
+      powerLine: timeseries.map((pt, i) => `${toX(i).toFixed(1)},${toPowerY(pt.solar_power_factor).toFixed(1)}`).join(" "),
+    };
+  }, [timeseries, n]);
 
   const scrubFromClientX = (clientX: number) => {
     const el = trackRef.current;
     if (!el || n === 0) return;
     const rect = el.getBoundingClientRect();
     const ratio = Math.max(0, Math.min(0.99999, (clientX - rect.left) / Math.max(1, rect.width)));
-    onSelectIndex(Math.floor(ratio * n));
+    selectIndex(Math.floor(ratio * n));
   };
 
-  const toX = (i: number) => ((i + 0.5) / Math.max(1, n)) * SVG_W;
-  const toElevY = (elev: number) => {
-    const clamped = Math.max(MIN_ELEV, Math.min(MAX_ELEV, elev));
-    return SVG_H - ((clamped - MIN_ELEV) / (MAX_ELEV - MIN_ELEV)) * SVG_H;
-  };
-  const toPowerY = (factor: number) => SVG_H - Math.max(0, Math.min(1, factor)) * (SVG_H - 8) - 4;
-
-  const sunLine = timeseries.map((pt, i) => `${toX(i).toFixed(1)},${toElevY(pt.sun_elev_deg).toFixed(1)}`).join(" ");
-  const earthLine = timeseries.map((pt, i) => `${toX(i).toFixed(1)},${toElevY(pt.earth_elev_deg).toFixed(1)}`).join(" ");
-  const powerLine = timeseries.map((pt, i) => `${toX(i).toFixed(1)},${toPowerY(pt.solar_power_factor).toFixed(1)}`).join(" ");
   const playheadPct = n > 0 ? ((safeIdx + 0.5) / n) * 100 : 0;
 
   return (
-    <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: "0.75rem", padding: "0.85rem 1rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem", marginBottom: "0.6rem" }}>
+    <section className="panel-card" style={{ padding: "0.85rem 1rem", gap: "0.55rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
         <strong style={{ fontSize: "0.88rem" }}>Synchronized Power &amp; DTE Comms Timeline</strong>
-        <div style={{ display: "flex", gap: "0.9rem", fontSize: "0.75rem", color: "var(--text-muted)", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "0.9rem", fontSize: "0.75rem", color: "var(--text-muted)", flexWrap: "wrap", fontVariantNumeric: "tabular-nums" }}>
           <span><span style={{ color: "#f59e0b" }}>●</span> Sun El: {active ? `${active.sun_elev_deg.toFixed(2)}°` : "—"}</span>
           <span><span style={{ color: "#38bdf8" }}>●</span> Earth El: {active ? `${active.earth_elev_deg.toFixed(2)}°` : "—"}</span>
           <span><span style={{ color: "#10b981" }}>●</span> Power: {active ? `${Math.round(active.solar_power_factor * 100)}%` : "—"}</span>
@@ -155,11 +166,11 @@ export function MissionTimelinePanel({
         )}
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.35rem", fontSize: "0.72rem", color: "var(--text-muted)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.72rem", color: "var(--text-muted)" }}>
         <span>{timeseries[0] ? formatShortDate(timeseries[0].timestamp_utc) : "Start"}</span>
         <span>Drag or click anywhere on timeline to scrub</span>
         <span>{n > 0 ? formatShortDate(timeseries[n - 1].timestamp_utc) : "End"}</span>
       </div>
-    </div>
+    </section>
   );
 }

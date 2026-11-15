@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Refuse to work on the wrong branch.
+#
+# Each human works only on the branch listed for their module in plan/OWNERS.md.
+# Running on a detached HEAD, on main, or on someone else's branch is a mistake
+# that silently mixes work between people, so it is blocked before any command runs.
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || {
+  echo "BRANCH GUARD: not inside a git repository." >&2
+  exit 1
+}
+cd "$repo_root"
+
+current="$(git branch --show-current 2>/dev/null || true)"
+identity="$(git config user.name 2>/dev/null || true)"
+
+if [[ -z "$current" ]]; then
+  echo "BRANCH GUARD: detached HEAD. Switch to your branch before working." >&2
+  echo "  git switch <your-branch>" >&2
+  exit 1
+fi
+
+# Trunk is protected: nobody works directly on it.
+if [[ "$current" == "main" || "$current" == "master" ]]; then
+  echo "BRANCH GUARD: you are on '$current', which is trunk." >&2
+  echo "  Work happens on your own branch; trunk changes arrive only through a pull request." >&2
+  echo "  git switch <your-branch>" >&2
+  exit 1
+fi
+
+owners_file="$repo_root/plan/OWNERS.md"
+if [[ -f "$owners_file" && -n "$identity" ]]; then
+  # A row looks like: | `M1` | scope | bauerceptor | `bauerceptor` | active |
+  expected="$(awk -F'|' -v who="$identity" '
+    $0 ~ /^\|/ {
+      owner=$4; branch=$5
+      gsub(/[`*[:space:]]/, "", owner)
+      gsub(/[`*[:space:]]/, "", branch)
+      if (owner == who && branch != "") { print branch; exit }
+    }
+  ' "$owners_file")"
+
+  if [[ -n "$expected" && "$current" != "$expected" ]]; then
+    echo "BRANCH GUARD: identity '$identity' belongs on branch '$expected', not '$current'." >&2
+    echo "  See plan/OWNERS.md." >&2
+    exit 1
+  fi
+fi
+
+echo "BRANCH GUARD: on '$current' as '$identity'."
+exit 0

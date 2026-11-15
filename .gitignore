@@ -50,3 +50,27 @@ npm-debug.log*
 .env
 .env.*
 !.env.example
+
+# Agent tool state — local to each machine, never shared or tracked.
+# AGENTS.md is the shared protocol and stays tracked on purpose.
+.commandcode/
+.claude/
+.opencode/
+.codex/
+.cursor/
+.continue/
+.windsurf/
+.roo/
+.gemini/
+.qwen/
+.aider*
+.specstory/
+.hermes/
+.mistral/
+.agents/
+.copilot/
+.agent-state/
+.agent-cache/
+
+# Local session handoff — personal starting notes, not shared.
+NEXT_SESSION.md

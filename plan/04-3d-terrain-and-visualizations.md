@@ -1,5 +1,7 @@
 # Module 4: 3D Lunar Terrain, Sky-Dome & Operational Visualizations
 
+<!-- STATUS: HISTORICAL | REASON: DEVELOPMENT_PLAN.md and plan/task-ledger.json are the only operative authorities; this document is design context only | REPLACEMENT: DEVELOPMENT_PLAN.md#req-01 | TASKS: DOC-001 -->
+
 **Parent Plan:** [DEVELOPMENT_PLAN.md](../DEVELOPMENT_PLAN.md)
 **Architecture Spec:** [00-architecture-and-standards.md](00-architecture-and-standards.md)
 **Assigned Role:** 3D Graphics & Scientific Visualization Lead
@@ -7,6 +9,7 @@
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: the entire 3D module is post-P1 and requires a new human-approved revision | REPLACEMENT: DEVELOPMENT_PLAN.md#req-02 | TASKS: P1-GATE -->
 ## Module Objective
 Deliver the high-impact visual heart of the application—translating NASA elevation grids (`local_enu` frame) and ephemeris angles into **four synchronized, unmistakable visual perspectives**:
 1. Real-time **3D Lunar Terrain & Sharp Zero-Atmosphere Shadows** (`F4.1`–`F4.2`)
@@ -40,6 +43,7 @@ Deliver the high-impact visual heart of the application—translating NASA eleva
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: the 3D grazing-angle shadow engine is the highest-cost, highest-risk item and is not in P0 or P1 | REPLACEMENT: DEVELOPMENT_PLAN.md#req-02 | TASKS: P1-GATE -->
 ### `F4.2` — Grazing-Angle Solar Ray & Real-Time Crater Shadow Engine
 * **Target Files:**
   * `frontend/src/features/terrain-3d/celestialVectors.ts` (~95 lines — pure `(az, elev) → (x, y, z)` vector math)
@@ -50,11 +54,14 @@ Deliver the high-impact visual heart of the application—translating NASA eleva
   * **Grazing-Angle Shadow Tuning (Critical for `1°–5°` South Pole Sun):**
     * Fit `DirectionalLight.shadow.camera` tightly to the `40 km × 40 km` mesh (`left/right/top/bottom = ±22`), `mapSize = 2048 × 2048`, `shadow.bias = -0.0005`, `shadow.normalBias = 0.02` to prevent shadow acne or detached shadows at low Sun angles.
     * Keep ambient light near zero (`0.04` earthshine/starlight only) to showcase **zero atmospheric scattering**—producing stark, high-contrast lunar shadows!
+> **Correction:** shadows are sharp-edged but not perfectly sharp: the Sun's finite angular diameter still produces a penumbra. See REQ-08.
+
   * Render visible 3D line-of-sight rays from the lander mast to the **Sun** (gold ray, dimming when blocked) and **Earth** (cyan DTE beam, turning dashed-red when blocked by a ridge).
 * **Acceptance Criteria:** As `F3.5` plays through a lunar day, crater shadows sweep 360° around South Pole ridges and match `is_sunlit` at the lander pin.
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: the horizon silhouette is promoted into P0 as an SVG component | REPLACEMENT: DEVELOPMENT_PLAN.md#req-11 | TASKS: FE-002 -->
 ### `F4.3` — 360° Panoramic Horizon Silhouette Chart
 * **Target Files:**
   * `frontend/src/features/sky-horizon/PanoramaHorizonChart.tsx` (~165 lines)
@@ -81,6 +88,7 @@ Deliver the high-impact visual heart of the application—translating NASA eleva
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: the timeline is promoted into P0 as an SVG component | REPLACEMENT: DEVELOPMENT_PLAN.md#req-11 | TASKS: FE-002 -->
 ### `F4.5` — Synchronized Multi-Day Power & DTE Comms Timeline
 * **Target Files:**
   * `frontend/src/features/mission-timeline/MissionTimelinePanel.tsx` (~160 lines)
@@ -114,5 +122,7 @@ Deliver the high-impact visual heart of the application—translating NASA eleva
   * Side-by-side visual explainer card comparing terrestrial vs. lunar physics:
     * **Solar Day Length:** Earth `24.0 hrs` vs. Moon `708.7 hrs (29.53 Earth days)`.
     * **Atmospheric Refraction & Twilight:** Earth (`~0.57°` refraction + Rayleigh twilight sky glow) vs. Moon (`0.00°` refraction + zero air → razor-sharp shadows & instant thermal drop from `+50°C` to `-180°C`).
+> **Correction:** thermal response is not instant and depends on regolith thermal inertia and location. Equatorial noon reaches roughly +127°C. See REQ-09.
+
     * **Earth Movement in Sky:** On the Moon, Earth stays within a `~15°` libration box rather than rising and setting daily—meaning local crater ridges dictate whether a base ever sees Earth!
 * **Acceptance Criteria:** Dynamically injects the active site's real metrics into the comparison callouts.

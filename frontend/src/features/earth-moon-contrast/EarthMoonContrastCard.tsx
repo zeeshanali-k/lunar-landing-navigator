@@ -1,11 +1,12 @@
 /** Earth-vs-Moon Environmental Contrast Panel with live site metrics (F4.7). */
 
 import { useMemo } from "react";
+import { usePlaybackStore } from "../../state";
 import type { EvaluateResponse } from "../../types";
 
 export interface EarthMoonContrastCardProps {
   evaluation: EvaluateResponse;
-  currentIndex: number;
+  currentIndex?: number;
   personaMode?: "planner" | "explorer";
 }
 
@@ -14,16 +15,25 @@ export function EarthMoonContrastCard({
   currentIndex,
   personaMode = "planner",
 }: EarthMoonContrastCardProps) {
+  const storeIndex = usePlaybackStore((s) => s.currentIndex);
+  const activeIdx = currentIndex ?? storeIndex;
+
   const { site, summary, horizon_profile, timeseries } = evaluation;
-  const safeIdx = Math.min(Math.max(0, currentIndex), Math.max(0, timeseries.length - 1));
+  const safeIdx = Math.min(Math.max(0, activeIdx), Math.max(0, timeseries.length - 1));
   const active = timeseries[safeIdx];
-  const limbDeg = horizon_profile[0]?.geometric_limb_deg ?? -0.08;
+  const limbLabel =
+    horizon_profile.length > 0
+      ? `${horizon_profile[0].geometric_limb_deg.toFixed(2)}° limb`
+      : "spherical limb";
 
   const librationBox = useMemo(() => {
     if (timeseries.length === 0) {
       return { azSpan: 0, elevSpan: 0 };
     }
-    let minAz = 360, maxAz = 0, minEl = 90, maxEl = -90;
+    let minAz = 360;
+    let maxAz = 0;
+    let minEl = 90;
+    let maxEl = -90;
     for (const pt of timeseries) {
       minAz = Math.min(minAz, pt.earth_az_deg);
       maxAz = Math.max(maxAz, pt.earth_az_deg);
@@ -47,22 +57,22 @@ export function EarthMoonContrastCard({
     {
       title: "2. Atmosphere & Horizon Refraction",
       earth: "~0.57° refraction + Rayleigh twilight glow",
-      moon: "0.00° refraction · Hard shadow (+50°C to -180°C)",
-      siteMetric: `Active Sun: ${active ? `${active.sun_elev_deg.toFixed(2)}°` : "—"} vs. limb ${limbDeg.toFixed(2)}° (${active?.is_sunlit ? "Sunlit" : "Shadow"})`,
-      explorerNote: "With zero air, no sky scatter softens crater shadows—the moment mountains block the disk, power stops.",
+      moon: "0.00° refraction · Sharp shadows; regolith inertia governs cooling (~+127°C equatorial noon)",
+      siteMetric: `Active Sun: ${active ? `${active.sun_elev_deg.toFixed(2)}°` : "—"} vs. ${limbLabel} (${active?.is_sunlit ? "Sunlit" : "Shadow"})`,
+      explorerNote: "With zero air, no sky scatter softens crater shadows—the moment mountains block the disk, solar output drops.",
     },
     {
       title: "3. Earth Movement in Sky",
       earth: "Moon rises & sets daily across 360°",
-      moon: `Fixed within ~15° libration box (wobbles ±7°)`,
+      moon: "Earth remains within a ~15° libration box (±7° wobble)",
       siteMetric: `Measured span: ${librationBox.azSpan.toFixed(1)}° Az × ${librationBox.elevSpan.toFixed(1)}° El · DTE ${summary.dte_comms_hours.toFixed(0)}h`,
       explorerNote: "Earth never rises high overhead here—a single mountain ridge can decide if Direct-to-Earth comms survive.",
     },
   ];
 
   return (
-    <section style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: "0.75rem", padding: "0.85rem 1rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.65rem", flexWrap: "wrap", gap: "0.5rem" }}>
+    <section className="panel-card" style={{ padding: "0.85rem 1rem", gap: "0.65rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
         <strong style={{ fontSize: "0.88rem" }}>Earth vs. Moon Environmental Contrast</strong>
         <span style={{ fontSize: "0.74rem", color: "var(--text-muted)" }}>
           Mode: {personaMode === "explorer" ? "Explorer / Educator" : "Mission Planner"} · Site: {site.name}
