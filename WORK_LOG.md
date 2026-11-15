@@ -549,3 +549,32 @@ Remaining:
 | `svgPointToLatLon` kept in the map module | Pure projection geometry for a P1 feature, not physics; removing it would break the map for no safety gain. |
 | Comparison store now passes a scenario key | The fallback contract requires one; typing it surfaced the missing P1 scenarios. |
 | Zeta is the only writer/pusher of `bauerceptor`; A/B/C hand off with `ZETA HANDOFF` | Concurrent merges and unpushed bases are the main failure mode. One merge at a time, push every green integration, then sync the next worktree. An M3 unblock is actionable only after the push. |
+
+---
+
+### DATA-002 — done — agent-alpha
+
+- Branch/commit: `bauerceptor-alpha` @ `009d0bf` (task work); the ledger closure is the branch tip.
+- Changed: `backend/src/infrastructure/pds_dem.py` (PDS3 label parser, size/hash verifier, elevation reader); `backend/src/cli/download_lola.py` (build-time acquisition with `.part`, verification, atomic rename, manifest writer); `backend/tests/unit/test_pds_dem.py` (10 tests); `data/manifests/lola/manifest.json` (generated provenance).
+- Commands: `uv run --project backend --frozen python -m src.cli.download_lola` — exit 0; `uv run --python 3.12 --frozen pytest tests/unit/test_pds_dem.py -v` — exit 0 (10 passed).
+- Evidence: `data/manifests/lola/manifest.json` sha256 `2d2b4554755ef1799930cc1968e1aa330c95145fd113d7356336605298957817`; image 115,520,000 bytes sha256 `e6591eeea35402ca5e124ca00f5bf0774381a2d4fa919144b455d82b8ff65fdc`; label 4,986 bytes sha256 `107c7558cbf8832e4119d3c8c2b1b272623344275c85378a9b0e03c22876eb33`.
+- Parsed label: 7600×7600, `LSB_INTEGER` 16-bit, `SCALING_FACTOR` 0.5, `OFFSET` 1737400, 80 m/pix, `POLAR STEREOGRAPHIC`, `PLANETOCENTRIC`, centre longitude 0, latitude bounds −90…−80, projection offsets 3799.5.
+- Open issues: none. The untracked manifest that existed in the main worktree reversed `MINIMUM_LATITUDE`/`MAXIMUM_LATITUDE` and lacked `parser_version` and the label hash; it was regenerated under this task, so that stale file should not be reused.
+- Proposed doc deltas: `DEVELOPMENT_PLAN.md` REQ-04 does not record `SCALING_FACTOR = 0.5` (elevation = DN × 0.5), which the product label makes load-bearing; consider adding it for `DATA-005`.
+
+```text
+ZETA HANDOFF — DATA-002 ready to merge
+Branch: bauerceptor-alpha
+Worktree: /home/red/Projects/lunar-landing-alpha
+Commit: bauerceptor-alpha tip after this closure commit; task work commit 009d0bf
+Task status: done
+Base: abe3b0c (bauerceptor at session start)
+Commands: uv run --project backend --frozen python -m src.cli.download_lola exit 0; uv run --python 3.12 --frozen pytest tests/unit/test_pds_dem.py -v exit 0
+Evidence: data/manifests/lola/manifest.json sha256 2d2b4554755ef1799930cc1968e1aa330c95145fd113d7356336605298957817; image 115520000 bytes sha256 e6591eeea35402ca5e124ca00f5bf0774381a2d4fa919144b455d82b8ff65fdc; label sha256 107c7558cbf8832e4119d3c8c2b1b272623344275c85378a9b0e03c22876eb33
+Changed paths: backend/src/cli/download_lola.py, backend/src/infrastructure/pds_dem.py, backend/tests/unit/test_pds_dem.py, data/manifests/lola/manifest.json, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: data/manifests/lola/manifest.json sha256 2d2b4554755ef1799930cc1968e1aa330c95145fd113d7356336605298957817
+Pre-merge checks: ruff check and ruff format --check on the new files exit 0; validate_task_ledger.py, check_planning_docs.py, check_file_lengths.py exit 0
+M3 impact: none
+Known risks: the 115 MB raw image stays ignored at data/downloads/lola (shared cache); a rerun verifies it instead of re-downloading
+Do not merge if: the manifest or image hash differs, or any validator fails
+```
