@@ -171,8 +171,14 @@ export function LunarTerrainCanvas({
     const rig = rigRef.current;
     if (!hasTerrain || !preparedPatch || !rig || !activePoint) return;
     const centerY = sampleCenterSurfaceYKm(preparedPatch, exaggeration);
-    updateCelestialRig(rig, activePoint, centerY, observerHeightM, solarArrayType, (xKm, zKm) =>
-      sampleSurfaceYKmAtXZ(preparedPatch, xKm, zKm, exaggeration),
+    updateCelestialRig(
+      rig,
+      activePoint,
+      centerY,
+      observerHeightM,
+      solarArrayType,
+      (xKm, zKm) => sampleSurfaceYKmAtXZ(preparedPatch, xKm, zKm, exaggeration),
+      exaggeration,
     );
   }, [hasTerrain, preparedPatch, exaggeration, activePoint, observerHeightM, solarArrayType]);
 

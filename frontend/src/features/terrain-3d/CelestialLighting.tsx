@@ -130,8 +130,8 @@ export function createCelestialRig(scene: THREE.Scene): CelestialRig {
   landerGroup.add(bodyMesh, mastMesh, panelPivot);
 
   const ringLines = RANGE_RING_RADII_KM.map((radiusKm) => {
-    const pts = Array.from({ length: 73 }, (_, i) => {
-      const t = (i / 72) * Math.PI * 2;
+    const pts = Array.from({ length: 241 }, (_, i) => {
+      const t = (i / 240) * Math.PI * 2;
       return new THREE.Vector3(Math.cos(t) * radiusKm, 0, Math.sin(t) * radiusKm);
     });
     const rGeom = new THREE.BufferGeometry().setFromPoints(pts);
@@ -181,8 +181,9 @@ export function updateCelestialRig(
   observerHeightM: number,
   solarArrayType: SolarArrayType,
   sampleSurfaceY: (xKm: number, zKm: number) => number,
+  verticalExaggeration = 1.0,
 ): void {
-  const vecs = computeCelestialSceneVectors(point, centerSurfaceYKm, observerHeightM);
+  const vecs = computeCelestialSceneVectors(point, centerSurfaceYKm, observerHeightM, 24.0, verticalExaggeration, sampleSurfaceY);
   rig.sunLight.position.set(...vecs.sunLightPos);
   rig.sunLight.target.position.set(0, centerSurfaceYKm, 0);
   rig.sunLight.target.updateMatrixWorld();
@@ -198,16 +199,23 @@ export function updateCelestialRig(
 
   for (const { radiusKm, line } of rig.ringLines) {
     const pos = line.geometry.getAttribute("position") as THREE.BufferAttribute;
-    for (let i = 0; i <= 72; i += 1) {
-      const t = (i / 72) * Math.PI * 2;
-      const x = Math.cos(t) * radiusKm;
-      const z = Math.sin(t) * radiusKm;
-      pos.setXYZ(i, x, sampleSurfaceY(x, z) + 0.08, z);
+    for (let i = 0; i <= 240; i += 1) {
+      const t = (i / 240) * Math.PI * 2;
+      const cosT = Math.cos(t);
+      const sinT = Math.sin(t);
+      const x = cosT * radiusKm;
+      const z = sinT * radiusKm;
+      const yMax = Math.max(
+        sampleSurfaceY(x, z),
+        sampleSurfaceY(cosT * (radiusKm - 0.35), sinT * (radiusKm - 0.35)),
+        sampleSurfaceY(cosT * (radiusKm + 0.35), sinT * (radiusKm + 0.35)),
+      );
+      pos.setXYZ(i, x, yMax + 0.22, z);
     }
     pos.needsUpdate = true;
   }
   for (const { xKm, zKm, sprite } of rig.cardinalSprites) {
-    sprite.position.set(xKm, sampleSurfaceY(xKm, zKm) + 1.2, zKm);
+    sprite.position.set(xKm, sampleSurfaceY(xKm, zKm) + 1.6, zKm);
   }
 
   setLineEndpoints(rig.sunRayLine, vecs.mastOrigin, vecs.sunRayEnd);

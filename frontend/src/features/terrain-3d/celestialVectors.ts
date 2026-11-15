@@ -58,12 +58,54 @@ function addScaledVec(origin: [number, number, number], dir: [number, number, nu
   return [origin[0] + dir[0] * lengthKm, origin[1] + dir[1] * lengthKm, origin[2] + dir[2] * lengthKm];
 }
 
+function scaleVecVertical(dir: [number, number, number], verticalExaggeration: number): [number, number, number] {
+  const sy = dir[1] * verticalExaggeration;
+  const len = Math.hypot(dir[0], sy, dir[2]) || 1;
+  return [dir[0] / len, sy / len, dir[2] / len];
+}
+
+/** Lift ray endpoint above intervening exaggerated terrain so LOS rays and orbs never clip underground. */
+export function adjustRayEndForTerrain(
+  mastOrigin: [number, number, number],
+  unitVec: [number, number, number],
+  rayLengthKm: number,
+  isVisible: boolean,
+  verticalExaggeration: number,
+  sampleSurfaceY?: (xKm: number, zKm: number) => number,
+): { unitVec: [number, number, number]; rayEnd: [number, number, number] } {
+  const scaled = scaleVecVertical(unitVec, verticalExaggeration);
+  const hNorm = Math.hypot(scaled[0], scaled[2]);
+  if (!sampleSurfaceY || hNorm < 1e-6) {
+    return { unitVec: scaled, rayEnd: addScaledVec(mastOrigin, scaled, rayLengthKm) };
+  }
+
+  const clearanceKm = isVisible ? 0.55 : 0.24;
+  const hx = scaled[0] / hNorm;
+  const hz = scaled[2] / hNorm;
+  const horizSpan = hNorm * rayLengthKm;
+  let slope = scaled[1] / hNorm;
+
+  for (let i = 1; i <= 48; i += 1) {
+    const d = (i / 48) * horizSpan;
+    if (d < 0.75) continue;
+    const groundY = sampleSurfaceY(hx * d, hz * d);
+    const reqSlope = (groundY + clearanceKm - mastOrigin[1]) / d;
+    if (reqSlope > slope) slope = reqSlope;
+  }
+
+  const adjLen = Math.hypot(1, slope);
+  const adjUnit: [number, number, number] = [hx / adjLen, slope / adjLen, hz / adjLen];
+  return { unitVec: adjUnit, rayEnd: addScaledVec(mastOrigin, adjUnit, rayLengthKm) };
+}
+
 /** Compute Three.js Sun/Earth unit vectors, light placement, and mast LOS endpoints. */
 export function computeCelestialSceneVectors(
   point: TimeseriesPoint,
   centerSurfaceYKm: number,
   observerHeightM: number,
   rayLengthKm = 24.0,
+  verticalExaggeration = 1.0,
+  sampleSurfaceY?: (xKm: number, zKm: number) => number,
 ): CelestialSceneVectors {
   const sunUnitVec = azElevToThreeXYZ(point.sun_az_deg, point.sun_elev_deg);
   const earthUnitVec = azElevToThreeXYZ(point.earth_az_deg, point.earth_elev_deg);
@@ -71,10 +113,19 @@ export function computeCelestialSceneVectors(
   const mastHeightKm = computeMastVisualOffsetKm(observerHeightM);
   const mastOrigin: [number, number, number] = [0, centerSurfaceYKm + mastHeightKm, 0];
 
+  const sunAdj = adjustRayEndForTerrain(mastOrigin, sunUnitVec, rayLengthKm, point.is_sunlit, verticalExaggeration, sampleSurfaceY);
+  const earthAdj = adjustRayEndForTerrain(
+    mastOrigin,
+    earthUnitVec,
+    rayLengthKm,
+    point.is_dte_visible,
+    verticalExaggeration,
+    sampleSurfaceY,
+  );
+
   const lightDistanceKm = 46.0;
-  const sunLightPos = addScaledVec([0, centerSurfaceYKm, 0], sunUnitVec, lightDistanceKm);
-  const sunRayEnd = addScaledVec(mastOrigin, sunUnitVec, rayLengthKm);
-  const earthRayEnd = addScaledVec(mastOrigin, earthUnitVec, rayLengthKm);
+  const lightDir = point.is_sunlit && sampleSurfaceY ? sunAdj.unitVec : scaleVecVertical(sunUnitVec, verticalExaggeration);
+  const sunLightPos = addScaledVec([0, centerSurfaceYKm, 0], lightDir, lightDistanceKm);
 
   const isGrazing = point.is_sunlit && point.sun_visible_fraction < 0.95;
   let sunIntensity = 0.0;
@@ -83,11 +134,11 @@ export function computeCelestialSceneVectors(
   }
 
   return {
-    sunUnitVec,
-    earthUnitVec,
+    sunUnitVec: sunAdj.unitVec,
+    earthUnitVec: earthAdj.unitVec,
     sunLightPos,
-    sunRayEnd,
-    earthRayEnd,
+    sunRayEnd: sunAdj.rayEnd,
+    earthRayEnd: earthAdj.rayEnd,
     mastOrigin,
     sunIntensity,
     isSunlit: point.is_sunlit,

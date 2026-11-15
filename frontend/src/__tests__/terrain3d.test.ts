@@ -117,6 +117,11 @@ export function runTerrain3dTests(): void {
 
   const alreadyHiRes: TerrainPatch = { ...coarsePatch, grid_size: 64 };
   assert(prepareTerrainPatch(alreadyHiRes) === alreadyHiRes, "64x64 terrain patch must pass through unchanged");
+
+  // 6. Terrain-clearance LOS adjustment keeps Sun and Earth rays above intervening ridges
+  const ridgeVecs = computeCelestialSceneVectors(point, 0.25, 10.0, 20.0, 2.0, (xKm, zKm) => (Math.hypot(xKm, zKm) >= 8.0 ? 2.0 : 0.0));
+  assert(ridgeVecs.sunRayEnd[1] > 2.5, `sunRayEnd should lift above 2.0km ridge, got ${ridgeVecs.sunRayEnd[1]}`);
+  assert(ridgeVecs.earthRayEnd[1] > 2.2, `earthRayEnd should clear 2.0km ridge, got ${ridgeVecs.earthRayEnd[1]}`);
 }
 
 it("3D local_enu terrain geometry, vertex colors, and celestial vectors", () => {
