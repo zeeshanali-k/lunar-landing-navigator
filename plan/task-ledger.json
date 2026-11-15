@@ -870,7 +870,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DATA-002",
         "ARCH-002"
@@ -925,12 +925,24 @@
           "ref": "pytest tests/unit/test_dem_tiler.py tests/unit/test_raycaster.py"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_dem_tiler.py tests/unit/test_raycaster.py",
+          "exit": 0,
+          "note": "22 passed"
+        },
+        {
+          "kind": "report",
+          "ref": "terrain-packs-built",
+          "note": "9 terrain packs at backend/data/site_packs/*/terrain.json, one per artemis_iii site; each has 16384 finite elevations and slopes, three 360-sample horizons, and psr_mask null. Rebuild is byte-identical; sha256 of the sorted per-pack hash list is b8ad11d040ad1ee71562596156e06c41791e85cae930803b22f1047cac5cd025. No terrain pack exists for a Class B site. The DEM bytes and label were verified against the DATA-002 manifest before tiling; raycasts stop at the 120 km ceiling and never read outside the 80S-90S footprint."
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T16:28:00Z",
+      "completed_commit": "49be6b57ec05f37b4971afb89e401ebe56fd943d"
     },
     {
       "id": "DATA-006",

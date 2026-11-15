@@ -702,3 +702,31 @@ M3 impact: none (DATA-004 unblocks charlie's BE-001, not M3)
 Known risks: none
 Do not merge if: the generator or pytest fails, a pack's sample_count is not 26305, or the tree contains changes outside the changed paths above
 ```
+
+### DATA-005 — done — agent-beta
+
+- Branch/commit: `bauerceptor-beta` @ `49be6b5` (task work); the ledger closure is the branch tip.
+- Changed: added `backend/src/infrastructure/dem_tiler.py` (south-polar stereographic projection, local-ENU patch resampling, slope), `backend/src/infrastructure/raycaster.py` (spherical destination, apparent elevation, limb, 360-degree profiles), `backend/src/cli/build_terrain_packs.py`, and the two required test files; generated 9 `backend/data/site_packs/{site}/terrain.json` packs for the nine `artemis_iii` sites only.
+- Commands: `uv run --python 3.12 --frozen python -m src.cli.build_terrain_packs` — exit 0 (9 packs); `uv run --python 3.12 --frozen pytest tests/unit/test_dem_tiler.py tests/unit/test_raycaster.py -v` — exit 0 (22 passed).
+- Evidence: each pack has 128x128 = 16384 finite elevations and slopes, spacing `40000/127`, rows south-to-north, columns west-to-east, three horizon profiles with azimuths 0..359, and `psr_mask` null. The DEM image and label were verified against the DATA-002 manifest hashes. Rebuild is byte-identical; sha256 of the sorted per-pack hash list is `b8ad11d040ad1ee71562596156e06c41791e85cae930803b22f1047cac5cd025`. No Class B site has a terrain pack.
+- Extras run (not ledger evidence): `ruff check`, `ruff format --check`, `mypy` on the five new files — clean; `pytest tests/unit` — 113 passed; `check_file_lengths.py` — 0 violations.
+- Observations to record, not fixed: the DEM's `-80` circle is fractionally outside the pixel-centre domain (the edge pixel centres reach about -79.99994), so coverage is clipped to pixel centres. Ray samples outside the footprint are marked invalid and never counted; for the lowest-latitude Class A site (Cabeus, -82.26) the northern rays therefore stop at the coverage boundary (about 68 km) rather than 120 km. The 120 km ceiling still holds for every sample grid, and no out-of-DEM value is fabricated.
+- Proposed doc deltas: REQ-08 does not state whether `geometric_limb_deg` uses the observer's local ground or the terrain at the limb. This implementation uses the observer's local ground elevation, which makes the limb constant per azimuth and reproduces the flat-terrain analytic value; if the integrator wants a terrain-dependent limb, it belongs in REQ-08 rather than a second implementation.
+- Open issues: none blocking.
+
+```text
+ZETA HANDOFF — DATA-005 ready to merge
+Branch: bauerceptor-beta
+Worktree: /home/red/Projects/lunar-landing-beta
+Commit: bauerceptor-beta tip after this closure commit; task work commit 49be6b5
+Task status: done
+Base: 140b6b9 (bauerceptor tip before task work; DATA-004 is the preceding commit pair b9a472d/dd555ef on this branch)
+Commands: uv run --python 3.12 --frozen python -m src.cli.build_terrain_packs exit 0; uv run --python 3.12 --frozen pytest tests/unit/test_dem_tiler.py tests/unit/test_raycaster.py -v exit 0
+Evidence: pytest 22 passed; 9 terrain packs, 16384 elevations/slopes each; aggregate pack-hash sha256 b8ad11d040ad1ee71562596156e06c41791e85cae930803b22f1047cac5cd025
+Changed paths: backend/src/infrastructure/dem_tiler.py, backend/src/infrastructure/raycaster.py, backend/src/cli/build_terrain_packs.py, backend/tests/unit/test_dem_tiler.py, backend/tests/unit/test_raycaster.py, backend/data/site_packs/*/terrain.json, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: 9 x backend/data/site_packs/{artemis-*}/terrain.json; per-pack hashes are printed by the generator and the aggregate is b8ad11d0...
+Pre-merge checks: generator and pytest exit 0; ruff check, ruff format --check, mypy on the new files clean; pytest tests/unit 113 passed; check_file_lengths.py 0 violations
+M3 impact: none (DATA-005 unblocks charlie's BE-002, not M3)
+Known risks: the northern rays from Cabeus stop at the DEM coverage boundary (about 68 km) instead of 120 km; every sample grid is still capped at 120 km and no value is fabricated
+Do not merge if: the generator or pytest fails, a pack is not 128x128 with 16384 finite values, a Class B site has a terrain pack, or the tree contains changes outside the changed paths above
+```
