@@ -17,8 +17,8 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | `M3` frontend corrected onto the plan | `DONE` (committed on `bauerceptor`, not yet merged to `main`) | bauerceptor |
 | `M3` frontend, P0 completeness | `PARTIAL` — issues 5–8 fixed on `feat/module-3-frontend-core` (`801aa0a`); `ARCH-002` merged and pushed at `a0e75d6`, so `FE-001` is unblocked; #9 open | usairam |
 | `M1` data pipeline | `DONE` — `DATA-001`–`DATA-006` done; 16 ephemeris + 9 terrain packs, index, and byte-identical offline fixture mirror present | bauerceptor |
-| `M2` backend | `PARTIAL` — `ARCH-002` done; `agent-charlie` working `BE-001` (deps `DATA-004` + `ARCH-002` merged) | bauerceptor |
-| Parallel session (revision 5) | `IN PROGRESS` — `DATA-002`–`DATA-006` and `ARCH-002` merged and pushed (tip `89eb2c5`); M3 unblocked; next `BE-001`/`BE-002`/`BE-003` (charlie); zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
+| `M2` backend | `PARTIAL` — `ARCH-002`, `BE-001` done; `agent-charlie` next `BE-002` (deps `BE-001` + `DATA-005` merged) | bauerceptor |
+| Parallel session (revision 5) | `IN PROGRESS` — `DATA-002`–`DATA-006`, `ARCH-002`, and `BE-001` merged and pushed (tip `5b2ac18`); M3 unblocked; next `BE-002`/`BE-003` (charlie); zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
 | `M4` 3D | `PARTIAL` — M4 SVG horizon/timeline/contrast merged as `00f7e77`; `terrain-3d` remains `.gitkeep` and gated | devscion |
 | `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
 | **P0 release** | **`NOT SHIPPABLE` — 4 blockers remain (5, 6, 7, 8); offline evaluate fixtures still gated on `BE-002` (issue 27)** | — |
@@ -325,7 +325,7 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 |---|---|---|---|
 | `M1` | `agent-alpha` | — (complete: `DATA-002`, `DATA-003` done) | — |
 | `M1` | `agent-beta` | — (complete: `DATA-004`, `DATA-005`, `DATA-006` done) | — |
-| `M2` | `agent-charlie` | `BE-001` → `BE-002` → `BE-003` | `BE-001` ready and in progress (`DATA-004` + `ARCH-002` merged); `BE-002` needs `BE-001`; `BE-003` needs `BE-002` + `DATA-006` (now merged) |
+| `M2` | `agent-charlie` | `BE-002` → `BE-003` | `BE-001` done and merged; `BE-002` ready (`BE-001` + `DATA-005` merged); `BE-003` needs `BE-002` + `DATA-006` (merged) |
 | `M3` | usairam | `ARCH-002` merged and pushed at `a0e75d6`: merge `bauerceptor` into `feat/module-3-frontend-core`, apply the integration fixes, close `FE-001`/`FE-002`; `FE-003` after `BE-003` (`DATA-006` now merged) | `BE-003`; issue 9 human decision |
 | `M4` | devscion | not startable | `P0-GATE` |
 | `M5` | — | needs an owner | — |
@@ -827,3 +827,11 @@ Do not merge if: the generator or pytest fails, the mirror is not byte-identical
 - Recorded beta's findings as open issues #25–#29 (five pre-existing integration failures, fixture-manifest shape, `export_openapi` single-writer decision, offline evaluate scenarios gated on `BE-002`, `terrain.sample.json` placeholder). These need a human decision, not an agent fix.
 - Not synced `bauerceptor-charlie`: it has uncommitted `BE-001` closure work; `DATA-006` is only a `BE-003` input, so the sync belongs before `BE-003`.
 - Next: `agent-charlie` continues `BE-001` → `BE-002` → `BE-003`.
+
+### BE-001 integrated — agent-zeta
+
+- Verified `bauerceptor-charlie` before merge: `HEAD` `87b4a2f` matches the handoff, clean tree, `BE-001` `done` in the branch ledger with `pytest … test_mission_time.py test_interpolation.py` exit 0 (73 passed) and `completed_commit` `cea8aff`. Changed paths are within `BE-001.write_paths` plus the ledger, digest, and `WORK_LOG.md`.
+- Charlie did not contain the current `bauerceptor` tip (`5634ecb`), so I synced it first: `git merge bauerceptor` into `bauerceptor-charlie` (`b642d42`). Resolved the `WORK_LOG.md` and `plan/protected.sha256` conflicts only; the ledger auto-merged with both `DATA-006` and `BE-001` `done` (12 done). Refreshed the digest and re-ran the task commands on the synced branch: `pytest` exit 0 (73 passed), `ruff check .` exit 0.
+- Merged `bauerceptor-charlie` into `bauerceptor` as `5b2ac18` with `--no-ff --no-commit`; no conflicts. Refreshed the protected digest and ran `validate_task_ledger.py` (28 tasks, 12 done), `check_planning_docs.py` (exit 0), `check_file_lengths.py` (exit 0, 0 violations).
+- Pushed `5634ecb..5b2ac18` to `origin/bauerceptor`; synced `bauerceptor-charlie` to `5b2ac18`.
+- Next: `agent-charlie` starts `BE-002` (deps `BE-001` + `DATA-005` both merged).
