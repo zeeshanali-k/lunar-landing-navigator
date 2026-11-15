@@ -13,7 +13,7 @@ class WindowsRequestSchema(BaseModel):
     site_id: str
     year: int = Field(ge=1950, le=2100, default=2027)
     mission_duration_days: int = Field(ge=1, le=90, default=14)
-    solar_array_type: SolarArrayType = "vertical_tracking"
+    solar_array_type: SolarArrayType = SolarArrayType.VERTICAL_TRACKING
 
 
 class CandidateWindowSchema(BaseModel):

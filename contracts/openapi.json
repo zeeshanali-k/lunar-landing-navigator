@@ -1,177 +1,6 @@
 {
   "components": {
     "schemas": {
-      "CandidateWindowSchema": {
-        "description": "Single candidate landing window summary.",
-        "properties": {
-          "dte_fraction": {
-            "title": "Dte Fraction",
-            "type": "number"
-          },
-          "feasibility_score": {
-            "title": "Feasibility Score",
-            "type": "number"
-          },
-          "longest_dark_streak_hours": {
-            "title": "Longest Dark Streak Hours",
-            "type": "number"
-          },
-          "start_utc": {
-            "title": "Start Utc",
-            "type": "string"
-          },
-          "sunlit_fraction": {
-            "title": "Sunlit Fraction",
-            "type": "number"
-          }
-        },
-        "required": [
-          "start_utc",
-          "feasibility_score",
-          "sunlit_fraction",
-          "dte_fraction",
-          "longest_dark_streak_hours"
-        ],
-        "title": "CandidateWindowSchema",
-        "type": "object"
-      },
-      "CompareRequestSchema": {
-        "description": "Contract D comparison request payload (2 to 4 scenarios).",
-        "properties": {
-          "baseline_index": {
-            "default": 0,
-            "minimum": 0.0,
-            "title": "Baseline Index",
-            "type": "integer"
-          },
-          "scenarios": {
-            "items": {
-              "$ref": "#/components/schemas/CompareScenarioInputSchema"
-            },
-            "maxItems": 4,
-            "minItems": 1,
-            "title": "Scenarios",
-            "type": "array"
-          }
-        },
-        "required": [
-          "scenarios"
-        ],
-        "title": "CompareRequestSchema",
-        "type": "object"
-      },
-      "CompareResponseSchema": {
-        "description": "Contract D comparison response.",
-        "properties": {
-          "baseline_index": {
-            "title": "Baseline Index",
-            "type": "integer"
-          },
-          "recommended_scenario_id": {
-            "title": "Recommended Scenario Id",
-            "type": "string"
-          },
-          "scenarios": {
-            "items": {
-              "$ref": "#/components/schemas/ComparedScenarioSchema"
-            },
-            "title": "Scenarios",
-            "type": "array"
-          }
-        },
-        "required": [
-          "baseline_index",
-          "scenarios",
-          "recommended_scenario_id"
-        ],
-        "title": "CompareResponseSchema",
-        "type": "object"
-      },
-      "CompareScenarioInputSchema": {
-        "description": "Single scenario input entry in a multi-scenario comparison request.",
-        "properties": {
-          "label": {
-            "title": "Label",
-            "type": "string"
-          },
-          "request": {
-            "$ref": "#/components/schemas/EvaluateRequestSchema"
-          },
-          "scenario_id": {
-            "title": "Scenario Id",
-            "type": "string"
-          }
-        },
-        "required": [
-          "scenario_id",
-          "label",
-          "request"
-        ],
-        "title": "CompareScenarioInputSchema",
-        "type": "object"
-      },
-      "ComparedScenarioSchema": {
-        "description": "Single evaluated scenario with baseline comparison deltas.",
-        "properties": {
-          "deltas_vs_baseline": {
-            "$ref": "#/components/schemas/ScenarioDeltasSchema"
-          },
-          "evaluation": {
-            "$ref": "#/components/schemas/EvaluateResponseSchema"
-          },
-          "label": {
-            "title": "Label",
-            "type": "string"
-          },
-          "scenario_id": {
-            "title": "Scenario Id",
-            "type": "string"
-          }
-        },
-        "required": [
-          "scenario_id",
-          "label",
-          "evaluation",
-          "deltas_vs_baseline"
-        ],
-        "title": "ComparedScenarioSchema",
-        "type": "object"
-      },
-      "CustomTerrainRequestSchema": {
-        "additionalProperties": false,
-        "description": "Request payload for custom-coordinate terrain (P1 only; not routed in P0).",
-        "properties": {
-          "label": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Label"
-          },
-          "lat_deg": {
-            "maximum": 90.0,
-            "minimum": -90.0,
-            "title": "Lat Deg",
-            "type": "number"
-          },
-          "lon_deg": {
-            "maximum": 180.0,
-            "minimum": -180.0,
-            "title": "Lon Deg",
-            "type": "number"
-          }
-        },
-        "required": [
-          "lat_deg",
-          "lon_deg"
-        ],
-        "title": "CustomTerrainRequestSchema",
-        "type": "object"
-      },
       "DurationDays": {
         "description": "Mission duration allowlist. Values outside it are a 422.",
         "enum": [
@@ -600,35 +429,6 @@
         "title": "ObserverHeightM",
         "type": "number"
       },
-      "ScenarioDeltasSchema": {
-        "description": "Delta metrics relative to the baseline scenario.",
-        "properties": {
-          "dte_comms_hours_delta": {
-            "title": "Dte Comms Hours Delta",
-            "type": "number"
-          },
-          "feasibility_score_delta": {
-            "title": "Feasibility Score Delta",
-            "type": "number"
-          },
-          "longest_dark_streak_hours_delta": {
-            "title": "Longest Dark Streak Hours Delta",
-            "type": "number"
-          },
-          "sunlit_hours_delta": {
-            "title": "Sunlit Hours Delta",
-            "type": "number"
-          }
-        },
-        "required": [
-          "feasibility_score_delta",
-          "sunlit_hours_delta",
-          "longest_dark_streak_hours_delta",
-          "dte_comms_hours_delta"
-        ],
-        "title": "ScenarioDeltasSchema",
-        "type": "object"
-      },
       "SiteCategory": {
         "description": "Registry category (REQ-05).",
         "enum": [
@@ -1004,41 +804,6 @@
         "title": "TimeseriesPointSchema",
         "type": "object"
       },
-      "TopWindowSchema": {
-        "description": "Ranked top-performing landing window.",
-        "properties": {
-          "dte_fraction": {
-            "title": "Dte Fraction",
-            "type": "number"
-          },
-          "feasibility_score": {
-            "title": "Feasibility Score",
-            "type": "number"
-          },
-          "rank": {
-            "minimum": 1.0,
-            "title": "Rank",
-            "type": "integer"
-          },
-          "start_utc": {
-            "title": "Start Utc",
-            "type": "string"
-          },
-          "sunlit_fraction": {
-            "title": "Sunlit Fraction",
-            "type": "number"
-          }
-        },
-        "required": [
-          "rank",
-          "start_utc",
-          "feasibility_score",
-          "sunlit_fraction",
-          "dte_fraction"
-        ],
-        "title": "TopWindowSchema",
-        "type": "object"
-      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -1078,77 +843,6 @@
         ],
         "title": "ValidationError",
         "type": "object"
-      },
-      "WindowsRequestSchema": {
-        "description": "Contract E 12-month optimal landing window scan request.",
-        "properties": {
-          "mission_duration_days": {
-            "default": 14,
-            "maximum": 90.0,
-            "minimum": 1.0,
-            "title": "Mission Duration Days",
-            "type": "integer"
-          },
-          "site_id": {
-            "title": "Site Id",
-            "type": "string"
-          },
-          "solar_array_type": {
-            "$ref": "#/components/schemas/SolarArrayType",
-            "default": "vertical_tracking"
-          },
-          "year": {
-            "default": 2027,
-            "maximum": 2100.0,
-            "minimum": 1950.0,
-            "title": "Year",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "site_id"
-        ],
-        "title": "WindowsRequestSchema",
-        "type": "object"
-      },
-      "WindowsResponseSchema": {
-        "description": "Contract E 12-month window heatmap response.",
-        "properties": {
-          "mission_duration_days": {
-            "title": "Mission Duration Days",
-            "type": "integer"
-          },
-          "site_id": {
-            "title": "Site Id",
-            "type": "string"
-          },
-          "solar_array_type": {
-            "$ref": "#/components/schemas/SolarArrayType"
-          },
-          "top_windows": {
-            "items": {
-              "$ref": "#/components/schemas/TopWindowSchema"
-            },
-            "title": "Top Windows",
-            "type": "array"
-          },
-          "windows": {
-            "items": {
-              "$ref": "#/components/schemas/CandidateWindowSchema"
-            },
-            "title": "Windows",
-            "type": "array"
-          }
-        },
-        "required": [
-          "site_id",
-          "mission_duration_days",
-          "solar_array_type",
-          "windows",
-          "top_windows"
-        ],
-        "title": "WindowsResponseSchema",
-        "type": "object"
       }
     }
   },
@@ -1159,52 +853,10 @@
   },
   "openapi": "3.1.0",
   "paths": {
-    "/api/v1/compare": {
-      "post": {
-        "description": "Compare scenarios side-by-side or across launch shifts (Contract D).",
-        "operationId": "compare_scenarios_api_v1_compare_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CompareRequestSchema"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CompareResponseSchema"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Compare Scenarios",
-        "tags": [
-          "compare"
-        ]
-      }
-    },
     "/api/v1/evaluate": {
       "post": {
-        "description": "Evaluate illumination, DTE comms, countdowns, and score for a scenario (Contract B).",
-        "operationId": "evaluate_scenario_api_v1_evaluate_post",
+        "description": "Evaluate illumination, DTE comms, countdowns, and score for a scenario.",
+        "operationId": "evaluate_scenario_endpoint_api_v1_evaluate_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1237,7 +889,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Evaluate Scenario",
+        "summary": "Evaluate Scenario Endpoint",
         "tags": [
           "evaluate"
         ]
@@ -1267,8 +919,8 @@
     },
     "/api/v1/sites": {
       "get": {
-        "description": "Return curated lunar landing sites matching Contract A.",
-        "operationId": "list_sites_api_v1_sites_get",
+        "description": "Return the 16 curated sites in registry order.",
+        "operationId": "list_sites_endpoint_api_v1_sites_get",
         "responses": {
           "200": {
             "content": {
@@ -1277,7 +929,7 @@
                   "items": {
                     "$ref": "#/components/schemas/SiteSummarySchema"
                   },
-                  "title": "Response List Sites Api V1 Sites Get",
+                  "title": "Response List Sites Endpoint Api V1 Sites Get",
                   "type": "array"
                 }
               }
@@ -1285,7 +937,7 @@
             "description": "Successful Response"
           }
         },
-        "summary": "List Sites",
+        "summary": "List Sites Endpoint",
         "tags": [
           "sites"
         ]
@@ -1293,7 +945,7 @@
     },
     "/api/v1/sites/{site_id}/terrain": {
       "get": {
-        "description": "Return local_enu terrain patch for a curated landing site (Contract C).",
+        "description": "Return a LOLA terrain patch, or 404/409 for unknown or limb-only sites.",
         "operationId": "get_site_terrain_api_v1_sites__site_id__terrain_get",
         "parameters": [
           {
@@ -1331,90 +983,6 @@
         "summary": "Get Site Terrain",
         "tags": [
           "sites"
-        ]
-      }
-    },
-    "/api/v1/terrain/custom": {
-      "post": {
-        "description": "Return local_enu terrain patch for custom selenographic coordinates (Contract C).",
-        "operationId": "create_custom_terrain_api_v1_terrain_custom_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CustomTerrainRequestSchema"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TerrainPatchSchema"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Create Custom Terrain",
-        "tags": [
-          "sites"
-        ]
-      }
-    },
-    "/api/v1/windows": {
-      "post": {
-        "description": "Return 12-month candidate landing windows for a site (Contract E).",
-        "operationId": "scan_windows_api_v1_windows_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/WindowsRequestSchema"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WindowsResponseSchema"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Scan Windows",
-        "tags": [
-          "windows"
         ]
       }
     }

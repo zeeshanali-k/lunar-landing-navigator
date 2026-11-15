@@ -16,7 +16,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-import yaml
+import yaml  # type: ignore[import-untyped]
 
 from src.infrastructure.pds_dem import (
     PARSER_VERSION,
@@ -94,7 +94,7 @@ def acquire(
 ) -> dict[str, Any]:
     """Acquire one artefact, reusing a verified cache entry when possible."""
     prior_sha = None if prior is None else prior.get("sha256")
-    if prior_sha and destination.is_file():
+    if prior is not None and prior_sha and destination.is_file():
         cached_bytes = destination.stat().st_size
         if expected_bytes is None or cached_bytes == expected_bytes:
             cached_sha = sha256_file(destination)

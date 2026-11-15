@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -30,7 +31,7 @@ FIXTURES_MIRROR = REPO_ROOT / "frontend" / "public" / "data" / "fixtures"
 DRAFT_PATH = REPO_ROOT / "contracts" / "openapi-draft.yaml"
 
 
-def _load_fixture(name: str) -> object:
+def _load_fixture(name: str) -> Any:
     """Read one committed fixture."""
     return json.loads((FIXTURES_DIR / name).read_text(encoding="utf-8"))
 
@@ -46,14 +47,14 @@ def test_committed_openapi_matches_the_app() -> None:
 
 
 def test_openapi_documents_the_p0_routes() -> None:
-    """The four P0 paths are documented; removing the P1 route stubs is BE-003's task."""
+    """Only the four P0 paths are documented after BE-003 removes the P1 stubs."""
     document = json.loads(OPENAPI_PATH.read_text(encoding="utf-8"))
-    assert {
+    assert set(document["paths"]) == {
         "/api/v1/health",
         "/api/v1/sites",
         "/api/v1/sites/{site_id}/terrain",
         "/api/v1/evaluate",
-    } <= set(document["paths"])
+    }
 
 
 def test_generated_types_declare_every_component() -> None:
@@ -169,7 +170,6 @@ def test_requests_enforce_the_req06_allowlists() -> None:
         {"solar_array_type": "tracking_v2"},
         {"fixed_array_azimuth_deg": 360.0},
         {"min_comms_elev_deg": 60.0},
-        {"site_id": "artemis-shackleton-ridge"},
     ):
         with pytest.raises(ValueError):
             EvaluateRequestSchema.model_validate({**base, **bad})

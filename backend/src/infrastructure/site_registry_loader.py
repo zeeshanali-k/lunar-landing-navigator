@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Literal
 
-import yaml
+import yaml  # type: ignore[import-untyped]
 from pydantic import BaseModel, Field, HttpUrl
 
 Category = Literal["artemis_iii", "clps_commercial", "apollo_historic", "international"]

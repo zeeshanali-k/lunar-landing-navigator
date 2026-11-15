@@ -1190,7 +1190,7 @@
       "priority": "P0",
       "owner": "M2",
       "reviewer": "M1",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "BE-002",
         "DATA-006"
@@ -1208,7 +1208,8 @@
         "backend/src/api",
         "backend/src/application",
         "backend/tests/integration",
-        "backend/src/api/main.py"
+        "backend/src/api/main.py",
+        "contracts/openapi.json"
       ],
       "inputs": [
         "backend/data/site_packs"
@@ -1252,12 +1253,30 @@
           "ref": "mypy src tests"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/integration",
+          "exit": 0,
+          "note": "29 passed"
+        },
+        {
+          "kind": "command",
+          "ref": "mypy src tests",
+          "exit": 0,
+          "note": "Success: no issues found in 65 source files"
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen ruff check .",
+          "exit": 0
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T17:55:28Z",
+      "completed_commit": "b36bedfa2385af24e607b5467719d3dd7019c6f6"
     },
     {
       "id": "FE-001",
