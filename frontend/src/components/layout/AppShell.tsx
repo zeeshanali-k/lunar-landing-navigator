@@ -1,6 +1,6 @@
 /** Responsive aerospace command-center workspace shell connecting all modules (F3.1). */
 
-import { Trash2 } from "lucide-react";
+import { ComparisonBoardView } from "../../features/comparison-board";
 import { EarthMoonContrastCard } from "../../features/earth-moon-contrast";
 import { SouthPoleMap } from "../../features/lunar-map-2d";
 import { OperationalKpiStrip } from "../../features/mission-kpis";
@@ -8,14 +8,16 @@ import { MissionTimelinePanel, SolarArraySelector } from "../../features/mission
 import { ExplorerCalloutBanner, GuidedChallengesView } from "../../features/persona-mode";
 import { SiteExplorerDrawer } from "../../features/site-explorer";
 import { PanoramaHorizonChart, PolarSkyDome } from "../../features/sky-horizon";
+import { LunarTerrainCanvas } from "../../features/terrain-3d";
 import { DateAndDurationBar, PlaybackScrubber } from "../../features/time-controls";
-import { useComparisonStore, useMissionStore } from "../../state";
+import { WindowHeatmapView } from "../../features/window-finder";
+import { useMissionStore } from "../../state";
 import { TopCommandBar } from "./TopCommandBar";
 
 export function AppShell() {
   const activeTab = useMissionStore((s) => s.activeTab);
-  const selectedSiteId = useMissionStore((s) => s.selectedSiteId);
   const evaluationData = useMissionStore((s) => s.evaluationData);
+  const terrainPatch = useMissionStore((s) => s.terrainPatch);
   const terrainUnavailable = useMissionStore((s) => s.terrainUnavailable);
   const solarArrayType = useMissionStore((s) => s.solarArrayType);
   const observerHeightM = useMissionStore((s) => s.observerHeightM);
@@ -24,9 +26,6 @@ export function AppShell() {
   const notices = useMissionStore((s) => s.notices);
   const error = useMissionStore((s) => s.error);
   const setHardwareConfig = useMissionStore((s) => s.setHardwareConfig);
-
-  const pinnedScenarios = useComparisonStore((s) => s.pinnedScenarios);
-  const unpinScenario = useComparisonStore((s) => s.unpinScenario);
 
   const isSphericalLimbOnly = terrainUnavailable || evaluationData?.site.has_precomputed_terrain === false;
   const horizonProfile = evaluationData?.horizon_profile ?? [];
@@ -70,6 +69,15 @@ export function AppShell() {
                 <SouthPoleMap />
                 <PolarSkyDome horizonProfile={horizonProfile} timeseries={timeseries} />
                 <div style={{ gridColumn: "1 / -1" }}>
+                  <LunarTerrainCanvas
+                    terrainPatch={terrainPatch}
+                    terrainUnavailable={isSphericalLimbOnly}
+                    timeseries={timeseries}
+                    observerHeightM={observerHeightM}
+                    solarArrayType={solarArrayType}
+                  />
+                </div>
+                <div style={{ gridColumn: "1 / -1" }}>
                   <PanoramaHorizonChart horizonProfile={horizonProfile} timeseries={timeseries} />
                 </div>
                 <div style={{ gridColumn: "1 / -1" }}>
@@ -101,34 +109,35 @@ export function AppShell() {
           </>
         ) : activeTab === "explorer" ? (
           <GuidedChallengesView />
+        ) : activeTab === "compare" ? (
+          <ComparisonBoardView />
         ) : (
-          <section className="panel-card">
-            <h2 className="panel-title">
-              <span>{activeTab.toUpperCase()} Workspace</span>
-            </h2>
-            {activeTab === "compare" && (
-              <div style={{ display: "grid", gap: "0.5rem" }}>
-                <p style={{ margin: 0, color: "var(--text-muted)" }}>
-                  Pinned Scenarios ({pinnedScenarios.length}/4) — Module 5 Comparison Board connects here:
-                </p>
-                {pinnedScenarios.map((scen) => (
-                  <div key={scen.scenario_id} className="btn-surface" style={{ justifyContent: "space-between" }}>
-                    <span>{scen.label}</span>
-                    <button type="button" onClick={() => void unpinScenario(scen.scenario_id)} className="btn-surface">
-                      <Trash2 size={13} /> Remove
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-            {activeTab === "windows" && (
-              <p style={{ margin: 0, color: "var(--text-muted)" }}>
-                12-Month Optimal Landing Window Heatmap (Module 5) for {evaluationData?.site.name ?? selectedSiteId}.
-              </p>
-            )}
-          </section>
+          <WindowHeatmapView />
         )}
       </main>
+      <footer
+        style={{
+          borderTop: "1px solid var(--border-subtle)",
+          padding: "0.7rem 1.25rem",
+          fontSize: "0.74rem",
+          color: "var(--text-muted)",
+          display: "flex",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: "0.5rem",
+          background: "rgba(16, 23, 38, 0.85)",
+        }}
+      >
+        <span>Data Sources: NASA LRO LOLA (`ldem_80s_80m`) · JPL Horizons (`MOON_ME`) · LRO QuickMap · NASA Moon Trek · CSA</span>
+        <span>
+          Active Site Model:{" "}
+          <strong style={{ color: isSphericalLimbOnly ? "var(--accent-warn)" : "var(--accent-ok)" }}>
+            {isSphericalLimbOnly
+              ? "Class B — Spherical limb only (terrain model unavailable)"
+              : "Class A — Measured LOLA south-polar topography"}
+          </strong>
+        </span>
+      </footer>
     </div>
   );
 }

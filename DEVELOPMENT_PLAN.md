@@ -135,7 +135,7 @@ Ownership is by **module ID**, never by person. [`plan/OWNERS.md`](plan/OWNERS.m
 | `M2` | Backend API, physics, scoring, contracts | **unassigned** |
 | `M3` | Frontend core, site selection, 2D map, KPIs | usairam |
 | `M4` | 3D terrain, sky-dome | devscion (gated) |
-| `M5` | Comparison, windows, QA, delivery | **unassigned** |
+| `M5` | Comparison, windows, QA, delivery | devscion |
 
 `M2` blocks everything downstream: `M1` produces packs that only `M2` serves, and `M3` renders only what `M2` returns. `scripts/validate_task_ledger.py` refuses to accept a task as `in_progress` or `done` while its module has no assigned owner.
 
