@@ -300,6 +300,26 @@ Until `ARCH-002` is merged, usairam can prepare without starting a task: merge `
 `FE-001`/`FE-002` changes. Do not set a task `in_progress`, do not commit task work, and do not
 hand-roll a temporary contract.
 
+### Who unblocks which M3 task
+
+| M3 task | Hard inputs | Agent signal | Final human message |
+|---|---|---|---|
+| `FE-001` | `ARCH-002` done and merged | Charlie: `M3 HANDOFF READY — ARCH-002 done and verified; waiting for zeta merge.`; zeta: `M3 UNBLOCK — tell usairam to start FE-001 now.` | Tell usairam to merge `bauerceptor` into `feat/module-3-frontend-core` and start `FE-001`. |
+| `FE-002` | `FE-001` done | none from M1/M2 | usairam proceeds after `FE-001`; no agent wait. |
+| `FE-003` | `FE-002` done + `DATA-006` (M1) + `BE-003` (M2) merged | Beta: `M3 FE-003 INPUT READY — DATA-006 merged; FE-003 still needs BE-003 and FE-002.`; zeta: `M3 FE-003 INPUT READY — DATA-006 and BE-003 merged; FE-003 still needs FE-002.` | Tell usairam to start `FE-003` only when `FE-002` is done and both input signals are true. |
+
+`agent-alpha` does not directly unblock an M3 task. Its `DATA-002`/`DATA-003` unblock beta’s
+`DATA-004`/`DATA-005` and charlie’s `BE-001`/`BE-002`; it emits
+`M1 DATA READY — DATA-002 and DATA-003 merged; beta may start DATA-004/DATA-005.` It must not tell
+the human to start usairam.
+
+`agent-beta`’s `DATA-004`/`DATA-005` unblock charlie, not M3. Only `DATA-006` is an `FE-003` input;
+beta emits `M3 FE-003 INPUT READY — DATA-006 merged; FE-003 still needs BE-003 and FE-002.` and
+must not claim the final unblock. Zeta emits the combined signal after `BE-003` merges.
+
+The exact Charlie and zeta handoff lines, including the “do not emit if the typecheck/barrel check
+failed” condition, are in `NEXT_SESSION.md` sections 9.1 and 10.7.
+
 ### FE-001 — app shell, stores, canonical URL, typed client
 
 Dependencies: `ARCH-002`. Write paths: `frontend/src/components/layout`, `frontend/src/state`,
