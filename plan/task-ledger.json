@@ -668,7 +668,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "in_progress",
+      "status": "done",
       "depends_on": [
         "DATA-001"
       ],
@@ -724,12 +724,36 @@
           "ref": "pytest tests/unit/test_horizons_parser.py"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "artifact",
+          "ref": "data/manifests/horizons",
+          "sha256": "8aa65a3439e5c5cf76634ba6325b706c8b03540a6098b08f840ca89a3fc7cf43",
+          "note": "aggregate sha256 over 32 manifests: sha256 of sorted per-file sha256sum lines"
+        },
+        {
+          "kind": "artifact",
+          "ref": "data/manifests/horizons/artemis-slater-plain.sun.json",
+          "sha256": "f9f71f5afa3f10707f85ce28b5ea459c7f1f652ba6f26b3a2d3da8c152a5308f"
+        },
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_horizons_parser.py",
+          "exit": 0,
+          "note": "14 passed"
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --project backend --frozen python -m src.cli.download_horizons",
+          "exit": 0,
+          "note": "32 tracks, 26305 rows each; 32 fetched then 32 reused on rerun; raw sha256 recorded per manifest"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T14:35:18Z",
+      "completed_commit": "6f160042e84dbcc8faa27b00989e3d85a937abc7"
     },
     {
       "id": "DATA-004",
