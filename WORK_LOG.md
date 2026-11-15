@@ -15,7 +15,7 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | Governance (single plan, ownership, anti-tamper guards) | `DONE` — ledger `DOC-001`, `DOC-002`, `DOC-GATE`, `ARCH-001` closed with evidence | bauerceptor |
 | Human review gate | `DONE` — `DOC-GATE` closed 2026-11-15 with recorded approval | bauerceptor |
 | `M3` frontend corrected onto the plan | `DONE` (committed on `bauerceptor`, not yet merged to `main`) | bauerceptor |
-| `M3` frontend, P0 completeness | `PARTIAL` — M4 panels merged; `FE-001`/`FE-002`/`FE-003` remain (issues 5, 7, 8, 9, 14) | usairam |
+| `M3` frontend, P0 completeness | `PARTIAL` — issues 5–8 fixed on `feat/module-3-frontend-core` (`801aa0a`) and verified in a test merge; pending merge; #9 open | usairam |
 | `M1` data pipeline | `READY` — `DATA-001` done; `agent-alpha` takes `DATA-002`/`DATA-003`, `agent-beta` takes `DATA-004`–`DATA-006` | bauerceptor |
 | `M2` backend | `READY` — `agent-charlie` takes `ARCH-002` then `BE-001`–`BE-003` | bauerceptor |
 | Parallel session (revision 5) | `READY` — worktrees/branches defined; zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
@@ -192,6 +192,52 @@ the 6-site registry. This branch's revision 5 and DATA-001 are newer and were pr
 | Type risk | The panels import from `frontend/src/types`; `ARCH-002` deletes the hand-written modules but the barrel `frontend/src/types/index.ts` is outside its `write_paths`. See open issue 14 |
 | P0 cockpit | The M4 `AppShell` still mounts `SouthPoleMap` and persona mode, so open issue 5 remains. The spherical-limb notice is added; the Class B badge and provenance footer remain with `FE-002` |
 
+### M3 branch verification — usairam (2026-11-15)
+
+Branch `feat/module-3-frontend-core` at `801aa0a`, based on `origin/main` `ebf8a23`. The branch has
+not merged this `bauerceptor` revision-5/16-site work.
+
+| Check | Result |
+|---|---|
+| Branch `bun run typecheck` / `bun run build` | pass |
+| Branch has `lint`, `format:check`, or `test` scripts | **no** — it predates `ARCH-001`; `urlSync.test.ts` cannot run there |
+| Test merge into `bauerceptor` | 9 conflicts: `WORK_LOG.md` and 8 frontend files |
+| Integrated result (throwaway worktree) | `typecheck`, `lint`, 3 tests (2 M4 + `urlSync`), `format:check`, `build` all pass |
+| `external_links` contract | present in `backend/src/api/schemas/site_schemas.py` and `contracts/fixtures/sites.sample.json` |
+| Issue 9 | glossary untouched; still open |
+
+Fixes verified on the branch:
+
+- **#5** — `SouthPoleMap` and the explorer/persona views moved to `map`/`explorer` P1 tabs; the
+  default P0 cockpit no longer mounts them.
+- **#6** — `PolarSkyDome`, `PanoramaHorizonChart`, `MissionTimelinePanel`, and
+  `SolarArraySelector` are mounted in the P0 cockpit.
+- **#7** — Class A/B badges, the spherical-limb banner, the provenance footer (LOLA, JPL Horizons,
+  QuickMap, Moon Trek, CSA), and removal of P0 custom coordinates from the drawer.
+- **#8** — Step (10/60), array azimuth, and minimum-comms controls; dismissible URL notices; an
+  `urlSync.test.ts` file.
+
+Integration fixes required before closing:
+
+- The branch has no `ARCH-001` toolchain. Merge `bauerceptor` into it to get `lint`,
+  `format:check`, and `test`; do not run a separate toolchain.
+- `urlSync.test.ts` called `runUrlSyncTests()` at import time and used the removed
+  `artemis-shackleton-ridge` ID. In the integration it is wired into Vitest and uses
+  `artemis-cabeus-peak`.
+- `urlSync.ts` accepted a non-canonical `mode` query parameter. The integration removes it so the
+  canonical eight keys stay exact.
+- The merge conflicts are formatting plus the store/route changes. Take the M3 frontend
+  implementation and keep the `bauerceptor` docs; `types/site.ts` auto-merges with nullable
+  terrain fields and `external_links`.
+- Do not rebase or rewrite the M3 branch; merge `bauerceptor` into it after the parallel session
+  and preserve its commits.
+
+Remaining after the merge: update `frontend/src/types/index.ts` against the generated
+`ARCH-002` types, run the full frontend toolchain, close `FE-001`/`FE-002` with evidence, keep
+`FE-003` waiting for `BE-003` + `DATA-006`, and resolve issue 9 editorially. Compare and Landing
+Window tabs remain visible as P1 placeholders in the top bar; decide whether to gate them with the
+P1 route.
+
 ### Coordinate source of record — IAU
 
 The `DATA-001` registry uses IAU/USGS Gazetteer of Planetary Nomenclature named-feature centres as
@@ -213,17 +259,17 @@ contracts merge.
 
 ### P0 blockers — the release cannot ship until these are closed
 
-Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially addresses 6, 7, and 8; they stay open until `FE-002` records the acceptance evidence. None were introduced by the governance work; they are the gap between what module 3 shipped and what REQ-11 requires. Numbers refer to the table below.
+Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially addresses 6, 7, and 8; the M3 branch `feat/module-3-frontend-core` (`801aa0a`) fixes 5–8 and is verified in a test merge. They stay open until that branch lands and `FE-001`/`FE-002` record the acceptance evidence. None were introduced by the governance work; they are the gap between what module 3 shipped and what REQ-11 requires. Numbers refer to the table below.
 
-**Status as of this revision: all five are explicit ledger acceptance criteria.** They were previously implicit — living in this file but absent from the ledger — which meant an agent could satisfy `FE-002` while leaving P0 broken. The acceptance lists now name each one, so a task cannot be marked done with the gap open. Issue 3 (test runner) and issue 12 (`uv.lock`) were closed by `ARCH-001`; issue 10 (registry) was closed by `DATA-001`. The M4 SVG horizon/timeline panels merged as `00f7e77` but do not close `FE-002` until its evidence is recorded.
+**Status as of this revision: all five are explicit ledger acceptance criteria.** They were previously implicit — living in this file but absent from the ledger — which meant an agent could satisfy `FE-002` while leaving P0 broken. The acceptance lists now name each one, so a task cannot be marked done with the gap open. Issue 3 (test runner) and issue 12 (`uv.lock`) were closed by `ARCH-001`; issue 10 (registry) was closed by `DATA-001`. The M4 SVG horizon/timeline panels merged as `00f7e77`, and the M3 branch `801aa0a` fixes 5–8; neither closes `FE-001`/`FE-002` until the branch merges and the evidence is recorded.
 
 | # | Blocker | Ledger requirement | Why it blocks P0 |
 |---|---|---|---|
 | 1 | No fixture generator, so offline mode has nothing to read | `DATA-006` acceptance; `FE-003` depends on it | P0 promises a demo with no network; fixtures were deleted as duplicates and their replacement does not exist yet |
-| 5 | 2D map and persona mode are P1 but mounted in the P0 cockpit | `FE-001` acceptance (P0 cockpit mounts no P1 feature) | Ships P1 surface area as if it were P0 and invites the fabricated-data path back |
-| 6 | Horizon silhouette and timeline are placeholders | `FE-002` acceptance, items 4–6 | These are the two visualisations REQ-11 names as the P0 core; today they render a count and a fake slot |
-| 7 | No Class B badge, spherical-limb notice, or provenance footer | `FE-002` acceptance, items 1–3 and 9 | A limb-only site would display as if it had measured terrain, which REQ-05 forbids |
-| 8 | No `step`, `array_az`, or `min_comms` controls | `FE-002` acceptance, item 8 | Three of the eight canonical scenario fields exist in state and URL but no UI writes them |
+| 5 | 2D map and persona mode are P1 but mounted in the P0 cockpit | `FE-001` acceptance (P0 cockpit mounts no P1 feature) | Verified fixed on `feat/module-3-frontend-core` (`801aa0a`); pending merge |
+| 6 | Horizon silhouette and timeline are placeholders | `FE-002` acceptance, items 4–6 | Verified fixed on `feat/module-3-frontend-core` (`801aa0a`); pending merge |
+| 7 | No Class B badge, spherical-limb notice, or provenance footer | `FE-002` acceptance, items 1–3 and 9 | Verified fixed on `feat/module-3-frontend-core` (`801aa0a`); pending merge |
+| 8 | No `step`, `array_az`, or `min_comms` controls | `FE-002` acceptance, item 8 | Verified fixed on `feat/module-3-frontend-core` (`801aa0a`); pending merge |
 | 10 | Registry holds 6 sites, not 16 | `DATA-001` acceptance | REQ-05 requires exactly 16; the demo would show less than half the curated set |
 
 ### Full list
@@ -234,10 +280,10 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 | 2 | `evaluateScenario`/`compareScenarios`/`scanWindows` now require a scenario key; comparison and windows callers are typed but their scenarios are P1 | `frontend/src/services/`, `P1-COMPARE`, `P1-WINDOWS` | low | open |
 | 3 | No test runner or `test` script, so three ledger acceptance commands cannot run | `frontend/package.json`, `frontend/vitest.config.ts` | BLOCKER for P0 | `DONE` — closed by `ARCH-001` |
 | 4 | Wire types are hand-maintained; `api.generated.ts` does not exist | `frontend/src/types/`, `ARCH-002` | MAJOR | in `ARCH-002` acceptance |
-| 5 | 2D map and persona mode are built but are P1, mounted unconditionally in the cockpit | `frontend/src/features/lunar-map-2d/`, `frontend/src/features/persona-mode/` | MAJOR | in `FE-001` acceptance |
-| 6 | Horizon silhouette and timeline were placeholders, the two P0 visualisations REQ-11 requires | `frontend/src/components/layout/AppShell.tsx` | BLOCKER for P0 | `PARTIAL` — M4 SVG panels merged as `00f7e77`; `FE-002` must verify acceptance |
-| 7 | No Class B badge, spherical-limb notice, or provenance footer in the UI | `frontend/src/components/`, `frontend/src/features/` | BLOCKER for P0 | `PARTIAL` — M4 spherical-limb notice added; badge and footer still open |
-| 8 | No `step`, `array_az`, or `min_comms` controls; values exist in state and URL but no UI writes them | `frontend/src/features/time-controls/` | BLOCKER for P0 | `PARTIAL` — M4 array/mast selector added; step, `array_az`, and `min_comms` still open |
+| 5 | 2D map and persona mode are built but are P1, mounted unconditionally in the cockpit | `frontend/src/features/lunar-map-2d/`, `frontend/src/features/persona-mode/` | MAJOR | `VERIFIED` on `feat/module-3-frontend-core` at `801aa0a`; pending merge |
+| 6 | Horizon silhouette and timeline were placeholders, the two P0 visualisations REQ-11 requires | `frontend/src/components/layout/AppShell.tsx` | BLOCKER for P0 | `VERIFIED` on `feat/module-3-frontend-core` at `801aa0a`; pending merge |
+| 7 | No Class B badge, spherical-limb notice, or provenance footer in the UI | `frontend/src/components/`, `frontend/src/features/` | BLOCKER for P0 | `VERIFIED` on `feat/module-3-frontend-core` at `801aa0a`; pending merge |
+| 8 | No `step`, `array_az`, or `min_comms` controls; values exist in state and URL but no UI writes them | `frontend/src/features/time-controls/` | BLOCKER for P0 | `VERIFIED` on `feat/module-3-frontend-core` at `801aa0a`; pending merge |
 | 9 | Educational glossary asserts unsourced science (1.54° tilt, 40 K, ±6.5° libration, "uninterrupted" DTE) and generates narrative from booleans | `frontend/src/features/persona-mode/educationalGlossary.ts` | MAJOR | open — deliberately deferred, see below |
 | 10 | Registry holds 6 sites, not the 16 REQ-05 requires | `backend/config/curated_sites.yaml` | BLOCKER for P0 | `DONE` — closed by `DATA-001` |
 | 11 | `contracts/openapi-draft.yaml` still hand-maintained alongside Pydantic | `contracts/` | MAJOR | in `ARCH-002` acceptance |
@@ -246,6 +292,9 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 | 14 | `ARCH-002` deletes hand-written wire types but `frontend/src/types/index.ts` is outside its `write_paths`; the merged M4 panels import from that barrel | `frontend/src/types/index.ts`, `ARCH-002` | BLOCKER for `ARCH-002` | open — needs a human-approved ledger revision or `FE-001` ownership |
 | 15 | M4 test files exported runner functions but registered no Vitest tests, so they collected zero tests | `frontend/src/__tests__/` | MAJOR | `DONE` — wired into Vitest; 2 tests pass |
 | 16 | M4 code was merged to `main` without a ledger task or plan/registry update; `main` still carried revision 3, the 14-site ledger, and the 6-site registry | `frontend/src/features/sky-horizon/`, `frontend/src/features/mission-timeline/`, `frontend/src/features/earth-moon-contrast/`, `DEVELOPMENT_PLAN.md` | governance | `RECORDED` — Appendix F; M4 remains gated, no ledger task |
+| 17 | M3 branch lacks the `ARCH-001` toolchain; its `urlSync.test.ts` called the runner at import time and used the removed `artemis-shackleton-ridge` site | `frontend/package.json`, `frontend/src/__tests__/urlSync.test.ts` | MAJOR | `DONE IN INTEGRATION` — merge `bauerceptor` for the toolchain and use the Vitest `it` wiring/current site ID |
+| 18 | M3 branch is based on revision 3 / 6-site registry and must merge `bauerceptor` (revision 5 / 16-site) before closing | `DEVELOPMENT_PLAN.md`, `backend/config/curated_sites.yaml` | MAJOR | `OPEN` — merge `bauerceptor` after `ARCH-002` |
+| 19 | Compare and Landing Window P1 tabs remain visible as placeholders in the P0 top bar | `frontend/src/components/layout/TopCommandBar.tsx` | MINOR | `OPEN` — decide whether to gate them with the P1 route |
 
 ### Deliberately not fixed
 
@@ -267,7 +316,7 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 | `M1` | `agent-alpha` | `DATA-002` → `DATA-003` | ready |
 | `M1` | `agent-beta` | `DATA-004` → `DATA-005` → `DATA-006` | `DATA-004` needs `DATA-003` + `ARCH-002`; `DATA-005` needs `DATA-002` + `ARCH-002`; `DATA-006` needs both packs |
 | `M2` | `agent-charlie` | `ARCH-002` → `BE-001` → `BE-002` → `BE-003` | `BE-001` needs `DATA-004` + `ARCH-002`; `BE-002` needs `BE-001` + `DATA-005`; `BE-003` needs `BE-002` + `DATA-006` |
-| `M3` | usairam | `FE-001` → `FE-002` → `FE-003`; see “M3 remaining work — handoff to usairam” | `ARCH-002`, `BE-003`, `DATA-006`; issue 9 human decision |
+| `M3` | usairam | Merge `feat/module-3-frontend-core` (`801aa0a`) with `bauerceptor` after `ARCH-002`; apply the integration fixes; close `FE-001`/`FE-002`; `FE-003` after `BE-003`/`DATA-006` | `ARCH-002`, `BE-003`, `DATA-006`; issue 9 human decision |
 | `M4` | devscion | not startable | `P0-GATE` |
 | `M5` | — | needs an owner | — |
 
@@ -287,24 +336,29 @@ Dependency order: `ARCH-002` → `FE-001` → `FE-002` → `FE-003`. `FE-003` al
 No M3 ledger task is eligible today. `FE-001` depends on `ARCH-002` (`M2`), which is still pending;
 `FE-002` depends on `FE-001`; `FE-003` depends on `FE-002`, `BE-003` (`M2`), and `DATA-006` (`M1`).
 
+Current state (2026-11-15): usairam has already pushed issues 5–8 on
+`feat/module-3-frontend-core` (`801aa0a`). A throwaway test merge into `bauerceptor` passed
+`typecheck`, `lint`, 3 tests, `format:check`, and `build`. Do not re-implement 5–8. The remaining
+work is the merge, the type-barrel update, and closing `FE-001`/`FE-002` with evidence.
+
 The M1 raw data and packs do **not** block `FE-001` or `FE-002` directly: the frontend consumes API
 responses and generated types. M1 becomes a hard blocker for `FE-003` through `DATA-006`, and M2
 blocks `FE-003` through `BE-003`. The immediate blocker for the first M3 task is **M2, not M1**.
 
 The unblock path is the Wave 1 gate: `agent-charlie` completes `ARCH-002`, and `agent-zeta` merges
-**and pushes** it. `FE-001` then becomes eligible and can run in parallel with the rest of the
-data/backend pipeline. `FE-002` follows. `FE-003` waits for `BE-003` and `DATA-006`.
+**and pushes** it. Then usairam merges `bauerceptor` into `feat/module-3-frontend-core`, applies the
+integration fixes (Vitest wiring/current site ID, no `mode` key, Prettier, type barrel), runs the
+frontend checks, and closes `FE-001`/`FE-002`. `FE-003` waits for `BE-003` and `DATA-006`.
 
-Until `ARCH-002` is merged and pushed, usairam can prepare without starting a task: merge
-`bauerceptor` into `feat/module-3-frontend-core`, read the plan and ledger, review the merged M4
-panels, and plan the `FE-001`/`FE-002` changes. Do not set a task `in_progress`, do not commit task
-work, and do not hand-roll a temporary contract.
+Until `ARCH-002` is merged and pushed, usairam should not start a new ledger task and should not
+redo the UI work. He can review the test-merge findings above and prepare the type-barrel change,
+but must not set a task `in_progress` or commit task work on a stale base.
 
 ### Who unblocks which M3 task
 
 | M3 task | Hard inputs | Agent signal | Final human message |
 |---|---|---|---|
-| `FE-001` | `ARCH-002` done, merged, and pushed | Charlie: `M3 HANDOFF READY — ARCH-002 done and verified; waiting for zeta merge.`; zeta: `M3 UNBLOCK — tell usairam to start FE-001 now.` | Tell usairam only after zeta has merged **and pushed** `ARCH-002`; give him the pushed `origin/bauerceptor` commit. |
+| `FE-001` | `ARCH-002` done, merged, and pushed | Charlie: `M3 HANDOFF READY — ARCH-002 done and verified; waiting for zeta merge.`; zeta: `M3 UNBLOCK — merge bauerceptor and finish FE-001/FE-002.` | Tell usairam only after zeta has merged **and pushed** `ARCH-002`: merge `bauerceptor` into `feat/module-3-frontend-core`, apply the integration fixes, run the checks, and close `FE-001`/`FE-002`; do not re-implement 5–8. |
 | `FE-002` | `FE-001` done | none from M1/M2 | usairam proceeds after `FE-001`; no agent wait. |
 | `FE-003` | `FE-002` done + `DATA-006` (M1) + `BE-003` (M2) merged and pushed | Beta: `M3 FE-003 INPUT READY — DATA-006 merged; FE-003 still needs BE-003 and FE-002.`; zeta: `M3 FE-003 INPUT READY — DATA-006 and BE-003 merged; FE-003 still needs FE-002.` | Tell usairam to start `FE-003` only when `FE-002` is done and zeta has **pushed** both inputs; give him the pushed `origin/bauerceptor` commit. |
 
@@ -340,6 +394,10 @@ zeta is the only writer and pusher of `bauerceptor`.
   commits with `ALLOW_PROTECTED=1`, fetches, and pushes `origin/bauerceptor`.
 - Only after the push succeeds does zeta sync the next worktrees and emit an M3 signal. If a check
   or the push fails, zeta does not push and does not unblock; it reports.
+- After every integration zeta emits `ZETA MERGED — <TASK-ID> integrated at <merge-commit>; pushed
+  origin/bauerceptor; checks green; synced <worktree>; next: <agent/task>.` On failure it emits
+  `ZETA BLOCKED — <TASK-ID> not merged; reason: <exact check/conflict>; no push; action:
+  <agent/human>.` A/B/C wait for `ZETA MERGED` before the next task.
 - No force-push, no rebase, no squash, no agent-branch push. `completed_commit` hashes stay
   resolvable.
 - If orchestrated with Herdr: use `herdr worktree open` for the existing agent worktrees, start one
@@ -367,6 +425,10 @@ Do not merge if: <conditions, if any>
 
 ### FE-001 — app shell, stores, canonical URL, typed client
 
+Status (2026-11-15): implemented on `feat/module-3-frontend-core` at `801aa0a`; remaining is the
+`bauerceptor` merge after `ARCH-002`, the generated-type barrel, and ledger closure. Do not
+re-implement the UI.
+
 Dependencies: `ARCH-002`. Write paths: `frontend/src/components/layout`, `frontend/src/state`,
 `frontend/src/services`, `frontend/src/App.tsx`, `frontend/src/types/coordinates.ts`,
 `frontend/src/types/index.ts`, `frontend/src/__tests__/urlSync.test.ts`.
@@ -393,6 +455,10 @@ Remaining:
 - Tests: `frontend/src/__tests__/urlSync.test.ts`; run `bun run test`. Evidence: `bun run test`.
 
 ### FE-002 — controls, KPI strip, horizon silhouette, timeline
+
+Status (2026-11-15): implemented on `feat/module-3-frontend-core` at `801aa0a`; remaining is the
+`bauerceptor` merge after `ARCH-002`, preserving the Vitest wiring and closing with evidence. Do not
+re-implement the UI.
 
 Dependencies: `FE-001`. Write paths: `frontend/src/components/layout`, `frontend/src/components/ui`,
 `frontend/src/features/mission-kpis`, `frontend/src/features/mission-timeline`,

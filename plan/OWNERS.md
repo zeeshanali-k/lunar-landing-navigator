@@ -8,7 +8,7 @@ Three humans, three machines, three different agents. This file is the **only** 
 |---|---|---|---|---|
 | `M1` | Data, LOLA topography, ephemeris, raycast | bauerceptor | `bauerceptor` | active |
 | `M2` | Backend API, physics, scoring, contracts | bauerceptor | `bauerceptor` | active |
-| `M3` | Frontend core, site selection, 2D map, KPIs | usairam | `feat/module-3-frontend-core` | in review |
+| `M3` | Frontend core, site selection, 2D map, KPIs | usairam | `feat/module-3-frontend-core` | fixes 5–8 pushed at `801aa0a`; verified in integration; pending merge |
 | `M4` | 3D terrain, sky-dome, advanced visualizations | devscion | `feat/m4-3d-terrain` | partial — SVG horizon/timeline/contrast merged; `terrain-3d` remains `.gitkeep` and gated |
 | `M5` | Comparison, window finder, delivery | **unassigned** | — | blocked |
 
