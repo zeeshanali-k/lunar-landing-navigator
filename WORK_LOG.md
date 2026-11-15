@@ -289,7 +289,7 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 | 11 | `contracts/openapi-draft.yaml` still hand-maintained alongside Pydantic | `contracts/` | MAJOR | in `ARCH-002` acceptance |
 | 12 | `backend/uv.lock` absent, pytest not installed, so no Python check can run | `backend/` | BLOCKER for P0 | `DONE` — closed by `ARCH-001` |
 | 13 | Fixture `terrain.sample.json` is 16×16; production contract is 128×128 | `contracts/fixtures/` | MINOR | open |
-| 14 | `ARCH-002` deletes hand-written wire types but `frontend/src/types/index.ts` is outside its `write_paths`; the merged M4 panels import from that barrel | `frontend/src/types/index.ts`, `ARCH-002` | BLOCKER for `ARCH-002` | open — needs a human-approved ledger revision or `FE-001` ownership |
+| 14 | `ARCH-002` deletes hand-written wire types but `frontend/src/types/index.ts` is outside its `write_paths`; the merged M4 panels import from that barrel | `frontend/src/types/index.ts`, `ARCH-002` | BLOCKER for `ARCH-002` | `RESOLVED` — human-approved ledger revision (2026-11-15) adds the barrel, three consumers, and the acceptance-required deletions to `ARCH-002.write_paths` |
 | 15 | M4 test files exported runner functions but registered no Vitest tests, so they collected zero tests | `frontend/src/__tests__/` | MAJOR | `DONE` — wired into Vitest; 2 tests pass |
 | 16 | M4 code was merged to `main` without a ledger task or plan/registry update; `main` still carried revision 3, the 14-site ledger, and the 6-site registry | `frontend/src/features/sky-horizon/`, `frontend/src/features/mission-timeline/`, `frontend/src/features/earth-moon-contrast/`, `DEVELOPMENT_PLAN.md` | governance | `RECORDED` — Appendix F; M4 remains gated, no ledger task |
 | 17 | M3 branch lacks the `ARCH-001` toolchain; its `urlSync.test.ts` called the runner at import time and used the removed `artemis-shackleton-ridge` site | `frontend/package.json`, `frontend/src/__tests__/urlSync.test.ts` | MAJOR | `DONE IN INTEGRATION` — merge `bauerceptor` for the toolchain and use the Vitest `it` wiring/current site ID |
@@ -551,6 +551,7 @@ Remaining:
 | `svgPointToLatLon` kept in the map module | Pure projection geometry for a P1 feature, not physics; removing it would break the map for no safety gain. |
 | Comparison store now passes a scenario key | The fallback contract requires one; typing it surfaced the missing P1 scenarios. |
 | Zeta is the only writer/pusher of `bauerceptor`; A/B/C hand off with `ZETA HANDOFF` | Concurrent merges and unpushed bases are the main failure mode. One merge at a time, push every green integration, then sync the next worktree. An M3 unblock is actionable only after the push. |
+| Extended `ARCH-002` `write_paths` by explicit human approval (2026-11-15) | The generated-types migration cannot be real without editing the type barrel (`frontend/src/types/index.ts`), the three consumers, and deleting `contracts/openapi-draft.yaml` plus the four hand-written wire modules. The ledger's acceptance already required those deletions; the revision aligns `write_paths` with acceptance. |
 
 ---
 
