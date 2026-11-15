@@ -12,7 +12,8 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 
 | Area | State | Owner |
 |---|---|---|
-| Governance (single plan, ownership, anti-tamper guards) | `DONE` | bauerceptor |
+| Governance (single plan, ownership, anti-tamper guards) | `DONE` — ledger `DOC-001`, `DOC-002` closed with evidence | bauerceptor |
+| Human review gate | `PENDING` — `DOC-GATE` is the one eligible task | bauerceptor |
 | `M3` frontend corrected onto the plan | `DONE` (committed on `bauerceptor`, not yet merged to `main`) | bauerceptor |
 | `M3` frontend, P0 completeness | `BLOCKED` — 5 issues open (3, 6, 7, 8, 9) | bauerceptor |
 | `M1` data pipeline | `BLOCKED` — no `uv.lock`, nothing downloaded, 2 issues open (1, 10) | bauerceptor |

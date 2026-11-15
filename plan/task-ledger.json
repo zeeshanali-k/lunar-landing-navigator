@@ -22,7 +22,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [],
       "requirement_ids": [
         "REQ-01",
@@ -67,12 +67,24 @@
           "ref": "git diff --exit-code -- README.md"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "git diff --exit-code -- README.md",
+          "exit": 0,
+          "note": "README byte-identical; rewrite deferred to DELIVERY-002"
+        },
+        {
+          "kind": "artifact",
+          "ref": "DEVELOPMENT_PLAN.md",
+          "sha256": "bfc7bb5278c46038c2f49eb0db129c3f8e92d08a069488baecae3c2dc665c897"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T04:39:57Z",
+      "completed_commit": "249ad359a82d4d954c473b0c64cae4435f94abb8"
     },
     {
       "id": "DOC-002",
@@ -81,7 +93,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DOC-001"
       ],
@@ -139,12 +151,43 @@
           "ref": "planning-validators-pass"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "python3 scripts/validate_task_ledger.py",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "python3 scripts/check_planning_docs.py",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "python3 scripts/check_file_lengths.py",
+          "exit": 0
+        },
+        {
+          "kind": "artifact",
+          "ref": "AGENTS.md",
+          "sha256": "43db3fe5d5abddecefbc8120d35b5a820f1778730e8adb4a9a823d89fec43a57"
+        },
+        {
+          "kind": "artifact",
+          "ref": "plan/task-ledger.json",
+          "sha256": "bf6cca9d458b8d7fe6586621e0d7e6064b4cc24f9a660eb274c9fa1b4ca58e82"
+        },
+        {
+          "kind": "report",
+          "ref": "planning-validators-pass",
+          "note": "validate_task_ledger.py, check_planning_docs.py, check_file_lengths.py all exit 0 at 249ad35"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T04:39:57Z",
+      "completed_commit": "249ad359a82d4d954c473b0c64cae4435f94abb8"
     },
     {
       "id": "DOC-GATE",

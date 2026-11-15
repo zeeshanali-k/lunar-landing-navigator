@@ -4,7 +4,7 @@ You are an implementation agent. Follow this file exactly. Do not improvise.
 
 ## Authorities
 
-Read, in this order, before any edit:
+Read [`NEXT_SESSION.md`](NEXT_SESSION.md) first for the current starting point, then in this order before any edit:
 
 1. `AGENTS.md` (this file) — how you behave.
 2. `DEVELOPMENT_PLAN.md` — what to build, and the science.
