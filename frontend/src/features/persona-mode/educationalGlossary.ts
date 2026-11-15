@@ -98,12 +98,7 @@ export const MISSION_CHALLENGES: MissionChallenge[] = [
   },
 ];
 
-export function getLiveExplorerInsight(
-  siteName: string,
-  isSunlit: boolean,
-  isDteVisible: boolean,
-  solarArrayType: SolarArrayType,
-): string {
+export function getLiveExplorerInsight(siteName: string, isSunlit: boolean, isDteVisible: boolean, solarArrayType: SolarArrayType): string {
   const lightMsg = isSunlit
     ? `${siteName} is currently catching low-angle polar sunlight above the crater rim.`
     : `${siteName} is in crisp lunar shadow right now because surrounding ridges block the grazing Sun.`;

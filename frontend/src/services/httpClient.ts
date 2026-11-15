@@ -59,12 +59,7 @@ export function isAbortError(error: unknown): boolean {
   if (error instanceof DOMException && error.name === "AbortError") {
     return true;
   }
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "name" in error &&
-    (error as { name: unknown }).name === "AbortError"
-  );
+  return typeof error === "object" && error !== null && "name" in error && (error as { name: unknown }).name === "AbortError";
 }
 
 /** A generated fixture-manifest entry. Keys are canonical scenario keys (REQ-11). */
@@ -100,10 +95,7 @@ async function loadManifest(signal: AbortSignal): Promise<FixtureManifest | null
  * Load a fixture for an exact scenario key. A missing manifest entry is an error,
  * never a substitution: the caller must know that no data is available.
  */
-async function loadFallbackFixture(
-  scenarioKey: string | undefined,
-  signal: AbortSignal,
-): Promise<unknown> {
+async function loadFallbackFixture(scenarioKey: string | undefined, signal: AbortSignal): Promise<unknown> {
   if (!scenarioKey) {
     throw new Error(`${OFFLINE_FIXTURE_UNAVAILABLE}: no scenario key supplied.`);
   }
@@ -134,9 +126,7 @@ export interface RequestJsonOptions {
  * Perform a typed JSON API request, cancelling older requests sharing `requestKey`.
  * Falls back to an exact-match fixture only on network failure or 5xx.
  */
-export async function requestJson<TResponse>(
-  options: RequestJsonOptions,
-): Promise<TResponse> {
+export async function requestJson<TResponse>(options: RequestJsonOptions): Promise<TResponse> {
   const { path, method = "GET", body, requestKey, signal, scenarioKey } = options;
 
   if (signal?.aborted) {
@@ -159,8 +149,7 @@ export async function requestJson<TResponse>(
       return (await loadFallbackFixture(scenarioKey, controller.signal)) as TResponse;
     }
 
-    const headers: Record<string, string> | undefined =
-      body !== undefined ? { "Content-Type": "application/json" } : undefined;
+    const headers: Record<string, string> | undefined = body !== undefined ? { "Content-Type": "application/json" } : undefined;
 
     const response = await fetch(`${API_BASE_URL}${path}`, {
       method,

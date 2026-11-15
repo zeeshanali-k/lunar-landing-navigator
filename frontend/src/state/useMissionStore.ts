@@ -196,9 +196,7 @@ export const useMissionStore = create<MissionState>((set, get) => ({
       let terrainPatch: TerrainPatch | null = null;
       let terrainUnavailable = false;
       try {
-        terrainPatch = customCoords
-          ? await fetchCustomTerrain(customCoords)
-          : await fetchSiteTerrain(selectedSiteId ?? DEFAULT_SITE_ID);
+        terrainPatch = customCoords ? await fetchCustomTerrain(customCoords) : await fetchSiteTerrain(selectedSiteId ?? DEFAULT_SITE_ID);
       } catch (terrainErr: unknown) {
         // A Class B site has no measured terrain. That is a documented state,
         // not an error, and must not be filled with another site's patch.
@@ -249,12 +247,7 @@ export const useMissionStore = create<MissionState>((set, get) => ({
     await get().refreshScenario();
   },
 
-  setHardwareConfig: async (
-    solarArrayType,
-    observerHeightM,
-    fixedArrayAzimuthDeg,
-    minCommsElevDeg,
-  ) => {
+  setHardwareConfig: async (solarArrayType, observerHeightM, fixedArrayAzimuthDeg, minCommsElevDeg) => {
     set((s) => ({
       solarArrayType,
       observerHeightM,

@@ -40,17 +40,27 @@ export function AppShell() {
               <div className="cockpit-visual-grid">
                 <SouthPoleMap />
                 <section className="panel-card" style={{ minHeight: "230px" }}>
-                  <h2 className="panel-title"><span><Layers size={13} /> 3D local_enu Terrain Slot (F4.1–F4.2)</span></h2>
+                  <h2 className="panel-title">
+                    <span>
+                      <Layers size={13} /> 3D local_enu Terrain Slot (F4.1–F4.2)
+                    </span>
+                  </h2>
                   <p style={{ margin: 0, color: "var(--text-muted)", fontSize: "0.86rem" }}>
                     Patch: {terrainPatch ? `${terrainPatch.grid_size}×${terrainPatch.grid_size} (${terrainPatch.frame})` : "Loading..."}
                   </p>
                 </section>
                 <section className="panel-card" style={{ minHeight: "200px" }}>
-                  <h2 className="panel-title"><span>360° Horizon &amp; Sky-Dome Slot (F4.3–F4.4)</span></h2>
-                  <p style={{ margin: 0, color: "var(--text-muted)", fontSize: "0.86rem" }}>Horizon samples: {evaluationData?.horizon_profile.length ?? 0}</p>
+                  <h2 className="panel-title">
+                    <span>360° Horizon &amp; Sky-Dome Slot (F4.3–F4.4)</span>
+                  </h2>
+                  <p style={{ margin: 0, color: "var(--text-muted)", fontSize: "0.86rem" }}>
+                    Horizon samples: {evaluationData?.horizon_profile.length ?? 0}
+                  </p>
                 </section>
                 <section className="panel-card" style={{ minHeight: "200px" }}>
-                  <h2 className="panel-title"><span>Power &amp; DTE Timeline Slot (F4.5–F4.6)</span></h2>
+                  <h2 className="panel-title">
+                    <span>Power &amp; DTE Timeline Slot (F4.5–F4.6)</span>
+                  </h2>
                   <p style={{ margin: 0, color: "var(--text-muted)", fontSize: "0.86rem" }}>
                     Sunlit: {evaluationData?.summary.sunlit_hours ?? "—"}h | DTE: {evaluationData?.summary.dte_comms_hours ?? "—"}h
                   </p>
@@ -65,7 +75,9 @@ export function AppShell() {
           <GuidedChallengesView />
         ) : (
           <section className="panel-card">
-            <h2 className="panel-title"><span>{activeTab.toUpperCase()} Workspace</span></h2>
+            <h2 className="panel-title">
+              <span>{activeTab.toUpperCase()} Workspace</span>
+            </h2>
             {activeTab === "compare" && (
               <div style={{ display: "grid", gap: "0.5rem" }}>
                 <p style={{ margin: 0, color: "var(--text-muted)" }}>

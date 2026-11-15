@@ -34,11 +34,7 @@ export interface ParsedScenario {
 export const ALLOWED_DURATIONS = [7, 14, 29.5] as const;
 export const ALLOWED_STEPS = [10, 60] as const;
 export const ALLOWED_MASTS = [1.5, 2.0, 10.0] as const;
-const VALID_ARRAY_TYPES = new Set<SolarArrayType>([
-  "horizontal_fixed",
-  "vertical_fixed",
-  "vertical_tracking",
-]);
+const VALID_ARRAY_TYPES = new Set<SolarArrayType>(["horizontal_fixed", "vertical_fixed", "vertical_tracking"]);
 
 const REJECTED_KEYS = ["lat", "lon", "label", "custom_coords", "array_azimuth"] as const;
 
@@ -55,9 +51,7 @@ function isAllowedNumber(value: number, allowed: readonly number[]): boolean {
 }
 
 /** Parse and validate scenario parameters from a URL query string. */
-export function parseScenarioFromUrl(
-  search: string = typeof window !== "undefined" ? window.location.search : "",
-): ParsedScenario {
+export function parseScenarioFromUrl(search: string = typeof window !== "undefined" ? window.location.search : ""): ParsedScenario {
   const params = new URLSearchParams(search);
   const result: Partial<ScenarioUrlParams> = {};
   const notices: string[] = [];
@@ -194,9 +188,7 @@ export function buildShareableScenarioUrl(params: ScenarioUrlParams): string {
 }
 
 /** Copy the shareable scenario URL to clipboard; returns true on success. */
-export async function copyScenarioLinkToClipboard(
-  params: ScenarioUrlParams,
-): Promise<boolean> {
+export async function copyScenarioLinkToClipboard(params: ScenarioUrlParams): Promise<boolean> {
   if (typeof navigator === "undefined" || !navigator.clipboard) {
     return false;
   }

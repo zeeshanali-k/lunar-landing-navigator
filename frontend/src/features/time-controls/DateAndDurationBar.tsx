@@ -59,9 +59,27 @@ export function DateAndDurationBar() {
 
   return (
     <section className="panel-card" style={{ gap: "0.65rem" }}>
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "0.6rem" }}>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "0.6rem",
+        }}
+      >
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.35rem" }}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem", fontSize: "0.75rem", fontWeight: 600, color: "var(--text-muted)", marginRight: "0.2rem" }}>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.3rem",
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              color: "var(--text-muted)",
+              marginRight: "0.2rem",
+            }}
+          >
             <Calendar size={13} /> Presets:
           </span>
           {DATE_PRESETS.map((preset) => {
@@ -81,7 +99,15 @@ export function DateAndDurationBar() {
         </div>
 
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.6rem" }}>
-          <label style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", fontSize: "0.76rem", color: "var(--text-muted)" }}>
+          <label
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.35rem",
+              fontSize: "0.76rem",
+              color: "var(--text-muted)",
+            }}
+          >
             <span>UTC Start:</span>
             <input
               type="datetime-local"

@@ -33,8 +33,6 @@ backend/data/kernels/*
 !backend/data/kernels/.gitkeep
 backend/data/lola_grids/*
 !backend/data/lola_grids/.gitkeep
-backend/data/site_packs/*
-!backend/data/site_packs/.gitkeep
 
 # Node / Frontend
 frontend/node_modules/

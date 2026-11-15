@@ -86,13 +86,27 @@ export function PlaybackScrubber() {
   const handleJumpSunset = (): void => {
     if (points.length === 0) return;
     setPlaying(false);
-    jumpToIndex(findNextTransitionIndex(points, currentIndex, (p) => p.is_sunlit, (p) => p.sun_elev_deg));
+    jumpToIndex(
+      findNextTransitionIndex(
+        points,
+        currentIndex,
+        (p) => p.is_sunlit,
+        (p) => p.sun_elev_deg,
+      ),
+    );
   };
 
   const handleJumpEarthset = (): void => {
     if (points.length === 0) return;
     setPlaying(false);
-    jumpToIndex(findNextTransitionIndex(points, currentIndex, (p) => p.is_dte_visible, (p) => p.earth_clearance_deg));
+    jumpToIndex(
+      findNextTransitionIndex(
+        points,
+        currentIndex,
+        (p) => p.is_dte_visible,
+        (p) => p.earth_clearance_deg,
+      ),
+    );
   };
 
   return (
@@ -102,7 +116,12 @@ export function PlaybackScrubber() {
           <button type="button" onClick={stepBackward} className="btn-surface" title="Previous step" aria-label="Previous step">
             <ChevronLeft size={14} />
           </button>
-          <button type="button" onClick={togglePlaying} className="btn-surface" style={{ borderColor: isPlaying ? "var(--accent-sun)" : "var(--border-subtle)" }}>
+          <button
+            type="button"
+            onClick={togglePlaying}
+            className="btn-surface"
+            style={{ borderColor: isPlaying ? "var(--accent-sun)" : "var(--border-subtle)" }}
+          >
             {isPlaying ? <Pause size={14} color="var(--accent-sun)" /> : <Play size={14} color="var(--accent-ok)" />}
             <span>{isPlaying ? "Pause" : "Play"}</span>
           </button>
@@ -138,17 +157,16 @@ export function PlaybackScrubber() {
             aria-label="Mission timeline scrubber"
           />
           {points.length > 0 && (
-            <div style={{ display: "flex", height: "4px", borderRadius: "999px", overflow: "hidden", gap: "1px" }} title="Solar illumination strip (Gold = Sunlit, Dark = Shadow)">
+            <div
+              style={{ display: "flex", height: "4px", borderRadius: "999px", overflow: "hidden", gap: "1px" }}
+              title="Solar illumination strip (Gold = Sunlit, Dark = Shadow)"
+            >
               {points.map((pt, idx) => (
                 <span
                   key={pt.timestamp_utc}
                   style={{
                     flex: 1,
-                    background: !pt.is_sunlit
-                      ? "#1e293b"
-                      : pt.sun_visible_fraction < 0.99
-                        ? "#fbbf24"
-                        : "#f59e0b",
+                    background: !pt.is_sunlit ? "#1e293b" : pt.sun_visible_fraction < 0.99 ? "#fbbf24" : "#f59e0b",
                     opacity: idx === currentIndex ? 1 : 0.72,
                   }}
                 />

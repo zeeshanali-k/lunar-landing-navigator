@@ -1,12 +1,6 @@
 /** Central re-export of locked Track 0 API contracts (Contracts A-E) and coordinate utils. */
 
-export type {
-  CustomTerrainRequest,
-  ExternalLinks,
-  SiteCategory,
-  SiteSummary,
-  TerrainPatch,
-} from "./site";
+export type { CustomTerrainRequest, ExternalLinks, SiteCategory, SiteSummary, TerrainPatch } from "./site";
 export type {
   CustomCoords,
   DurationDays,
@@ -22,17 +16,6 @@ export type {
   SubScores,
   TimeseriesPoint,
 } from "./evaluation";
-export type {
-  ComparedScenario,
-  CompareRequest,
-  CompareResponse,
-  CompareScenarioInput,
-  ScenarioDeltas,
-} from "./comparison";
-export type {
-  TopWindow,
-  WindowCandidate,
-  WindowsRequest,
-  WindowsResponse,
-} from "./windows";
+export type { ComparedScenario, CompareRequest, CompareResponse, CompareScenarioInput, ScenarioDeltas } from "./comparison";
+export type { TopWindow, WindowCandidate, WindowsRequest, WindowsResponse } from "./windows";
 export { degToRad, normalizeAzimuthDeg, radToDeg } from "./coordinates";

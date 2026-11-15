@@ -1,10 +1,6 @@
 /** Contract A (SiteSummary) and Contract C (TerrainPatch) TypeScript types. */
 
-export type SiteCategory =
-  | "artemis_iii"
-  | "clps_commercial"
-  | "apollo_historic"
-  | "international";
+export type SiteCategory = "artemis_iii" | "clps_commercial" | "apollo_historic" | "international";
 
 export interface ExternalLinks {
   quickmap_url: string;

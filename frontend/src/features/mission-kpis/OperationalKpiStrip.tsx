@@ -98,34 +98,61 @@ export function OperationalKpiStrip() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(195px, 1fr))", gap: "0.55rem" }}>
         <div style={CARD_STYLE}>
           <div style={HEADER_STYLE}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}><Gauge size={12} color="var(--accent-ok)" /> Feasibility Score</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
+              <Gauge size={12} color="var(--accent-ok)" /> Feasibility Score
+            </span>
             {personaMode === "explorer" ? (
               <span style={{ fontSize: "0.68rem", color: "var(--accent-dte)" }}>Explorer Detail</span>
             ) : (
-              <button type="button" onClick={() => setShowBreakdown((v) => !v)} className="category-pill" style={{ display: "inline-flex", alignItems: "center", gap: "0.2rem", padding: "0.15rem 0.45rem" }}>
+              <button
+                type="button"
+                onClick={() => setShowBreakdown((v) => !v)}
+                className="category-pill"
+                style={{ display: "inline-flex", alignItems: "center", gap: "0.2rem", padding: "0.15rem 0.45rem" }}
+              >
                 Sub-Scores {showBreakdown ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
               </button>
             )}
           </div>
           <div style={{ display: "flex", alignItems: "baseline", gap: "0.45rem" }}>
-            <strong style={{ fontSize: "1.25rem", fontVariantNumeric: "tabular-nums", color: summary?.feasibility_score != null ? scoreColor(summary.feasibility_score) : "var(--text-muted)" }}>
+            <strong
+              style={{
+                fontSize: "1.25rem",
+                fontVariantNumeric: "tabular-nums",
+                color: summary?.feasibility_score != null ? scoreColor(summary.feasibility_score) : "var(--text-muted)",
+              }}
+            >
               {summary?.feasibility_score != null ? summary.feasibility_score.toFixed(1) : "N/A"}
             </strong>
-            <span style={{ fontSize: "0.76rem", color: "var(--text-muted)" }}>{summary?.feasibility_score != null ? `/ 100 ${loading ? "• Updating..." : ""}` : "terrain unavailable"}</span>
+            <span style={{ fontSize: "0.76rem", color: "var(--text-muted)" }}>
+              {summary?.feasibility_score != null ? `/ 100 ${loading ? "• Updating..." : ""}` : "terrain unavailable"}
+            </span>
           </div>
           <div style={{ fontSize: "0.74rem", color: "var(--text-muted)", fontVariantNumeric: "tabular-nums" }}>
-            {summary ? `Sunlit: ${summary.sunlit_hours.toFixed(0)}h (${Math.round(summary.sunlit_fraction * 100)}%) | DTE: ${summary.dte_comms_hours.toFixed(0)}h` : "Awaiting telemetry..."}
+            {summary
+              ? `Sunlit: ${summary.sunlit_hours.toFixed(0)}h (${Math.round(summary.sunlit_fraction * 100)}%) | DTE: ${summary.dte_comms_hours.toFixed(0)}h`
+              : "Awaiting telemetry..."}
           </div>
         </div>
 
         <div style={CARD_STYLE}>
           <div style={HEADER_STYLE}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}><Sun size={12} color="var(--accent-sun)" /> Sun Status</span>
-            {currentPoint && <span style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>{Math.round(currentPoint.solar_power_factor * 100)}% array</span>}
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
+              <Sun size={12} color="var(--accent-sun)" /> Sun Status
+            </span>
+            {currentPoint && (
+              <span style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>
+                {Math.round(currentPoint.solar_power_factor * 100)}% array
+              </span>
+            )}
           </div>
-          <div style={{ fontSize: "0.96rem", fontWeight: 700, color: sunStatus.color, fontVariantNumeric: "tabular-nums" }}>{sunStatus.text}</div>
+          <div style={{ fontSize: "0.96rem", fontWeight: 700, color: sunStatus.color, fontVariantNumeric: "tabular-nums" }}>
+            {sunStatus.text}
+          </div>
           <div style={{ fontSize: "0.74rem", color: "var(--text-muted)", fontVariantNumeric: "tabular-nums" }}>
-            {currentPoint ? `Elev: ${formatSignedDeg(currentPoint.sun_elev_deg)} (Horiz ${currentPoint.sun_horizon_elev_deg.toFixed(1)}°)${summary ? ` • ${summary.mean_irradiance_w_m2.toFixed(0)} W/m² mean` : ""}` : "Select a step to inspect solar flux"}
+            {currentPoint
+              ? `Elev: ${formatSignedDeg(currentPoint.sun_elev_deg)} (Horiz ${currentPoint.sun_horizon_elev_deg.toFixed(1)}°)${summary ? ` • ${summary.mean_irradiance_w_m2.toFixed(0)} W/m² mean` : ""}`
+              : "Select a step to inspect solar flux"}
           </div>
         </div>
 
@@ -138,11 +165,15 @@ export function OperationalKpiStrip() {
 
         <div style={CARD_STYLE}>
           <div style={HEADER_STYLE}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}><Radio size={12} color="var(--accent-dte)" /> DTE Comms Status</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
+              <Radio size={12} color="var(--accent-dte)" /> DTE Comms Status
+            </span>
           </div>
           <div style={{ fontSize: "0.94rem", fontWeight: 700, color: dteColor, fontVariantNumeric: "tabular-nums" }}>{dteText}</div>
           <div style={{ fontSize: "0.74rem", color: "var(--text-muted)", fontVariantNumeric: "tabular-nums" }}>
-            {currentPoint ? `Earth Elev: ${currentPoint.earth_elev_deg.toFixed(1)}° | Sep: ${currentPoint.sun_earth_sep_deg.toFixed(1)}°` : "Awaiting Earth line-of-sight..."}
+            {currentPoint
+              ? `Earth Elev: ${currentPoint.earth_elev_deg.toFixed(1)}° | Sep: ${currentPoint.sun_earth_sep_deg.toFixed(1)}°`
+              : "Awaiting Earth line-of-sight..."}
           </div>
         </div>
 
@@ -155,15 +186,35 @@ export function OperationalKpiStrip() {
       </div>
 
       {isBreakdownVisible && summary && (
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.55rem", paddingTop: "0.55rem", borderTop: "1px solid var(--border-subtle)" }}>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            gap: "0.55rem",
+            paddingTop: "0.55rem",
+            borderTop: "1px solid var(--border-subtle)",
+          }}
+        >
           {subScoreItems.map((item) => (
             <span key={item.label} className="status-pill" style={{ fontSize: "0.74rem", fontVariantNumeric: "tabular-nums" }}>
               <span style={{ color: "var(--text-muted)" }}>{item.label}:</span>
-              <strong style={{ color: item.value == null ? "var(--text-muted)" : scoreColor(item.value) }}>{item.value == null ? "N/A" : item.value.toFixed(1)}</strong>
+              <strong style={{ color: item.value == null ? "var(--text-muted)" : scoreColor(item.value) }}>
+                {item.value == null ? "N/A" : item.value.toFixed(1)}
+              </strong>
             </span>
           ))}
           {summary.risk_warnings.map((warning) => (
-            <span key={warning} className="status-pill" style={{ borderColor: "rgba(245, 158, 11, 0.45)", background: "rgba(245, 158, 11, 0.12)", color: "#fcd34d", fontSize: "0.73rem" }}>
+            <span
+              key={warning}
+              className="status-pill"
+              style={{
+                borderColor: "rgba(245, 158, 11, 0.45)",
+                background: "rgba(245, 158, 11, 0.12)",
+                color: "#fcd34d",
+                fontSize: "0.73rem",
+              }}
+            >
               <AlertTriangle size={12} /> {warning}
             </span>
           ))}
