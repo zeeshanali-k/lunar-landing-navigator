@@ -4,10 +4,7 @@
  * derived from the Pydantic models. Until then it must mirror REQ-06 exactly.
  */
 
-export type SolarArrayType =
-  | "horizontal_fixed"
-  | "vertical_fixed"
-  | "vertical_tracking";
+export type SolarArrayType = "horizontal_fixed" | "vertical_fixed" | "vertical_tracking";
 
 /** REQ-06 allowlists. Values outside these are a 422. */
 export type DurationDays = 7 | 14 | 29.5;

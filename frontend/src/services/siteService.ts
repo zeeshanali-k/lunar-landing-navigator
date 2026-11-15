@@ -21,10 +21,7 @@ export async function fetchSites(signal?: AbortSignal): Promise<SiteSummary[]> {
  * measured terrain. That is surfaced to the caller rather than replaced with
  * another site's patch; see REQ-05 and REQ-10.
  */
-export async function fetchSiteTerrain(
-  siteId: string,
-  signal?: AbortSignal,
-): Promise<TerrainPatch> {
+export async function fetchSiteTerrain(siteId: string, signal?: AbortSignal): Promise<TerrainPatch> {
   return requestJson<TerrainPatch>({
     path: `/sites/${encodeURIComponent(siteId)}/terrain`,
     method: "GET",
@@ -35,10 +32,7 @@ export async function fetchSiteTerrain(
 }
 
 /** Fetch a terrain patch for custom coordinates (Contract C). P1 only; not routed in P0. */
-export async function fetchCustomTerrain(
-  payload: CustomTerrainRequest,
-  signal?: AbortSignal,
-): Promise<TerrainPatch> {
+export async function fetchCustomTerrain(payload: CustomTerrainRequest, signal?: AbortSignal): Promise<TerrainPatch> {
   return requestJson<TerrainPatch>({
     path: "/terrain/custom",
     method: "POST",

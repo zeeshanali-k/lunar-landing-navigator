@@ -1,44 +1,130 @@
 # Curated lunar landing sites registry (East-positive selenographic coordinates in [-180, +180])
 sites:
-  - id: artemis-shackleton-ridge
-    name: Shackleton Connecting Ridge
+  - id: artemis-cabeus-peak
+    name: Peak near Cabeus B
     category: artemis_iii
     agency: NASA
-    lat_deg: -89.45
-    lon_deg: 135.2
-    summary: High-elevation ridge connecting Shackleton and de Gerlache craters with extended illumination.
-  - id: artemis-mons-mouton
-    name: Mons Mouton (Leibnitz Beta Plateau)
+    lat_deg: -82.26
+    lon_deg: -54.58
+    coordinate_source_url: https://planetarynames.wr.usgs.gov/Feature/8058
+    summary: Artemis III candidate landing region at a massif peak beside Cabeus B crater in the south polar highlands.
+  - id: artemis-haworth
+    name: Haworth
     category: artemis_iii
     agency: NASA
-    lat_deg: -84.65
-    lon_deg: 31.2
-    summary: Broad flat-topped massif near the lunar South Pole offering high Earth visibility and gentle slopes.
+    lat_deg: -86.90
+    lon_deg: -4.00
+    coordinate_source_url: https://planetarynames.wr.usgs.gov/Feature/14502
+    summary: Artemis III candidate landing region on the Haworth crater rim in the south polar highlands.
   - id: artemis-malapert-massif
     name: Malapert Massif
     category: artemis_iii
     agency: NASA
-    lat_deg: -85.97
-    lon_deg: -2.7
-    summary: Prominent Earth-facing peak at the South Pole with strong direct-to-Earth communications clearance.
+    lat_deg: -85.98
+    lon_deg: -1.67
+    coordinate_source_url: https://planetarynames.wr.usgs.gov/Feature/16338
+    summary: Artemis III candidate landing region on the Mons Malapert massif near the lunar south pole.
+  - id: artemis-mons-mouton-plateau
+    name: Mons Mouton Plateau
+    category: artemis_iii
+    agency: NASA
+    lat_deg: -84.60
+    lon_deg: 31.00
+    coordinate_source_url: https://planetarynames.wr.usgs.gov/Feature/16070
+    summary: Artemis III candidate landing region on the plateau of Mons Mouton, a distinct region from Mons Mouton on the same massif.
+  - id: artemis-mons-mouton
+    name: Mons Mouton
+    category: artemis_iii
+    agency: NASA
+    lat_deg: -84.60
+    lon_deg: 31.00
+    coordinate_source_url: https://planetarynames.wr.usgs.gov/Feature/16070
+    summary: Artemis III candidate landing region on the Mons Mouton massif, a distinct region from Mons Mouton Plateau on the same massif.
+  - id: artemis-nobile-rim-1
+    name: Nobile Rim 1
+    category: artemis_iii
+    agency: NASA
+    lat_deg: -85.28
+    lon_deg: 53.27
+    coordinate_source_url: https://planetarynames.wr.usgs.gov/Feature/4321
+    summary: Artemis III candidate landing region on the rim of Nobile crater, one of two Nobile Rim regions.
+  - id: artemis-nobile-rim-2
+    name: Nobile Rim 2
+    category: artemis_iii
+    agency: NASA
+    lat_deg: -85.28
+    lon_deg: 53.27
+    coordinate_source_url: https://planetarynames.wr.usgs.gov/Feature/4321
+    summary: Artemis III candidate landing region on the rim of Nobile crater, the second of the two Nobile Rim regions.
+  - id: artemis-degerlache-rim-2
+    name: de Gerlache Rim 2
+    category: artemis_iii
+    agency: NASA
+    lat_deg: -88.48
+    lon_deg: -88.34
+    coordinate_source_url: https://planetarynames.wr.usgs.gov/Feature/1439
+    summary: Artemis III candidate landing region on the rim of de Gerlache crater near the lunar south pole.
+  - id: artemis-slater-plain
+    name: Slater Plain
+    category: artemis_iii
+    agency: NASA
+    lat_deg: -88.08
+    lon_deg: 111.29
+    coordinate_source_url: https://planetarynames.wr.usgs.gov/Feature/15325
+    summary: Artemis III candidate landing region in the Slater Plain area of the south polar highlands.
   - id: clps-mare-crisium
     name: Mare Crisium (Blue Ghost)
     category: clps_commercial
     agency: NASA / Firefly
-    lat_deg: 18.56
-    lon_deg: 61.81
-    summary: Smooth mid-latitude basalt basin near Mons Latreille targeted by CLPS Blue Ghost Mission 1.
+    lat_deg: 18.47
+    lon_deg: 61.92
+    coordinate_source_url: https://planetarynames.wr.usgs.gov/Feature/15996
+    summary: Firefly Blue Ghost Mission 1 landing site on the mare basalt plain beside Mons Latreille in Mare Crisium.
+  - id: clps-gruithuisen-domes
+    name: Gruithuisen Domes
+    category: clps_commercial
+    agency: NASA
+    lat_deg: 36.07
+    lon_deg: -39.59
+    coordinate_source_url: https://planetarynames.wr.usgs.gov/Feature/3981
+    summary: CLPS candidate landing region at the Gruithuisen Domes, a pair of silicic volcanic domes near Mons Gruithuisen Delta.
+  - id: clps-lacus-mortis
+    name: Lacus Mortis
+    category: clps_commercial
+    agency: NASA
+    lat_deg: 45.13
+    lon_deg: 27.32
+    coordinate_source_url: https://planetarynames.wr.usgs.gov/Feature/3212
+    summary: CLPS candidate landing region in Lacus Mortis, a basalt-flooded crater on the northeastern near side.
   - id: apollo-11-tranquillitatis
     name: Apollo 11 (Mare Tranquillitatis)
     category: apollo_historic
     agency: NASA
-    lat_deg: 0.674
-    lon_deg: 23.473
-    summary: Tranquility Base historic first crewed lunar landing site with minimal horizon obstruction.
-  - id: change-4-von-karman
-    name: Chang'e-4 (Von Karman Crater)
+    lat_deg: 0.67
+    lon_deg: 23.47
+    coordinate_source_url: https://planetarynames.wr.usgs.gov/Feature/5684
+    summary: Apollo 11 Tranquility Base, the first crewed lunar landing, in Mare Tranquillitatis.
+  - id: apollo-15-hadley-rille
+    name: Apollo 15 (Hadley Rille)
+    category: apollo_historic
+    agency: NASA
+    lat_deg: 25.72
+    lon_deg: 3.15
+    coordinate_source_url: https://planetarynames.wr.usgs.gov/Feature/5064
+    summary: Apollo 15 landing site at Hadley Rille below the Apennine mountains.
+  - id: isro-chandrayaan-3-shiv-shakti
+    name: Chandrayaan-3 (Shiv Shakti Point)
+    category: international
+    agency: ISRO
+    lat_deg: -69.37
+    lon_deg: 32.32
+    coordinate_source_url: https://planetarynames.wr.usgs.gov/Feature/16272
+    summary: Chandrayaan-3 Vikram landing site, named Statio Shiv Shakti, in the lunar southern highlands.
+  - id: cnsa-change-4-von-karman
+    name: Chang'e-4 (Von Kármán Crater)
     category: international
     agency: CNSA
-    lat_deg: -45.457
-    lon_deg: 177.588
-    summary: Historic first lunar far-side landing inside South Pole-Aitken basin; 0% direct-to-Earth visibility.
+    lat_deg: -45.45
+    lon_deg: 177.60
+    coordinate_source_url: https://planetarynames.wr.usgs.gov/Feature/15781
+    summary: Chang'e-4 landing site, named Statio Tianhe, inside Von Kármán crater on the lunar far side.

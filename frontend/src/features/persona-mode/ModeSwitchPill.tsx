@@ -20,7 +20,13 @@ export function ModeSwitchPill() {
       <div
         role="group"
         aria-label="Audience mode"
-        style={{ display: "inline-flex", padding: "0.18rem", borderRadius: "0.5rem", border: "1px solid var(--border-subtle)", background: "var(--bg-space)" }}
+        style={{
+          display: "inline-flex",
+          padding: "0.18rem",
+          borderRadius: "0.5rem",
+          border: "1px solid var(--border-subtle)",
+          background: "var(--bg-space)",
+        }}
       >
         {(["planner", "explorer"] as const).map((mode) => {
           const active = personaMode === mode;

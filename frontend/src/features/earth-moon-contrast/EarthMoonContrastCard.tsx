@@ -10,21 +10,14 @@ export interface EarthMoonContrastCardProps {
   personaMode?: "planner" | "explorer";
 }
 
-export function EarthMoonContrastCard({
-  evaluation,
-  currentIndex,
-  personaMode = "planner",
-}: EarthMoonContrastCardProps) {
+export function EarthMoonContrastCard({ evaluation, currentIndex, personaMode = "planner" }: EarthMoonContrastCardProps) {
   const storeIndex = usePlaybackStore((s) => s.currentIndex);
   const activeIdx = currentIndex ?? storeIndex;
 
   const { site, summary, horizon_profile, timeseries } = evaluation;
   const safeIdx = Math.min(Math.max(0, activeIdx), Math.max(0, timeseries.length - 1));
   const active = timeseries[safeIdx];
-  const limbLabel =
-    horizon_profile.length > 0
-      ? `${horizon_profile[0].geometric_limb_deg.toFixed(2)}° limb`
-      : "spherical limb";
+  const limbLabel = horizon_profile.length > 0 ? `${horizon_profile[0].geometric_limb_deg.toFixed(2)}° limb` : "spherical limb";
 
   const librationBox = useMemo(() => {
     if (timeseries.length === 0) {
@@ -81,7 +74,17 @@ export function EarthMoonContrastCard({
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "0.75rem" }}>
         {cards.map((card) => (
-          <div key={card.title} style={{ background: "#0b1120", border: "1px solid #1e293b", borderRadius: "0.55rem", padding: "0.7rem 0.8rem", display: "grid", gap: "0.35rem" }}>
+          <div
+            key={card.title}
+            style={{
+              background: "#0b1120",
+              border: "1px solid #1e293b",
+              borderRadius: "0.55rem",
+              padding: "0.7rem 0.8rem",
+              display: "grid",
+              gap: "0.35rem",
+            }}
+          >
             <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#e2e8f0" }}>{card.title}</div>
             <div style={{ fontSize: "0.74rem", color: "#94a3b8" }}>
               <strong style={{ color: "#38bdf8" }}>Earth:</strong> {card.earth}

@@ -54,15 +54,23 @@ export function CountdownBadge({
     letterSpacing: "0.03em",
   };
 
-  const valueColor = isImminent
-    ? "#fcd34d"
-    : hoursRemaining === null
-      ? "var(--text-muted)"
-      : "var(--text-primary)";
+  const valueColor = isImminent ? "#fcd34d" : hoursRemaining === null ? "var(--text-muted)" : "var(--text-primary)";
 
   return (
     <div style={cardStyle}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.4rem", fontSize: "0.73rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em", color: "var(--text-muted)" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "0.4rem",
+          fontSize: "0.73rem",
+          fontWeight: 600,
+          textTransform: "uppercase",
+          letterSpacing: "0.04em",
+          color: "var(--text-muted)",
+        }}
+      >
         <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
           <Clock size={12} color={isImminent ? "var(--accent-warn)" : accentColor} />
           {label}
@@ -74,11 +82,22 @@ export function CountdownBadge({
           </span>
         )}
       </div>
-      <div style={{ fontSize: hoursRemaining === null ? "0.86rem" : "1.02rem", fontWeight: 700, fontVariantNumeric: "tabular-nums", color: valueColor }}>
+      <div
+        style={{
+          fontSize: hoursRemaining === null ? "0.86rem" : "1.02rem",
+          fontWeight: 700,
+          fontVariantNumeric: "tabular-nums",
+          color: valueColor,
+        }}
+      >
         {formatted}
       </div>
       <div style={{ fontSize: "0.74rem", color: "var(--text-muted)" }}>
-        {isImminent ? "Critical transition within 12 hours" : hoursRemaining === null ? "No transition inside active window" : "Live countdown from selected step"}
+        {isImminent
+          ? "Critical transition within 12 hours"
+          : hoursRemaining === null
+            ? "No transition inside active window"
+            : "Live countdown from selected step"}
       </div>
     </div>
   );

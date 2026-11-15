@@ -1,11 +1,8 @@
 /** Unit tests for mission timeline step inference and Gantt segment grouping. */
 
-import {
-  buildCommsSegments,
-  buildPowerSegments,
-  classifyPowerState,
-  inferStepHours,
-} from "../features/mission-timeline/timelineSegments";
+import { it } from "vitest";
+
+import { buildCommsSegments, buildPowerSegments, classifyPowerState, inferStepHours } from "../features/mission-timeline/timelineSegments";
 import type { TimeseriesPoint } from "../types";
 
 function assert(condition: boolean, message: string): void {
@@ -20,12 +17,7 @@ function assertApprox(actual: number, expected: number, eps: number, label: stri
   }
 }
 
-function makePoint(
-  timestamp_utc: string,
-  sun_visible_fraction: number,
-  is_sunlit: boolean,
-  is_dte_visible: boolean,
-): TimeseriesPoint {
+function makePoint(timestamp_utc: string, sun_visible_fraction: number, is_sunlit: boolean, is_dte_visible: boolean): TimeseriesPoint {
   return {
     timestamp_utc,
     sun_az_deg: 0,
@@ -60,17 +52,11 @@ export function runTimelineSegmentsTests(): void {
   ];
   assertApprox(inferStepHours(hourly), 1.0, 1e-6, "hourly inferStepHours");
 
-  const halfHourly = [
-    makePoint("2027-11-06T00:00:00Z", 1.0, true, true),
-    makePoint("2027-11-06T00:30:00Z", 1.0, true, true),
-  ];
+  const halfHourly = [makePoint("2027-11-06T00:00:00Z", 1.0, true, true), makePoint("2027-11-06T00:30:00Z", 1.0, true, true)];
   assertApprox(inferStepHours(halfHourly), 0.5, 1e-6, "30-min inferStepHours");
 
   // 2. Power state classification
-  assert(
-    classifyPowerState(makePoint("2027-11-06T00:00:00Z", 0.9, false, false)) === "dark",
-    "is_sunlit=false must classify as dark",
-  );
+  assert(classifyPowerState(makePoint("2027-11-06T00:00:00Z", 0.9, false, false)) === "dark", "is_sunlit=false must classify as dark");
   assert(
     classifyPowerState(makePoint("2027-11-06T00:00:00Z", 0.02, true, false)) === "dark",
     "sun_visible_fraction<=0.05 must classify as dark",
@@ -133,4 +119,6 @@ export function runTimelineSegmentsTests(): void {
   );
 }
 
-runTimelineSegmentsTests();
+it("mission timeline step inference and Gantt segment grouping", () => {
+  runTimelineSegmentsTests();
+});

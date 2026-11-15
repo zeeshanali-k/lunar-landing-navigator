@@ -1,10 +1,6 @@
 /** Pure horizon interpolation, panoramic projection, and polar sky-dome math (F4.3 & F4.4). */
 
-import {
-  degToRad,
-  normalizeAzimuthDeg,
-  type HorizonProfilePoint,
-} from "../../types";
+import { degToRad, normalizeAzimuthDeg, type HorizonProfilePoint } from "../../types";
 
 export interface SVGPoint {
   x: number;
@@ -47,8 +43,7 @@ export function interpolateHorizonElevDeg(
       const t = (queryAz - startAz) / span;
       return {
         terrainElevDeg: curr.terrain_elev_deg + (next.terrain_elev_deg - curr.terrain_elev_deg) * t,
-        geometricLimbDeg:
-          curr.geometric_limb_deg + (next.geometric_limb_deg - curr.geometric_limb_deg) * t,
+        geometricLimbDeg: curr.geometric_limb_deg + (next.geometric_limb_deg - curr.geometric_limb_deg) * t,
       };
     }
   }
@@ -91,38 +86,27 @@ export function buildPanoramaHorizonPaths(
       const az = (i / (samples - 1)) * 360.0;
       limbPts.push(azElevToPanoramaSVG(az, 0, width, height, minElev, maxElev));
     }
-    const limbLinePath = limbPts
-      .map((p, idx) => `${idx === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`)
-      .join(" ");
+    const limbLinePath = limbPts.map((p, idx) => `${idx === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
     return { areaPath: "", ridgeLinePath: "", limbLinePath };
   }
 
   const ridgePts: SVGPoint[] = [];
   for (let i = 0; i < samples; i += 1) {
     const az = (i / (samples - 1)) * 360.0;
-    const { terrainElevDeg, geometricLimbDeg } = interpolateHorizonElevDeg(
-      profile,
-      az === 360.0 ? 0.0 : az,
-    );
+    const { terrainElevDeg, geometricLimbDeg } = interpolateHorizonElevDeg(profile, az === 360.0 ? 0.0 : az);
     ridgePts.push(azElevToPanoramaSVG(az, terrainElevDeg, width, height, minElev, maxElev));
     limbPts.push(azElevToPanoramaSVG(az, geometricLimbDeg, width, height, minElev, maxElev));
   }
 
-  const ridgeLinePath = ridgePts
-    .map((p, idx) => `${idx === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`)
-    .join(" ");
-  const limbLinePath = limbPts
-    .map((p, idx) => `${idx === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`)
-    .join(" ");
+  const ridgeLinePath = ridgePts.map((p, idx) => `${idx === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+  const limbLinePath = limbPts.map((p, idx) => `${idx === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
   const areaPath = `${ridgeLinePath} L${width.toFixed(1)},${height.toFixed(1)} L0,${height.toFixed(1)} Z`;
 
   return { areaPath, ridgeLinePath, limbLinePath };
 }
 
 /** Split trajectory points into contiguous segments when azimuth wraps across 360 <-> 0 deg. */
-export function splitWrappedTrajectorySegments<T extends TrajectoryPointInput>(
-  points: T[],
-): T[][] {
+export function splitWrappedTrajectorySegments<T extends TrajectoryPointInput>(points: T[]): T[][] {
   if (points.length === 0) {
     return [];
   }
@@ -140,14 +124,7 @@ export function splitWrappedTrajectorySegments<T extends TrajectoryPointInput>(
 }
 
 /** Project (azDeg, elevDeg) to polar sky-dome SVG coords (0=N top, 90=E right). */
-export function azElevToSkyDomeSVG(
-  azDeg: number,
-  elevDeg: number,
-  cx: number,
-  cy: number,
-  maxR: number,
-  rimMagnified: boolean,
-): SVGPoint {
+export function azElevToSkyDomeSVG(azDeg: number, elevDeg: number, cx: number, cy: number, maxR: number, rimMagnified: boolean): SVGPoint {
   const minElev = -5.0;
   const maxElev = rimMagnified ? 25.0 : 90.0;
   const clampedElev = Math.max(minElev, Math.min(maxElev, elevDeg));

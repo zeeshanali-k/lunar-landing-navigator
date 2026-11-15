@@ -54,7 +54,8 @@ def refresh_protected_digests() -> None:
     header = (
         "# SHA-256 digests of protected files.\n"
         "# Regenerate only with human sign-off:\n"
-        "#   ALLOW_PROTECTED=1 python3 scripts/check_planning_docs.py --refresh\n\n"
+        "#   ALLOW_PROTECTED=1 uv run --project backend --python 3.12 --frozen "
+        "python scripts/check_planning_docs.py --refresh\n\n"
     )
     PROTECTED_MANIFEST.write_text(header + "\n".join(entries) + "\n", encoding="utf-8")
 
@@ -206,6 +207,37 @@ def check_work_log() -> None:
     require("DONE" in text and "BLOCKED" in text, "WORK_LOG.md must use the status legend")
 
 
+def check_no_bare_python_invocations() -> None:
+    """Python must run through uv (REQ-03) in documentation.
+
+    Scans the operative and historical Markdown only. Scanning Python sources
+    produced self-referential false positives: this file, `planning_checks.py`,
+    and `scripts/fetch_horizons.py` all quote these patterns in docstrings and
+    in the regexes that define the rule itself. The rule governs how commands
+    are *instructed*; a real bare invocation starts the command line.
+    README.md is exempt because it is historical and rewritten by DELIVERY-002.
+    """
+    import re as _re
+
+    bare = _re.compile(r"^(?:python3?|pip)\s+(?:scripts/|-m\s|install\b)")
+    pipish = _re.compile(r"\b(?:pip\s+install|uv\s+pip)\b")
+    docs = (
+        [path for path in sorted(ROOT.glob("*.md")) if path.name != "README.md"]
+        + sorted((ROOT / "plan").glob("*.md"))
+        + sorted((ROOT / "docs").rglob("*.md"))
+    )
+    for path in docs:
+        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            stripped = line.strip()
+            if stripped.startswith("#"):
+                continue
+            if bare.match(stripped) or pipish.search(stripped):
+                raise PlanError(
+                    f"{path.relative_to(ROOT)}:{lineno} uses a bare Python invocation "
+                    f"{stripped[:48]!r}; use the uv form from REQ-03"
+                )
+
+
 def main() -> int:
     """Run every documentation check and report the outcome."""
     if "--refresh" in sys.argv[1:]:
@@ -230,6 +262,7 @@ def main() -> int:
         check_agent_dirs_untracked()
         check_protected_digests()
         check_work_log()
+        check_no_bare_python_invocations()
     except PlanError as exc:
         print(f"FAIL  {exc}")
         return 1

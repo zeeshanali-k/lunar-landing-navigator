@@ -3,7 +3,7 @@
 **Status:** OPERATIVE. This is the single plan and the only technical authority for implementation.
 **Challenge:** [NASA Space Apps 2026 — Lunar Landing Site Navigator](https://www.spaceappschallenge.org/2026/challenges/lunar-landing-site-navigator/)
 **Team:** three modules owned by three people; see [`plan/OWNERS.md`](plan/OWNERS.md).
-**Revision:** 3. Merges the former `HACKATHON_BUILD_PLAN.md` (revision 2) into this document and supersedes both earlier files.
+**Revision:** 5. Revision 3 merged the former `HACKATHON_BUILD_PLAN.md` (revision 2) into this document and superseded both earlier files. Revision 4 aligns the registry to NASA's nine current Artemis III candidate regions and extends ephemeris coverage to 2026-01-01…2029-01-01; see Appendix D. Revision 5 defines the parallel agent execution model, branch-per-worktree policy, and integration protocol without changing any science, contract, or acceptance rule; see Appendix E. Revision 5 also reconciles the M4 frontend merge from `main` and records the IAU coordinate source of record; see Appendices E and F.
 
 This plan replaces every earlier plan in this repository. `plan/00`–`plan/05` remain as historical design context and are not executable.
 
@@ -74,13 +74,14 @@ When a check fails, the agent reports the failure and stops. Making the check pa
 8. On any failed command, missing input, or ambiguity: set `blocked` with the exact reason and stop. Do not attempt speculative fixes.
 9. Do not edit `README.md`, do not start 3D work, do not add runtime downloads, and do not activate P1 without a completed `P1-APPROVAL` record.
 10. Do not perform opportunistic cleanup, refactors, dependency upgrades, or "while I'm here" changes.
+11. Parallel agents each select one task independently. A branch carries at most one `in_progress` task, and the integration branch never receives a branch whose task is still `in_progress`. A branch is integrated only after its task is `done` or `blocked`, and only the integrator merges it. See Appendix E.
 
 <a id="req-02"></a>
 ## REQ-02 Scope, ownership, and promotion/demotion
 
 ### P0 — first shippable release
 
-Fourteen curated sites; site/date/duration controls; precomputed Sun and Earth ephemeris; real LOLA terrain for covered sites and an honest `spherical_limb_only` model elsewhere; 360° horizon silhouette; multi-day power/DTE timeline; KPI strip with solar elevation and hours-to-sunset/earthset; power and DTE assessment; canonical shareable URL; and an offline demo that requires no network.
+Sixteen curated sites; site/date/duration controls; precomputed Sun and Earth ephemeris; real LOLA terrain for covered sites and an honest `spherical_limb_only` model elsewhere; 360° horizon silhouette; multi-day power/DTE timeline; KPI strip with solar elevation and hours-to-sunset/earthset; power and DTE assessment; canonical shareable URL; and an offline demo that requires no network.
 
 **P0 has no** custom coordinates, comparison, window heatmap, 2D polar map, 3D, PSR masks, export, Docker, cloud deployment, or database.
 
@@ -300,36 +301,40 @@ Downloads write to `<name>.part`, verify size and hash, then atomically rename. 
 <a id="req-05"></a>
 ## REQ-05 Closed site registry and terrain availability
 
-Exactly **14 unique** entries, in this order, which is the `GET /api/v1/sites` response order:
+Exactly **16 unique** entries, in this order, which is the `GET /api/v1/sites` response order:
 
 | # | `id` | Name | Category | Terrain |
 |---|---|---|---|---|
-| 1 | `artemis-shackleton-ridge` | Shackleton Connecting Ridge | `artemis_iii` | LOLA |
-| 2 | `artemis-faustini-rim-a` | Faustini Rim A | `artemis_iii` | LOLA |
-| 3 | `artemis-haworth` | Haworth | `artemis_iii` | LOLA |
-| 4 | `artemis-malapert-massif` | Malapert Massif | `artemis_iii` | LOLA |
-| 5 | `artemis-mons-mouton` | Mons Mouton (Leibnitz Beta Plateau) | `artemis_iii` | LOLA |
+| 1 | `artemis-cabeus-peak` | Peak near Cabeus B | `artemis_iii` | LOLA |
+| 2 | `artemis-haworth` | Haworth | `artemis_iii` | LOLA |
+| 3 | `artemis-malapert-massif` | Malapert Massif | `artemis_iii` | LOLA |
+| 4 | `artemis-mons-mouton-plateau` | Mons Mouton Plateau | `artemis_iii` | LOLA |
+| 5 | `artemis-mons-mouton` | Mons Mouton | `artemis_iii` | LOLA |
 | 6 | `artemis-nobile-rim-1` | Nobile Rim 1 | `artemis_iii` | LOLA |
-| 7 | `artemis-cabeus-peak` | Peak near Cabeus | `artemis_iii` | LOLA |
-| 8 | `clps-mare-crisium` | Mare Crisium (Blue Ghost) | `clps_commercial` | limb only |
-| 9 | `clps-gruithuisen-domes` | Gruithuisen Domes | `clps_commercial` | limb only |
-| 10 | `clps-lacus-mortis` | Lacus Mortis | `clps_commercial` | limb only |
-| 11 | `apollo-11-tranquillitatis` | Apollo 11 (Mare Tranquillitatis) | `apollo_historic` | limb only |
-| 12 | `apollo-15-hadley-rille` | Apollo 15 (Hadley Rille) | `apollo_historic` | limb only |
-| 13 | `isro-chandrayaan-3-shiv-shakti` | Chandrayaan-3 (Shiv Shakti Point) | `international` | limb only |
-| 14 | `cnsa-change-4-von-karman` | Chang'e-4 (Von Kármán Crater) | `international` | limb only |
+| 7 | `artemis-nobile-rim-2` | Nobile Rim 2 | `artemis_iii` | LOLA |
+| 8 | `artemis-degerlache-rim-2` | de Gerlache Rim 2 | `artemis_iii` | LOLA |
+| 9 | `artemis-slater-plain` | Slater Plain | `artemis_iii` | LOLA |
+| 10 | `clps-mare-crisium` | Mare Crisium (Blue Ghost) | `clps_commercial` | limb only |
+| 11 | `clps-gruithuisen-domes` | Gruithuisen Domes | `clps_commercial` | limb only |
+| 12 | `clps-lacus-mortis` | Lacus Mortis | `clps_commercial` | limb only |
+| 13 | `apollo-11-tranquillitatis` | Apollo 11 (Mare Tranquillitatis) | `apollo_historic` | limb only |
+| 14 | `apollo-15-hadley-rille` | Apollo 15 (Hadley Rille) | `apollo_historic` | limb only |
+| 15 | `isro-chandrayaan-3-shiv-shakti` | Chandrayaan-3 (Shiv Shakti Point) | `international` | limb only |
+| 16 | `cnsa-change-4-von-karman` | Chang'e-4 (Von Kármán Crater) | `international` | limb only |
 
 Rules:
 
-1. Every entry carries a `coordinate_source_url` recording where its `lat_deg`/`lon_deg` came from. **An agent must never invent a coordinate.** If a provenance URL cannot be captured, `DATA-001` is `blocked`.
-2. Mons Mouton appears **once** (the duplicate in the legacy prose is corrected). Secondary mission associations live in `summary`, not in extra categories.
-3. `elevation_m` and `mean_slope_deg` are derived from the generated site pack, never hand-entered.
-4. `has_precomputed_terrain` reflects actual pack presence, not registry intent.
-5. `parent_body` is not modelled; lunar sites only.
+1. The `artemis_iii` nine are NASA's current Artemis III candidate landing regions, announced 2024-10-28 ([NASA release 24-136](https://www.nasa.gov/news-release/nasa-provides-update-on-artemis-iii-moon-landing-regions/)). They replaced the original 2022 set of thirteen; Shackleton Connecting Ridge and Faustini Rim A were excluded in that downselect and are not in the registry.
+2. Every entry carries a `coordinate_source_url` recording where its `lat_deg`/`lon_deg` came from. **An agent must never invent a coordinate.** If a provenance URL cannot be captured, `DATA-001` is `blocked`.
+   The source of record is the IAU/USGS Gazetteer of Planetary Nomenclature feature centre (`https://planetarynames.wr.usgs.gov/Feature/<id>`). A QuickMap pinned URL is the documented fallback only when the gazetteer has no suitable feature or is unavailable; Wikipedia, blogs, and eyeballed map images are never a source. This is the coordinate policy for the registry; no later task re-sources or invents a coordinate.
+3. `Mons Mouton` and `Mons Mouton Plateau` are two distinct Artemis III regions on the same massif, not a duplicate. Secondary mission associations live in `summary`, not in extra categories.
+4. `elevation_m` and `mean_slope_deg` are derived from the generated site pack, never hand-entered.
+5. `has_precomputed_terrain` reflects actual pack presence, not registry intent.
+6. `parent_body` is not modelled; lunar sites only.
 
 ### Terrain availability model — two explicit classes
 
-**Class A — LOLA-covered (the 7 south-polar sites, latitude ≤ −80°).** Real DEM patch, real elevation, real slope, real 360° horizon.
+**Class A — LOLA-covered (the 9 south-polar sites, latitude ≤ −80°).** Real DEM patch, real elevation, real slope, real 360° horizon.
 
 **Class B — `spherical_limb_only` (the other 7).** No fabricated data whatsoever:
 
@@ -394,7 +399,7 @@ observer_height_m: 1.5 | 2.0 | 10.0
 solar_array_type : horizontal_fixed | vertical_fixed | vertical_tracking
 fixed_array_azimuth_deg : default 0.0        (0 = north, 90 = east), range [0, 360)
 min_comms_elev_deg      : default 5.0, range [-5.0, 45.0]
-site_id                 : one of the 14 registry IDs
+site_id                 : one of the 16 registry IDs
 ```
 
 Values outside an allowlist are a **422**. `observer_height_m` is an allowlist rather than a range because only three horizon profiles are precomputed (REQ-08).
@@ -408,10 +413,10 @@ Values outside an allowlist are a **422**. `observer_height_m` is an allowlist r
   "frame": "MOON_ME",
   "longitude_convention": "east_positive",
   "azimuth_convention": "clockwise_from_north",
-  "start_utc": "2027-01-01T00:00:00Z",
-  "stop_utc": "2028-07-01T00:00:00Z",
+  "start_utc": "2026-01-01T00:00:00Z",
+  "stop_utc": "2029-01-01T00:00:00Z",
   "step_seconds": 3600,
-  "sample_count": 13129,
+  "sample_count": 26305,
   "sun_az_deg": [0.0],
   "sun_elev_deg": [0.0],
   "earth_az_deg": [0.0],
@@ -456,9 +461,11 @@ Invariants: `elevations_m` and `slopes_deg` have exactly `grid_size² = 16384` f
 
 ### Coverage
 
-**2027-01-01T00:00:00Z through 2028-07-01T00:00:00Z inclusive, hourly, 13,129 samples per body per site.**
+**2026-01-01T00:00:00Z through 2029-01-01T00:00:00Z inclusive, hourly, 26,305 samples per body per site.**
 
-Rationale: supports the reference scenario (2027-11-01), all four launch delays (+14, +29.5, +90, +180 d), and every P1 window candidate including its 15-day lookahead.
+The stop date is **2029-01-01**, not 2028-12-31. A stop of 2028-12-31 yields only 26,281 samples and silently drops the final day. Verified against Horizons: `START_TIME='2026-01-01'`, `STOP_TIME='2029-01-01'`, `STEP_SIZE='1h'` returns exactly 26,305 rows.
+
+Rationale: supports current-date evaluation, the reference scenario (2027-11-01), all four launch delays (+14, +29.5, +90, +180 d), and every P1 window candidate including its 15-day lookahead. Latest evaluable start is ≈ 2028-11-16.
 
 **Hard rule:** an evaluation is valid only if `start + mission_duration + 15 days ≤ coverage_stop`, and `start ≥ coverage_start`. Otherwise reject with `422 EPHEMERIS_RANGE_EXCEEDED`. Never extrapolate, never clamp silently, never serve a neighbouring site's data.
 
@@ -713,7 +720,7 @@ All acceptance is a command or a frozen numeric comparison. Prohibited acceptanc
 
 ### Required evidence
 
-1. **Registry** — exactly 14 unique IDs, unique names, finite coordinates in range, a provenance URL per entry.
+1. **Registry** — exactly 16 unique IDs, unique names, finite coordinates in range, a provenance URL per entry.
 2. **Terrain availability** — pack presence matches `has_precomputed_terrain`; Class B terrain request returns 409.
 3. **Grid** — 128×128, 16,384 finite values, spacing `40000/127`, row/column directions, one axis-orientation unit test against probed pixels.
 4. **Raycast** — synthetic crater recovers analytic horizon within `< 0.02°`; flat surface yields the analytic limb for all three heights; a boundary test proves no sampling beyond 120 km.
@@ -803,3 +810,188 @@ The following remain in the repository as design context. They are **not** execu
 | Requirement-traceability matrix mapping objectives to feature IDs | REQ-01…REQ-12 below, each naming its primary tasks. |
 
 The old plan's *intent* — real NASA data, honest physics, rapid site comparison for planners and educators — is unchanged. Only its execution model was replaced.
+
+---
+
+## Appendix D — What revision 4 changed, and why
+
+Revision 4 is a scope correction approved by the human owner. It does not change any physics,
+contract, or acceptance rule from revision 3.
+
+| Superseded | Revision 4 | Reason |
+|---|---|---|
+| 14-site registry with seven `artemis_iii` entries from the 2022 candidate set | 16-site registry: NASA's **nine** current Artemis III candidate regions plus the seven CLPS/Apollo/international sites | NASA downselected Artemis III from thirteen regions (2022) to nine on 2024-10-28, [release 24-136](https://www.nasa.gov/news-release/nasa-provides-update-on-artemis-iii-moon-landing-regions/). |
+| `artemis-shackleton-ridge` (Shackleton Connecting Ridge), `artemis-faustini-rim-a` (Faustini Rim A) | Removed | Both were in the original thirteen and were excluded by NASA in the 2024 downselect. |
+| — | `artemis-mons-mouton-plateau`, `artemis-nobile-rim-2`, `artemis-degerlache-rim-2`, `artemis-slater-plain` added | These are among NASA's current nine and were missing from the old registry. `Mons Mouton` and `Mons Mouton Plateau` are two distinct regions on the same massif. |
+| Ephemeris coverage 2027-01-01 … 2028-07-01 (13,129 hourly samples) | 2026-01-01 … 2029-01-01 (26,305 hourly samples) | Supports current-date evaluation, the reference scenario, all four launch delays, and every P1 window candidate with its 15-day lookahead. A stop of 2028-12-31 silently drops the final day. |
+
+Execution history for this revision is in `WORK_LOG.md`; it is not duplicated here.
+
+---
+
+## Appendix E — Parallel agent execution (revision 5)
+
+Revision 5 changes how the existing ledger tasks are executed, not what they produce. The task
+DAG, commands, acceptance criteria, physics, contracts, registry, and evidence rules are unchanged.
+
+### Roles
+
+| Agent | Branch | Tasks, in order | Scope |
+|---|---|---|---|
+| `agent-alpha` | `bauerceptor-alpha` | `DATA-002`, `DATA-003` | LOLA DEM and JPL Horizons acquisition |
+| `agent-beta` | `bauerceptor-beta` | `DATA-004`, `DATA-005`, `DATA-006` | Ephemeris packs, terrain packs, pack index and fixtures |
+| `agent-charlie` | `bauerceptor-charlie` | `ARCH-002`, `BE-001`, `BE-002`, `BE-003` | Contracts, mission time and interpolation, physics, DTE, scoring, API |
+| `agent-zeta` | `bauerceptor` | integration only | Scope and evidence audit, merge, digests, documents, final validation |
+
+The ledger remains the task authority. Agent names and wave assignments live in `NEXT_SESSION.md`
+and this appendix; they are never added to the ledger or its closed schema.
+
+### Branch and worktree model
+
+`bauerceptor` is the integration branch. Git permits a branch to be checked out in only one
+worktree, so each agent works in a separate worktree on a dedicated branch cut from `bauerceptor`:
+`bauerceptor-alpha`, `bauerceptor-beta`, and `bauerceptor-charlie`. The branch guard accepts the
+owner branch and any `<owner-branch>-*` suffix declared in `plan/OWNERS.md`; it continues to reject
+`main`, detached HEAD, and every other branch.
+
+Integration uses `git merge --no-ff`. Squash, rebase, force-push, and branch rewriting are
+forbidden because every closed task records its `completed_commit` in the ledger and that commit
+must remain resolvable.
+
+### Concurrency rules
+
+1. One agent, one task at a time. A branch carries at most one `in_progress` task.
+2. An agent starts a task only when every `depends_on` entry is `done` on `bauerceptor` and the
+   agent has merged `bauerceptor` into its worktree so the producer's artefacts and contracts are
+   present.
+3. An agent hands off after each task. It sets the task `done` or `blocked`, commits, and stops. It
+   does not begin the next task until the integrator has merged the branch and synced
+   `bauerceptor` back into the agent's worktree.
+4. The integration branch never receives a branch whose task is still `in_progress`. The integrator
+   merges only `done` or `blocked` tasks.
+5. An agent writes only its current task's `write_paths`, its own task's ledger execution fields,
+   its own working notes (kept outside the committed tree), and a subsection of `WORK_LOG.md`. It does not edit another agent's files,
+   the ledger definitions, `DEVELOPMENT_PLAN.md`, `plan/OWNERS.md`, `NEXT_SESSION.md`, scripts,
+   hooks, or generated files by hand.
+6. Shared-file conflicts are resolved by the integrator: the ledger keeps both tasks' execution
+   fields, `plan/protected.sha256` is regenerated rather than hand-merged, and `WORK_LOG.md` keeps
+   both subsections.
+7. A failed command, missing input, or invalid artefact sets the task `blocked` with the exact
+   reason. An agent does not fix outside `write_paths`, relax a test, bypass a hook, or substitute
+   another data source.
+8. No agent pushes. No agent changes `user.name` or `user.email`. Commits carry no agent trailer.
+
+### Wave schedule
+
+The DAG fixes the schedule; it is not a preference.
+
+| Wave | `agent-alpha` | `agent-beta` | `agent-charlie` | Integrator gate |
+|---|---|---|---|---|
+| 0 | setup | setup | setup | Governance commit, worktrees, handover copies |
+| 1 | `DATA-002` | standby | `ARCH-002` | Merge `DATA-002` and `ARCH-002`; refresh; validate |
+| 2 | `DATA-003` | standby | standby | Merge `DATA-003`; refresh; validate |
+| 3 | done | `DATA-004` | standby | Merge `DATA-004`; refresh; validate |
+| 4 | done | `DATA-005` | `BE-001` | Merge `DATA-005` and `BE-001`; refresh; validate |
+| 5 | done | `DATA-006` | `BE-002` | Merge `DATA-006` and `BE-002`; refresh; validate |
+| 6 | done | done | `BE-003` | Merge `BE-003`; final validation |
+
+Standby is read-only preparation: reading the plan, ledger, source interfaces, and existing
+artefacts, and updating the agent's own working notes. A standby agent creates no task output and
+sets no dependent task `in_progress`.
+
+### Cross-worktree data contract
+
+`data/downloads/` is ignored and does not appear in a new worktree. The canonical raw cache is
+`data/downloads/lola/` and `data/downloads/horizons/` in the main worktree. Each agent worktree
+links its `data/downloads/lola` and `data/downloads/horizons` to that cache. Raw bytes remain
+uncommitted; the tracked manifests under `data/manifests/` are the provenance record. Each worktree
+creates its own `backend/.venv` with `uv sync --python 3.12 --frozen`.
+
+Existing untracked manifests under `data/manifests/lola/` and `data/manifests/horizons/` are
+unverified out-of-order artefacts. `agent-alpha` audits and regenerates or verifies them under
+`DATA-002` and `DATA-003`; no later agent treats them as trusted until the manifest records the
+required URL, retrieval time, byte count, and SHA-256. The untracked `scripts/fetch_horizons.py`
+is out of scope and is never committed; `DATA-003` writes its clients under `backend/src/cli/`.
+
+### Integration protocol
+
+For each finished branch, `agent-zeta`:
+
+1. Confirms the branch name and that the task is `done` or `blocked`.
+2. Audits the diff against `bauerceptor`: only the task's `write_paths`, that task's ledger
+   execution fields, the agent's `WORK_LOG.md` subsection, and the refreshed
+   `plan/protected.sha256`.
+3. Re-runs the task's commands on the agent branch and checks evidence references, exit codes,
+   artefact hashes, and test integrity.
+4. Merges with `--no-ff`, resolving the ledger, digest, and work-log conflicts by the rules above.
+   Any other conflict is a stop.
+5. Runs `scripts/validate_task_ledger.py`, `scripts/check_planning_docs.py`,
+   `scripts/check_file_lengths.py`, and the task's commands. A failure blocks the merge.
+6. Updates `WORK_LOG.md` and `NEXT_SESSION.md`. It updates `DEVELOPMENT_PLAN.md` only for a genuine
+   normative change, never for routine progress.
+7. Commits with `ALLOW_PROTECTED=1` and no trailer, then merges `bauerceptor` into the remaining
+   active agent worktrees before the next wave.
+
+---
+
+## Appendix F — M4 merge reconciliation (revision 5)
+
+`origin/main` merged `feat/m4-3d-terrain` (merge `ebf8a23`) before this revision was written. That
+merge did not update this plan, the ledger, `plan/OWNERS.md`, or the registry on `main`; they were
+still revision 3, the 14-site ledger, and the 6-site registry. This branch's revision 5 and the
+DATA-001 16-site registry are newer and were preserved when `origin/main` was merged into
+`bauerceptor` as `00f7e77`. This appendix reconciles the merged code with the operative plan.
+
+### What merged
+
+The M4 merge adds SVG/CSS frontend panels and their tests:
+
+- `frontend/src/features/sky-horizon/` — 360° horizon silhouette, sky-dome projection, and horizon
+  math.
+- `frontend/src/features/mission-timeline/` — multi-day timeline, solar-array and mast-height
+  selector, and timeline segment grouping.
+- `frontend/src/features/earth-moon-contrast/` — Earth/Moon geometry contrast card.
+- `frontend/src/__tests__/` — `horizonMath.test.ts` and `timelineSegments.test.ts`.
+- `frontend/src/components/layout/AppShell.tsx` — mounts the panels in place of the previous
+  placeholder slots.
+
+### What did not merge
+
+`frontend/src/features/terrain-3d/` remains only `.gitkeep`. The merge adds no `three`,
+`@react-three/fiber`, `@react-three/drei`, WebGL, or shadow-engine dependency, and no frontend
+physical constant. The deferred 3D terrain and shadow engine are still prohibited. The `.gitkeep`
+placeholder is not approval for 3D work; a future implementation needs a new human-approved
+revision after `P0-GATE`.
+
+### Status and classification
+
+- The merged SVG horizon and timeline panels are **P0 visualization inputs for `FE-002`**. They do
+  not make any ledger task done; the ledger remains the task authority, and the M4 merge created no
+  task. `FE-002` must review the panels and record the acceptance evidence before `P0-GATE`.
+- The P0 cockpit must not mount P1 features. `SouthPoleMap` and persona mode remain P1 and are
+  still an open issue for `FE-001`/`FE-002`. The M4 `AppShell` keeps them mounted; the routing fix
+  remains with those tasks.
+- The merged panels add the spherical-limb notice, solar-array/mast controls, and the horizon and
+  timeline visualizations. The Class B badge, provenance footer, and remaining `FE-002` acceptance
+  items are still open until that task closes.
+- No task was marked done by the merge, and no M4 task is added by this revision. M4 remains gated
+  behind `P0-GATE`.
+
+### Type-contract risk for `ARCH-002`
+
+The merged panels import `HorizonProfilePoint`, `TimeseriesPoint`, `EvaluateResponse`,
+`EvaluationSummary`, `SolarArrayType`, and `ObserverHeightM` from `frontend/src/types`.
+`ARCH-002` deletes the hand-written `site`, `evaluation`, `comparison`, and `windows` modules, but
+`frontend/src/types/index.ts` is outside its current `write_paths`. The barrel must re-export the
+generated types, or the panels must import the generated types directly.
+
+`ARCH-002` must run `bun run typecheck` after generating the contracts. If the barrel or a merged
+panel fails, set `ARCH-002` blocked and report. A human-approved ledger revision must add
+`frontend/src/types/index.ts` to `ARCH-002`'s `write_paths` or assign the barrel to `FE-001`. Do not
+hand-edit the generated types.
+
+### Coordinate source of record
+
+The registry remains the DATA-001 16-site registry, sourced from IAU/USGS Gazetteer named-feature
+centres. QuickMap is a documented fallback only. The M4 merge does not change the registry, and no
+task in this revision re-sources a coordinate.

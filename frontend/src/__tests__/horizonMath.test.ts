@@ -1,5 +1,7 @@
 /** Unit tests for horizon interpolation, panoramic projection, and sky-dome math. */
 
+import { it } from "vitest";
+
 import {
   azElevToPanoramaSVG,
   azElevToSkyDomeSVG,
@@ -80,4 +82,6 @@ export function runHorizonMathTests(): void {
   assertApprox(eastRim.y, 150, 1e-6, "east rim y");
 }
 
-runHorizonMathTests();
+it("horizon interpolation, panoramic projection, and sky-dome math", () => {
+  runHorizonMathTests();
+});
