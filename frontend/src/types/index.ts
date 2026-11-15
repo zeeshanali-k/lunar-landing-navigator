@@ -9,13 +9,16 @@ export type {
 } from "./site";
 export type {
   CustomCoords,
+  DurationDays,
   EvaluateRequest,
   EvaluateResponse,
   EvaluatedSite,
   EvaluationSummary,
   HorizonProfilePoint,
   NextEventsFromStart,
+  ObserverHeightM,
   SolarArrayType,
+  StepMinutes,
   SubScores,
   TimeseriesPoint,
 } from "./evaluation";

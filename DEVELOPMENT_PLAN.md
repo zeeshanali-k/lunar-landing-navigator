@@ -30,6 +30,7 @@ There are exactly three authorities. They do not overlap.
 | File | Purpose |
 |---|---|
 | [`AGENTS.md`](AGENTS.md) | The agent protocol: authorities, task selection, allowed writes, blocking, commit identity. |
+| [`WORK_LOG.md`](WORK_LOG.md) | The single record of what was actually done, by whom, what broke, and what is left. Never duplicate this history elsewhere. |
 | [`plan/OWNERS.md`](plan/OWNERS.md) | Module → human → branch. The only place a person's name appears. |
 | [`PROTECTED.md`](PROTECTED.md) | Files no agent may write: this plan, the ledger, the validators, hooks, and test configuration. |
 | [`plan/protected-paths.txt`](plan/protected-paths.txt) | The machine-readable protected list the `commit-msg` hook enforces. |

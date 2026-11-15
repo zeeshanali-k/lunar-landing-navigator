@@ -1,4 +1,5 @@
 AGENTS.md
+WORK_LOG.md
 DEVELOPMENT_PLAN.md
 PROTECTED.md
 plan/**

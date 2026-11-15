@@ -91,3 +91,9 @@ Run `uv run --project backend --frozen python scripts/validate_task_ledger.py` b
 ## Reporting
 
 Report, in at most six lines: task id, what changed, commands run with exit codes, artefacts with hashes, and the next eligible task id. If blocked, report the failing command and its exact output instead.
+
+## Work log
+
+[`WORK_LOG.md`](WORK_LOG.md) is the single running record of what has actually happened. After completing or blocking a task, add an entry there: what changed and in which files, what you verified, and any new issue you found but did not fix. Do not repeat that history in the plan, the ledger, `plan/OWNERS.md`, or a commit description — link to the work log instead.
+
+An issue you discover but leave unfixed goes in `WORK_LOG.md` under **Open issues** with the file, the severity, and what blocks it. Do not silently fix it out of scope, and do not leave it unrecorded.

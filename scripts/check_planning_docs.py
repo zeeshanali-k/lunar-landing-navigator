@@ -196,6 +196,16 @@ def check_no_vague_acceptance() -> None:
             require(phrase not in joined, f"{task['id']} acceptance uses vague phrase {phrase!r}")
 
 
+def check_work_log() -> None:
+    """The work log is the single running record; it must exist and stay structured."""
+    path = ROOT / "WORK_LOG.md"
+    require(path.exists(), "WORK_LOG.md is missing; it is the single record of completed work")
+    text = read(path)
+    for heading in ("## Current state", "## Open issues", "## Pending work, by module"):
+        require(heading in text, f"WORK_LOG.md missing section: {heading}")
+    require("DONE" in text and "BLOCKED" in text, "WORK_LOG.md must use the status legend")
+
+
 def main() -> int:
     """Run every documentation check and report the outcome."""
     if "--refresh" in sys.argv[1:]:
@@ -219,6 +229,7 @@ def main() -> int:
         check_no_duplicate_fixtures()
         check_agent_dirs_untracked()
         check_protected_digests()
+        check_work_log()
     except PlanError as exc:
         print(f"FAIL  {exc}")
         return 1
