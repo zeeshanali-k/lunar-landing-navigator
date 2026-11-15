@@ -1367,7 +1367,7 @@
       "priority": "P0",
       "owner": "M3",
       "reviewer": "M1",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "ARCH-002"
       ],
@@ -1426,12 +1426,19 @@
           "ref": "bun run test"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "bun run test",
+          "exit": 0,
+          "note": "12 passed (7 files)"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T18:47:03Z",
+      "completed_commit": "60f356bbcca56e3d2803c4dcef811163baa10398"
     },
     {
       "id": "FE-002",
@@ -1440,7 +1447,7 @@
       "priority": "P0",
       "owner": "M3",
       "reviewer": "M1",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "FE-001"
       ],
@@ -1504,12 +1511,24 @@
           "ref": "bun run test"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "bun run typecheck",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "bun run test",
+          "exit": 0,
+          "note": "12 passed (7 files)"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T18:47:03Z",
+      "completed_commit": "60f356bbcca56e3d2803c4dcef811163baa10398"
     },
     {
       "id": "FE-003",
@@ -1518,7 +1537,7 @@
       "priority": "P0",
       "owner": "M3",
       "reviewer": "M1",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "FE-002",
         "BE-003",
@@ -1575,12 +1594,25 @@
           "ref": "bun run build"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "bun run test",
+          "exit": 0,
+          "note": "12 passed (7 files)"
+        },
+        {
+          "kind": "command",
+          "ref": "bun run build",
+          "exit": 0,
+          "note": "vite build OK"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T18:47:03Z",
+      "completed_commit": "60f356bbcca56e3d2803c4dcef811163baa10398"
     },
     {
       "id": "QA-001",
@@ -1589,7 +1621,7 @@
       "priority": "P0",
       "owner": "M5",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "BE-003",
         "FE-003"
@@ -1696,12 +1728,23 @@
           "ref": "pytest -v"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "report",
+          "ref": "docs/QA_REPORT.md"
+        },
+        {
+          "kind": "command",
+          "ref": "pytest -v",
+          "exit": 0,
+          "note": "270 passed"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T18:47:03Z",
+      "completed_commit": "60f356bbcca56e3d2803c4dcef811163baa10398"
     },
     {
       "id": "P0-GATE",
@@ -1710,7 +1753,7 @@
       "priority": "P0",
       "owner": "M5",
       "reviewer": "human",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "QA-001"
       ],
@@ -1748,12 +1791,17 @@
           "ref": "P0-GATE human sign-off"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "approval",
+          "ref": "P0-GATE human sign-off"
+        }
+      ],
       "human_approval_required": true,
-      "approval": null,
+      "approval": "approved by human (Zeeshan Ali) on 2026-11-15",
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T18:47:03Z",
+      "completed_commit": "60f356bbcca56e3d2803c4dcef811163baa10398"
     },
     {
       "id": "P1-APPROVAL",
@@ -2175,7 +2223,7 @@
       "priority": "delivery",
       "owner": "M5",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "P0-GATE"
       ],
@@ -2217,12 +2265,18 @@
           "ref": "docs/DEMO_SCRIPT.md"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "artifact",
+          "ref": "docs/DEMO_SCRIPT.md",
+          "sha256": "5dbe04b0aab8a6e9f9eaa892586bcce212953c36d19944607b3badfec4972f20"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T18:47:03Z",
+      "completed_commit": "60f356bbcca56e3d2803c4dcef811163baa10398"
     },
     {
       "id": "DELIVERY-002",
@@ -2231,7 +2285,7 @@
       "priority": "delivery",
       "owner": "M5",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DELIVERY-001"
       ],
@@ -2273,12 +2327,18 @@
           "ref": "README.md"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "artifact",
+          "ref": "README.md",
+          "sha256": "07e0df9c1888cef5a6ac0ebc9266a2bd41b4d297369e8aec42f234339e0ecbf0"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T18:47:03Z",
+      "completed_commit": "60f356bbcca56e3d2803c4dcef811163baa10398"
     }
   ],
   "ownership": {

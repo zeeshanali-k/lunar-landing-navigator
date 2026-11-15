@@ -118,8 +118,12 @@ def test_next_events_from_start_matches_timeseries_zero() -> None:
     first = evaluated.timeseries[0]
     assert evaluated.summary.next_events_from_start.hours_to_sunset == first.hours_to_next_sunset
     assert evaluated.summary.next_events_from_start.hours_to_sunrise == first.hours_to_next_sunrise
-    assert evaluated.summary.next_events_from_start.hours_to_earthset == first.hours_to_next_earthset
-    assert evaluated.summary.next_events_from_start.hours_to_earthrise == first.hours_to_next_earthrise
+    assert (
+        evaluated.summary.next_events_from_start.hours_to_earthset == first.hours_to_next_earthset
+    )
+    assert (
+        evaluated.summary.next_events_from_start.hours_to_earthrise == first.hours_to_next_earthrise
+    )
 
 
 def test_evaluate_naive_start_returns_422() -> None:
@@ -182,10 +186,15 @@ def test_api_application_and_domain_never_import_download_clients() -> None:
     from pathlib import Path
 
     root = Path(__file__).resolve().parents[3] / "backend" / "src"
-    forbidden = ("from src.cli", "import src.cli", "horizons_client", "download_lola", "download_horizons")
+    forbidden = (
+        "from src.cli",
+        "import src.cli",
+        "horizons_client",
+        "download_lola",
+        "download_horizons",
+    )
     for module_dir in ("api", "application", "domain"):
         for path in (root / module_dir).rglob("*.py"):
             text = path.read_text(encoding="utf-8")
             for token in forbidden:
                 assert token not in text, f"{path} imports a download client: {token}"
-

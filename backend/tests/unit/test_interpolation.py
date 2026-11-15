@@ -52,13 +52,17 @@ def test_grid_interpolation_reproduces_nodes_and_midpoints() -> None:
     assert interpolate_grid(start, start, 3600, values) == 0.0
     assert interpolate_grid(start + timedelta(hours=1), start, 3600, values) == 10.0
     assert interpolate_grid(start + timedelta(hours=2), start, 3600, values) == 20.0
-    assert interpolate_grid(start + timedelta(minutes=30), start, 3600, values) == pytest.approx(5.0)
+    assert interpolate_grid(start + timedelta(minutes=30), start, 3600, values) == pytest.approx(
+        5.0
+    )
 
 
 def test_circular_grid_interpolation_wraps_across_nodes() -> None:
     start = datetime(2026, 1, 1, tzinfo=UTC)
     values = [359.0, 0.0]
-    assert interpolate_grid(start + timedelta(minutes=30), start, 3600, values, circular=True) == pytest.approx(359.5)
+    assert interpolate_grid(
+        start + timedelta(minutes=30), start, 3600, values, circular=True
+    ) == pytest.approx(359.5)
 
 
 def test_grid_interpolation_rejects_extrapolation() -> None:

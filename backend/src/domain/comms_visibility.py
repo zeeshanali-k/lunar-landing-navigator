@@ -33,10 +33,9 @@ def sun_earth_separation_deg(
     earth_zenith_rad = math.radians(90.0 - float(earth_elev_deg))
     az_delta_rad = math.radians(float(sun_az_deg) - float(earth_az_deg))
 
-    cos_sep = (
-        math.cos(sun_zenith_rad) * math.cos(earth_zenith_rad)
-        + math.sin(sun_zenith_rad) * math.sin(earth_zenith_rad) * math.cos(az_delta_rad)
-    )
+    cos_sep = math.cos(sun_zenith_rad) * math.cos(earth_zenith_rad) + math.sin(
+        sun_zenith_rad
+    ) * math.sin(earth_zenith_rad) * math.cos(az_delta_rad)
     cos_sep = max(-1.0, min(1.0, cos_sep))
     return math.degrees(math.acos(cos_sep))
 

@@ -43,7 +43,9 @@ def _parse_utc(value: str) -> datetime:
     try:
         parsed = datetime.fromisoformat(value)
     except ValueError as exc:
-        raise NaiveTimestampError(f"start_utc must be an ISO-8601 UTC timestamp; got {value!r}") from exc
+        raise NaiveTimestampError(
+            f"start_utc must be an ISO-8601 UTC timestamp; got {value!r}"
+        ) from exc
     if parsed.tzinfo is None or parsed.utcoffset() != timedelta(0):
         raise NaiveTimestampError(f"start_utc must be UTC-aware; got {value!r}")
     return parsed.astimezone(UTC)
@@ -54,7 +56,9 @@ def _spherical_limb_deg(observer_height_m: float) -> float:
     return -math.degrees(math.acos(MOON_RADIUS_M / (MOON_RADIUS_M + observer_height_m)))
 
 
-def _horizon_profile_for_height(terrain: dict[str, Any], observer_height_m: float) -> dict[str, Any]:
+def _horizon_profile_for_height(
+    terrain: dict[str, Any], observer_height_m: float
+) -> dict[str, Any]:
     for horizon in terrain["horizons"]:
         if horizon["observer_height_m"] == observer_height_m:
             return horizon
@@ -151,7 +155,9 @@ def evaluate_scenario(
 
         visible = sun_visible_fraction(sun_elev, sun_horizon)
         margin = sun_occultation_margin_deg(sun_elev, sun_horizon)
-        power = solar_power_factor(sun_elev, sun_az, solar_array_type, fixed_array_azimuth_deg, visible)
+        power = solar_power_factor(
+            sun_elev, sun_az, solar_array_type, fixed_array_azimuth_deg, visible
+        )
         horizontal_power = solar_power_factor(sun_elev, sun_az, HORIZONTAL_FIXED, 0.0, visible)
         clearance = earth_clearance_deg(earth_elev, earth_horizon)
         separation = sun_earth_separation_deg(sun_elev, earth_elev, sun_az, earth_az)
