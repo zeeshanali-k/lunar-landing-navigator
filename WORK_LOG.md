@@ -12,15 +12,15 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 
 | Area | State | Owner |
 |---|---|---|
-| Governance (single plan, ownership, anti-tamper guards) | `DONE` — ledger `DOC-001`, `DOC-002` closed with evidence | bauerceptor |
-| Human review gate | `PENDING` — `DOC-GATE` is the one eligible task | bauerceptor |
+| Governance (single plan, ownership, anti-tamper guards) | `DONE` — ledger `DOC-001`, `DOC-002`, `DOC-GATE`, `ARCH-001` closed with evidence | bauerceptor |
+| Human review gate | `DONE` — `DOC-GATE` closed 2026-11-15 with recorded approval | bauerceptor |
 | `M3` frontend corrected onto the plan | `DONE` (committed on `bauerceptor`, not yet merged to `main`) | bauerceptor |
-| `M3` frontend, P0 completeness | `BLOCKED` — 5 issues open (3, 6, 7, 8, 9) | bauerceptor |
-| `M1` data pipeline | `BLOCKED` — no `uv.lock`, nothing downloaded, 2 issues open (1, 10) | bauerceptor |
-| `M2` backend | `BLOCKED` — depends on `M1` packs | bauerceptor |
+| `M3` frontend, P0 completeness | `BLOCKED` — 5 issues open (5, 6, 7, 8, 9) | bauerceptor |
+| `M1` data pipeline | `PARTIAL` — `ARCH-001` done; LOLA DEM and one Horizons site fetched out of order; registry still 6 of 16 (`DATA-001`) | bauerceptor |
+| `M2` backend | `READY` — `ARCH-001` done; `ARCH-002` contracts next | bauerceptor |
 | `M4` 3D | `BLOCKED` — gated behind `P0-GATE` | devscion |
 | `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
-| **P0 release** | **`NOT SHIPPABLE` — 8 blockers open, all now encoded in ledger acceptance** | — |
+| **P0 release** | **`NOT SHIPPABLE` — 6 blockers remain (1, 5, 6, 7, 8, 10)** | — |
 
 ---
 
@@ -138,25 +138,29 @@ hard limit. Recorded as evidence `prettier-baseline-scope`.
 Verified: `uv sync`, `ruff check`, `bun install`, `typecheck`, `test`, `lint`, `format:check`,
 `build`, and `check_file_lengths` all exit 0.
 
+### Next session
+
+The human will resolve the registry coordinates (`DATA-001`) in a fresh session to avoid stale
+context. `NEXT_SESSION.md` is the runbook: it lists the 16 entries, the provenance rule, and the
+exact command and evidence sequence.
+
 ---
 
 ## Open issues
 
 ### P0 blockers — the release cannot ship until these are closed
 
-Eight issues gate P0. None were introduced by the governance work; they are the gap between what module 3 shipped and what REQ-11 requires. Numbers refer to the table below.
+Six issues gate P0. None were introduced by the governance work; they are the gap between what module 3 shipped and what REQ-11 requires. Numbers refer to the table below.
 
-**Status as of this revision: all eight are now explicit ledger acceptance criteria.** They were previously implicit — living in this file but absent from the ledger — which meant an agent could satisfy `FE-002` while leaving P0 broken. The acceptance lists now name each one, so a task cannot be marked done with the gap open.
+**Status as of this revision: all six are explicit ledger acceptance criteria.** They were previously implicit — living in this file but absent from the ledger — which meant an agent could satisfy `FE-002` while leaving P0 broken. The acceptance lists now name each one, so a task cannot be marked done with the gap open. Issue 3 (test runner) and issue 12 (`uv.lock`) were closed by `ARCH-001`.
 
 | # | Blocker | Ledger requirement | Why it blocks P0 |
 |---|---|---|---|
 | 1 | No fixture generator, so offline mode has nothing to read | `DATA-006` acceptance; `FE-003` depends on it | P0 promises a demo with no network; fixtures were deleted as duplicates and their replacement does not exist yet |
-| 3 | No test runner or `test` script | `ARCH-001` acceptance (new: `bun run test` must execute and pass); `FE-002` evidence requires it | Three ledger acceptance commands (`bun run test`) could not execute, so those tasks could never legitimately be marked done |
-| 5 | 2D map and persona mode are P1 but mounted in the P0 cockpit | `FE-001` acceptance (new: P0 cockpit mounts no P1 feature) | Ships P1 surface area as if it were P0 and invites the fabricated-data path back |
-| 5 | 2D map and persona mode are P1 but mounted in the P0 cockpit | `FE-001` acceptance (new: P0 cockpit mounts no P1 feature) | Ships P1 surface area as if it were P0, and invites the fabricated-data path back into the default view |
-| 6 | Horizon silhouette and timeline are placeholders | `FE-002` acceptance, items 4–6 (new) | These are the two visualisations REQ-11 names as the P0 core; today they render a count and a fake slot |
-| 7 | No Class B badge, spherical-limb notice, or provenance footer | `FE-002` acceptance, items 1–3 and 9 (new) | A limb-only site would display as if it had measured terrain, which REQ-05 forbids |
-| 8 | No `step`, `array_az`, or `min_comms` controls | `FE-002` acceptance, item 8 (new) | Three of the eight canonical scenario fields exist in state and URL but no UI writes them |
+| 5 | 2D map and persona mode are P1 but mounted in the P0 cockpit | `FE-001` acceptance (P0 cockpit mounts no P1 feature) | Ships P1 surface area as if it were P0 and invites the fabricated-data path back |
+| 6 | Horizon silhouette and timeline are placeholders | `FE-002` acceptance, items 4–6 | These are the two visualisations REQ-11 names as the P0 core; today they render a count and a fake slot |
+| 7 | No Class B badge, spherical-limb notice, or provenance footer | `FE-002` acceptance, items 1–3 and 9 | A limb-only site would display as if it had measured terrain, which REQ-05 forbids |
+| 8 | No `step`, `array_az`, or `min_comms` controls | `FE-002` acceptance, item 8 | Three of the eight canonical scenario fields exist in state and URL but no UI writes them |
 | 10 | Registry holds 6 sites, not 16 | `DATA-001` acceptance | REQ-05 requires exactly 16; the demo would show less than half the curated set |
 
 ### Full list
@@ -165,7 +169,7 @@ Eight issues gate P0. None were introduced by the governance work; they are the 
 |---|---|---|---|---|
 | 1 | Fixtures deleted but no generator exists yet, so offline mode has nothing to read | `frontend/public/data/fixtures/` (absent), `DATA-006` | `BLOCKED` on `M1` | in `DATA-006` acceptance |
 | 2 | `evaluateScenario`/`compareScenarios`/`scanWindows` now require a scenario key; comparison and windows callers are typed but their scenarios are P1 | `frontend/src/services/`, `P1-COMPARE`, `P1-WINDOWS` | low | open |
-| 3 | No test runner or `test` script, so three ledger acceptance commands cannot run | `frontend/package.json`, `frontend/vitest.config.ts` | BLOCKER for P0 | in `ARCH-001` acceptance |
+| 3 | No test runner or `test` script, so three ledger acceptance commands cannot run | `frontend/package.json`, `frontend/vitest.config.ts` | BLOCKER for P0 | `DONE` — closed by `ARCH-001` |
 | 4 | Wire types are hand-maintained; `api.generated.ts` does not exist | `frontend/src/types/`, `ARCH-002` | MAJOR | in `ARCH-002` acceptance |
 | 5 | 2D map and persona mode are built but are P1, mounted unconditionally in the cockpit | `frontend/src/features/lunar-map-2d/`, `frontend/src/features/persona-mode/` | MAJOR | in `FE-001` acceptance |
 | 6 | Horizon silhouette and timeline are placeholders, the two P0 visualisations REQ-11 requires | `frontend/src/components/layout/AppShell.tsx` | BLOCKER for P0 | in `FE-002` acceptance |
@@ -174,7 +178,7 @@ Eight issues gate P0. None were introduced by the governance work; they are the 
 | 9 | Educational glossary asserts unsourced science (1.54° tilt, 40 K, ±6.5° libration, "uninterrupted" DTE) and generates narrative from booleans | `frontend/src/features/persona-mode/educationalGlossary.ts` | MAJOR | open — deliberately deferred, see below |
 | 10 | Registry holds 6 sites, not the 16 REQ-05 requires | `backend/config/curated_sites.yaml` | BLOCKER for P0 | in `DATA-001` acceptance |
 | 11 | `contracts/openapi-draft.yaml` still hand-maintained alongside Pydantic | `contracts/` | MAJOR | in `ARCH-002` acceptance |
-| 12 | `backend/uv.lock` absent, pytest not installed, so no Python check can run | `backend/` | BLOCKER for P0 | in `ARCH-001` acceptance |
+| 12 | `backend/uv.lock` absent, pytest not installed, so no Python check can run | `backend/` | BLOCKER for P0 | `DONE` — closed by `ARCH-001` |
 | 13 | Fixture `terrain.sample.json` is 16×16; production contract is 128×128 | `contracts/fixtures/` | MINOR | open |
 
 ### Deliberately not fixed

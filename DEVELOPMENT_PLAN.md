@@ -3,7 +3,7 @@
 **Status:** OPERATIVE. This is the single plan and the only technical authority for implementation.
 **Challenge:** [NASA Space Apps 2026 — Lunar Landing Site Navigator](https://www.spaceappschallenge.org/2026/challenges/lunar-landing-site-navigator/)
 **Team:** three modules owned by three people; see [`plan/OWNERS.md`](plan/OWNERS.md).
-**Revision:** 3. Merges the former `HACKATHON_BUILD_PLAN.md` (revision 2) into this document and supersedes both earlier files.
+**Revision:** 4. Revision 3 merged the former `HACKATHON_BUILD_PLAN.md` (revision 2) into this document and superseded both earlier files. Revision 4 aligns the registry to NASA's nine current Artemis III candidate regions and extends ephemeris coverage to 2026-01-01…2029-01-01; see Appendix D.
 
 This plan replaces every earlier plan in this repository. `plan/00`–`plan/05` remain as historical design context and are not executable.
 
@@ -808,3 +808,19 @@ The following remain in the repository as design context. They are **not** execu
 | Requirement-traceability matrix mapping objectives to feature IDs | REQ-01…REQ-12 below, each naming its primary tasks. |
 
 The old plan's *intent* — real NASA data, honest physics, rapid site comparison for planners and educators — is unchanged. Only its execution model was replaced.
+
+---
+
+## Appendix D — What revision 4 changed, and why
+
+Revision 4 is a scope correction approved by the human owner. It does not change any physics,
+contract, or acceptance rule from revision 3.
+
+| Superseded | Revision 4 | Reason |
+|---|---|---|
+| 14-site registry with seven `artemis_iii` entries from the 2022 candidate set | 16-site registry: NASA's **nine** current Artemis III candidate regions plus the seven CLPS/Apollo/international sites | NASA downselected Artemis III from thirteen regions (2022) to nine on 2024-10-28, [release 24-136](https://www.nasa.gov/news-release/nasa-provides-update-on-artemis-iii-moon-landing-regions/). |
+| `artemis-shackleton-ridge` (Shackleton Connecting Ridge), `artemis-faustini-rim-a` (Faustini Rim A) | Removed | Both were in the original thirteen and were excluded by NASA in the 2024 downselect. |
+| — | `artemis-mons-mouton-plateau`, `artemis-nobile-rim-2`, `artemis-degerlache-rim-2`, `artemis-slater-plain` added | These are among NASA's current nine and were missing from the old registry. `Mons Mouton` and `Mons Mouton Plateau` are two distinct regions on the same massif. |
+| Ephemeris coverage 2027-01-01 … 2028-07-01 (13,129 hourly samples) | 2026-01-01 … 2029-01-01 (26,305 hourly samples) | Supports current-date evaluation, the reference scenario, all four launch delays, and every P1 window candidate with its 15-day lookahead. A stop of 2028-12-31 silently drops the final day. |
+
+Execution history for this revision is in `WORK_LOG.md`; it is not duplicated here.
