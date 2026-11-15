@@ -3,7 +3,7 @@
 **Status:** OPERATIVE. This is the single plan and the only technical authority for implementation.
 **Challenge:** [NASA Space Apps 2026 — Lunar Landing Site Navigator](https://www.spaceappschallenge.org/2026/challenges/lunar-landing-site-navigator/)
 **Team:** three modules owned by three people; see [`plan/OWNERS.md`](plan/OWNERS.md).
-**Revision:** 4. Revision 3 merged the former `HACKATHON_BUILD_PLAN.md` (revision 2) into this document and superseded both earlier files. Revision 4 aligns the registry to NASA's nine current Artemis III candidate regions and extends ephemeris coverage to 2026-01-01…2029-01-01; see Appendix D.
+**Revision:** 5. Revision 3 merged the former `HACKATHON_BUILD_PLAN.md` (revision 2) into this document and superseded both earlier files. Revision 4 aligns the registry to NASA's nine current Artemis III candidate regions and extends ephemeris coverage to 2026-01-01…2029-01-01; see Appendix D. Revision 5 defines the parallel agent execution model, branch-per-worktree policy, and integration protocol without changing any science, contract, or acceptance rule; see Appendix E.
 
 This plan replaces every earlier plan in this repository. `plan/00`–`plan/05` remain as historical design context and are not executable.
 
@@ -74,6 +74,7 @@ When a check fails, the agent reports the failure and stops. Making the check pa
 8. On any failed command, missing input, or ambiguity: set `blocked` with the exact reason and stop. Do not attempt speculative fixes.
 9. Do not edit `README.md`, do not start 3D work, do not add runtime downloads, and do not activate P1 without a completed `P1-APPROVAL` record.
 10. Do not perform opportunistic cleanup, refactors, dependency upgrades, or "while I'm here" changes.
+11. Parallel agents each select one task independently. A branch carries at most one `in_progress` task, and the integration branch never receives a branch whose task is still `in_progress`. A branch is integrated only after its task is `done` or `blocked`, and only the integrator merges it. See Appendix E.
 
 <a id="req-02"></a>
 ## REQ-02 Scope, ownership, and promotion/demotion
@@ -824,3 +825,108 @@ contract, or acceptance rule from revision 3.
 | Ephemeris coverage 2027-01-01 … 2028-07-01 (13,129 hourly samples) | 2026-01-01 … 2029-01-01 (26,305 hourly samples) | Supports current-date evaluation, the reference scenario, all four launch delays, and every P1 window candidate with its 15-day lookahead. A stop of 2028-12-31 silently drops the final day. |
 
 Execution history for this revision is in `WORK_LOG.md`; it is not duplicated here.
+
+---
+
+## Appendix E — Parallel agent execution (revision 5)
+
+Revision 5 changes how the existing ledger tasks are executed, not what they produce. The task
+DAG, commands, acceptance criteria, physics, contracts, registry, and evidence rules are unchanged.
+
+### Roles
+
+| Agent | Branch | Tasks, in order | Scope |
+|---|---|---|---|
+| `agent-alpha` | `bauerceptor-alpha` | `DATA-002`, `DATA-003` | LOLA DEM and JPL Horizons acquisition |
+| `agent-beta` | `bauerceptor-beta` | `DATA-004`, `DATA-005`, `DATA-006` | Ephemeris packs, terrain packs, pack index and fixtures |
+| `agent-charlie` | `bauerceptor-charlie` | `ARCH-002`, `BE-001`, `BE-002`, `BE-003` | Contracts, mission time and interpolation, physics, DTE, scoring, API |
+| `agent-zeta` | `bauerceptor` | integration only | Scope and evidence audit, merge, digests, documents, final validation |
+
+The ledger remains the task authority. Agent names and wave assignments live in `NEXT_SESSION.md`
+and this appendix; they are never added to the ledger or its closed schema.
+
+### Branch and worktree model
+
+`bauerceptor` is the integration branch. Git permits a branch to be checked out in only one
+worktree, so each agent works in a separate worktree on a dedicated branch cut from `bauerceptor`:
+`bauerceptor-alpha`, `bauerceptor-beta`, and `bauerceptor-charlie`. The branch guard accepts the
+owner branch and any `<owner-branch>-*` suffix declared in `plan/OWNERS.md`; it continues to reject
+`main`, detached HEAD, and every other branch.
+
+Integration uses `git merge --no-ff`. Squash, rebase, force-push, and branch rewriting are
+forbidden because every closed task records its `completed_commit` in the ledger and that commit
+must remain resolvable.
+
+### Concurrency rules
+
+1. One agent, one task at a time. A branch carries at most one `in_progress` task.
+2. An agent starts a task only when every `depends_on` entry is `done` on `bauerceptor` and the
+   agent has merged `bauerceptor` into its worktree so the producer's artefacts and contracts are
+   present.
+3. An agent hands off after each task. It sets the task `done` or `blocked`, commits, and stops. It
+   does not begin the next task until the integrator has merged the branch and synced
+   `bauerceptor` back into the agent's worktree.
+4. The integration branch never receives a branch whose task is still `in_progress`. The integrator
+   merges only `done` or `blocked` tasks.
+5. An agent writes only its current task's `write_paths`, its own task's ledger execution fields,
+   its own working notes (kept outside the committed tree), and a subsection of `WORK_LOG.md`. It does not edit another agent's files,
+   the ledger definitions, `DEVELOPMENT_PLAN.md`, `plan/OWNERS.md`, `NEXT_SESSION.md`, scripts,
+   hooks, or generated files by hand.
+6. Shared-file conflicts are resolved by the integrator: the ledger keeps both tasks' execution
+   fields, `plan/protected.sha256` is regenerated rather than hand-merged, and `WORK_LOG.md` keeps
+   both subsections.
+7. A failed command, missing input, or invalid artefact sets the task `blocked` with the exact
+   reason. An agent does not fix outside `write_paths`, relax a test, bypass a hook, or substitute
+   another data source.
+8. No agent pushes. No agent changes `user.name` or `user.email`. Commits carry no agent trailer.
+
+### Wave schedule
+
+The DAG fixes the schedule; it is not a preference.
+
+| Wave | `agent-alpha` | `agent-beta` | `agent-charlie` | Integrator gate |
+|---|---|---|---|---|
+| 0 | setup | setup | setup | Governance commit, worktrees, handover copies |
+| 1 | `DATA-002` | standby | `ARCH-002` | Merge `DATA-002` and `ARCH-002`; refresh; validate |
+| 2 | `DATA-003` | standby | standby | Merge `DATA-003`; refresh; validate |
+| 3 | done | `DATA-004` | standby | Merge `DATA-004`; refresh; validate |
+| 4 | done | `DATA-005` | `BE-001` | Merge `DATA-005` and `BE-001`; refresh; validate |
+| 5 | done | `DATA-006` | `BE-002` | Merge `DATA-006` and `BE-002`; refresh; validate |
+| 6 | done | done | `BE-003` | Merge `BE-003`; final validation |
+
+Standby is read-only preparation: reading the plan, ledger, source interfaces, and existing
+artefacts, and updating the agent's own working notes. A standby agent creates no task output and
+sets no dependent task `in_progress`.
+
+### Cross-worktree data contract
+
+`data/downloads/` is ignored and does not appear in a new worktree. The canonical raw cache is
+`data/downloads/lola/` and `data/downloads/horizons/` in the main worktree. Each agent worktree
+links its `data/downloads/lola` and `data/downloads/horizons` to that cache. Raw bytes remain
+uncommitted; the tracked manifests under `data/manifests/` are the provenance record. Each worktree
+creates its own `backend/.venv` with `uv sync --python 3.12 --frozen`.
+
+Existing untracked manifests under `data/manifests/lola/` and `data/manifests/horizons/` are
+unverified out-of-order artefacts. `agent-alpha` audits and regenerates or verifies them under
+`DATA-002` and `DATA-003`; no later agent treats them as trusted until the manifest records the
+required URL, retrieval time, byte count, and SHA-256. The untracked `scripts/fetch_horizons.py`
+is out of scope and is never committed; `DATA-003` writes its clients under `backend/src/cli/`.
+
+### Integration protocol
+
+For each finished branch, `agent-zeta`:
+
+1. Confirms the branch name and that the task is `done` or `blocked`.
+2. Audits the diff against `bauerceptor`: only the task's `write_paths`, that task's ledger
+   execution fields, the agent's `WORK_LOG.md` subsection, and the refreshed
+   `plan/protected.sha256`.
+3. Re-runs the task's commands on the agent branch and checks evidence references, exit codes,
+   artefact hashes, and test integrity.
+4. Merges with `--no-ff`, resolving the ledger, digest, and work-log conflicts by the rules above.
+   Any other conflict is a stop.
+5. Runs `scripts/validate_task_ledger.py`, `scripts/check_planning_docs.py`,
+   `scripts/check_file_lengths.py`, and the task's commands. A failure blocks the merge.
+6. Updates `WORK_LOG.md` and `NEXT_SESSION.md`. It updates `DEVELOPMENT_PLAN.md` only for a genuine
+   normative change, never for routine progress.
+7. Commits with `ALLOW_PROTECTED=1` and no trailer, then merges `bauerceptor` into the remaining
+   active agent worktrees before the next wave.

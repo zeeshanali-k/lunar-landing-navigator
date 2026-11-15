@@ -16,8 +16,9 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | Human review gate | `DONE` — `DOC-GATE` closed 2026-11-15 with recorded approval | bauerceptor |
 | `M3` frontend corrected onto the plan | `DONE` (committed on `bauerceptor`, not yet merged to `main`) | bauerceptor |
 | `M3` frontend, P0 completeness | `BLOCKED` — 5 issues open (5, 6, 7, 8, 9) | bauerceptor |
-| `M1` data pipeline | `PARTIAL` — `ARCH-001` and `DATA-001` done; LOLA DEM and one Horizons site fetched out of order; `DATA-002`/`DATA-003` next | bauerceptor |
-| `M2` backend | `READY` — `ARCH-001` done; `ARCH-002` contracts next | bauerceptor |
+| `M1` data pipeline | `READY` — `DATA-001` done; `agent-alpha` takes `DATA-002`/`DATA-003`, `agent-beta` takes `DATA-004`–`DATA-006` | bauerceptor |
+| `M2` backend | `READY` — `agent-charlie` takes `ARCH-002` then `BE-001`–`BE-003` | bauerceptor |
+| Parallel session (revision 5) | `READY` — worktrees and branches defined; `agent-zeta` integrates | bauerceptor |
 | `M4` 3D | `BLOCKED` — gated behind `P0-GATE` | devscion |
 | `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
 | **P0 release** | **`NOT SHIPPABLE` — 5 blockers remain (1, 5, 6, 7, 8)** | — |
@@ -157,10 +158,28 @@ Verified: `pytest tests/unit/test_site_registry.py -v` (6 passed), `ruff check .
 `validate_task_ledger.py`, `check_planning_docs.py`, and `check_file_lengths.py` all exit 0.
 `DATA-001` is closed at `e1dd973` with the evidence recorded in the ledger.
 
+### Parallel-agent handover (revision 5)
+
+The next session runs three agents in separate worktrees on branches cut from `bauerceptor`, with
+`agent-zeta` integrating. The full runbook, wave schedule, per-task commands, and dispatch prompts
+are in `NEXT_SESSION.md`; this entry records the decisions only.
+
+| Decision | Reason |
+|---|---|
+| `bauerceptor` stays the integration branch; agents use `bauerceptor-alpha`, `bauerceptor-beta`, `bauerceptor-charlie` | Git cannot check out one branch in three worktrees, and the branch guard binds the human identity to one branch. The guard now accepts `<owner-branch>-*`; `plan/OWNERS.md` declares the session. |
+| Agents hand off one task at a time; zeta merges only `done` or `blocked` tasks | The ledger validator permits at most one `in_progress` task, and the dependency DAG requires producer artefacts before a consumer starts. |
+| Zeta owns `DEVELOPMENT_PLAN.md`, `WORK_LOG.md`, `NEXT_SESSION.md`, and the protected digests | These are protected or shared; agents keep only their own `WORK_LOG.md` subsection and uncommitted working notes. |
+| Raw downloads are shared by symlink from the main worktree's `data/downloads/{lola,horizons}` | `data/downloads/` is ignored and will not appear in a new worktree; `agent-beta` needs `agent-alpha`'s raw bytes. |
+| No rebase, squash, or force-push | Each task's `completed_commit` must remain resolvable after integration. |
+
+Assignments: `agent-alpha` — `DATA-002`, `DATA-003`; `agent-beta` — `DATA-004`, `DATA-005`,
+`DATA-006`; `agent-charlie` — `ARCH-002`, `BE-001`, `BE-002`, `BE-003`; `agent-zeta` — integration.
+
 ### Next session
 
-The next eligible tasks are `ARCH-002` (`M2`) and `DATA-002` (`M1`). `NEXT_SESSION.md` should be
-refreshed to point at one of them before the next session.
+Dispatch the three agents and zeta using `NEXT_SESSION.md`. The first wave is `agent-alpha` on
+`DATA-002` and `agent-charlie` on `ARCH-002`; `agent-beta` is read-only standby until the data and
+contracts merge.
 
 ---
 
@@ -214,13 +233,14 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). None were introduced by
 
 ## Pending work, by module
 
-| Module | Next task | Blocked by |
-|---|---|---|
-| `M1` | `DATA-001` registry (16 sites with provenance) | ready |
-| `M2` | `ARCH-002` contract generation | ready |
-| `M3` | Open issues 3, 6, 7, 8, 9 above | corpus decision on P1 mounting |
-| `M4` | not startable | `P0-GATE` |
-| `M5` | needs an owner | — |
+| Module | Agent | Next tasks | Blocked by |
+|---|---|---|---|
+| `M1` | `agent-alpha` | `DATA-002` → `DATA-003` | ready |
+| `M1` | `agent-beta` | `DATA-004` → `DATA-005` → `DATA-006` | `DATA-004` needs `DATA-003` + `ARCH-002`; `DATA-005` needs `DATA-002` + `ARCH-002`; `DATA-006` needs both packs |
+| `M2` | `agent-charlie` | `ARCH-002` → `BE-001` → `BE-002` → `BE-003` | `BE-001` needs `DATA-004` + `ARCH-002`; `BE-002` needs `BE-001` + `DATA-005`; `BE-003` needs `BE-002` + `DATA-006` |
+| `M3` | usairam | Open issues 3, 6, 7, 8, 9 above | corpus decision on P1 mounting |
+| `M4` | devscion | not startable | `P0-GATE` |
+| `M5` | — | needs an owner | — |
 
 ---
 
