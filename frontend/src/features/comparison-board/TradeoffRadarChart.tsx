@@ -37,19 +37,28 @@ export function TradeoffRadarChart({ scenarios }: TradeoffRadarChartProps) {
           {hasClassB && <span style={{ fontSize: "0.7rem", color: "var(--accent-warn)" }}>Terrain axis N/A for spherical-limb sites</span>}
         </div>
 
-        <svg viewBox="0 0 300 264" style={{ width: "100%", maxHeight: "260px", background: "#070c17", borderRadius: "0.5rem" }}>
+        <svg
+          viewBox="0 0 300 264"
+          style={{
+            width: "100%",
+            maxHeight: "260px",
+            background: "var(--chart-bg)",
+            border: "1px solid var(--border-subtle)",
+            borderRadius: "0.5rem",
+          }}
+        >
           {[25, 50, 75, 100].map((ring) => {
             const pts = AXES.map((_, idx) => axisPoint(idx, ring))
               .map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`)
               .join(" ");
-            return <polygon key={ring} points={pts} fill="none" stroke="#1e293b" strokeWidth="1" />;
+            return <polygon key={ring} points={pts} fill="none" stroke="var(--chart-grid)" strokeWidth="1" />;
           })}
           {AXES.map((axis, idx) => {
             const end = axisPoint(idx, 100);
             return (
               <g key={axis.key}>
-                <line x1={CX} y1={CY} x2={end.x} y2={end.y} stroke="#334155" strokeWidth="1" />
-                <text x={end.x + axis.lx} y={end.y + axis.ly} textAnchor={axis.anchor} fontSize="10.5" fill="#cbd5e1">
+                <line x1={CX} y1={CY} x2={end.x} y2={end.y} stroke="var(--border-strong)" strokeWidth="1" />
+                <text x={end.x + axis.lx} y={end.y + axis.ly} textAnchor={axis.anchor} fontSize="10.5" fill="var(--chart-text)">
                   {axis.label}
                 </text>
               </g>
@@ -100,7 +109,16 @@ export function TradeoffRadarChart({ scenarios }: TradeoffRadarChartProps) {
           <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>Solid = LOLA ridge · Dashed = limb</span>
         </div>
 
-        <svg viewBox="0 0 560 190" style={{ width: "100%", height: "auto", background: "#070c17", borderRadius: "0.5rem" }}>
+        <svg
+          viewBox="0 0 560 190"
+          style={{
+            width: "100%",
+            height: "auto",
+            background: "var(--chart-bg)",
+            border: "1px solid var(--border-subtle)",
+            borderRadius: "0.5rem",
+          }}
+        >
           <g transform="translate(28,14)">
             {[-2, 0, 4, 8, 12].map((elev) => {
               const y = 148 - ((elev + 2) / 14) * 148;
@@ -111,10 +129,10 @@ export function TradeoffRadarChart({ scenarios }: TradeoffRadarChartProps) {
                     y1={y}
                     x2={516}
                     y2={y}
-                    stroke={elev === 0 ? "#475569" : "#1e293b"}
+                    stroke={elev === 0 ? "var(--border-strong)" : "var(--chart-grid)"}
                     strokeDasharray={elev === 0 ? "3 3" : undefined}
                   />
-                  <text x={-5} y={y + 3} textAnchor="end" fontSize="9" fill="#94a3b8">
+                  <text x={-5} y={y + 3} textAnchor="end" fontSize="9" fill="var(--chart-text)">
                     {elev}°
                   </text>
                 </g>
@@ -123,7 +141,7 @@ export function TradeoffRadarChart({ scenarios }: TradeoffRadarChartProps) {
             {[0, 90, 180, 270, 360].map((az) => {
               const x = (az / 360) * 516;
               return (
-                <text key={az} x={x} y={166} textAnchor="middle" fontSize="9.5" fill="#94a3b8">
+                <text key={az} x={x} y={166} textAnchor="middle" fontSize="9.5" fill="var(--chart-text)">
                   {az}°
                 </text>
               );

@@ -95,20 +95,13 @@ export function CustomCoordForm({ activeCustomCoords, loading, onSubmitCoords, o
       </label>
 
       {check.error && (
-        <div style={{ display: "flex", gap: "0.4rem", alignItems: "center", fontSize: "0.76rem", color: "#fca5a5" }}>
+        <div style={{ display: "flex", gap: "0.4rem", alignItems: "center", fontSize: "0.76rem", color: "var(--accent-danger)" }}>
           <AlertCircle size={14} /> <span>{check.error}</span>
         </div>
       )}
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}></div>
-
       <div style={{ display: "flex", gap: "0.5rem" }}>
-        <button
-          type="submit"
-          disabled={!check.valid || loading}
-          className="btn-surface"
-          style={{ flex: 1, justifyContent: "center", borderColor: "var(--accent-dte)" }}
-        >
+        <button type="submit" disabled={!check.valid || loading} className="btn-primary" style={{ flex: 1, justifyContent: "center" }}>
           <Crosshair size={14} />
           <span>{loading ? "Evaluating..." : "Evaluate Custom Site"}</span>
         </button>

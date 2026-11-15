@@ -2,14 +2,16 @@
 
 import { useEffect } from "react";
 import { AppShell } from "./components/layout";
-import { useMissionStore } from "./state";
+import { useMissionStore, useUiStore } from "./state";
 
 export function App() {
   const initializeMission = useMissionStore((s) => s.initializeMission);
+  const initUiTheme = useUiStore((s) => s.initUiTheme);
 
   useEffect(() => {
+    initUiTheme();
     void initializeMission();
-  }, [initializeMission]);
+  }, [initUiTheme, initializeMission]);
 
   return <AppShell />;
 }

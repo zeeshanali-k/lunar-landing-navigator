@@ -1,11 +1,16 @@
-/** 60fps requestAnimationFrame timeline scrubber with speed controls and Sunset/Earthset jumps (F3.5). */
+/** 60fps requestAnimationFrame timeline scrubber with sunset/Earthset jumps and help popups (F3.5). */
 
 import { useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, Pause, Play, Radio, Sunset } from "lucide-react";
+import { HelpPopover } from "../../components/ui";
 import { useMissionStore, usePlaybackStore, type PlaybackSpeed } from "../../state";
 import type { TimeseriesPoint } from "../../types";
 
 const SPEED_OPTIONS: PlaybackSpeed[] = [1, 6, 24];
+
+export interface PlaybackScrubberProps {
+  embedded?: boolean;
+}
 
 function findNextTransitionIndex(
   points: TimeseriesPoint[],
@@ -37,7 +42,7 @@ function formatUtcCompact(isoUtc: string): string {
   return isoUtc.replace("T", " ").replace(":00Z", " UTC").replace("Z", " UTC");
 }
 
-export function PlaybackScrubber() {
+export function PlaybackScrubber({ embedded = false }: PlaybackScrubberProps) {
   const evaluationData = useMissionStore((s) => s.evaluationData);
   const startUtc = useMissionStore((s) => s.startUtc);
 
@@ -109,8 +114,20 @@ export function PlaybackScrubber() {
     );
   };
 
-  return (
-    <section className="panel-card" style={{ gap: "0.6rem" }}>
+  const innerContent = (
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+      {!embedded && (
+        <div className="panel-row">
+          <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
+            <h2 className="panel-title">Mission Time Scrubber</h2>
+            <HelpPopover helpKey="playbackBar" align="left" />
+          </div>
+          <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontVariantNumeric: "tabular-nums" }}>
+            Step <strong>{currentIndex + 1}</strong> / {totalSteps} · {formatUtcCompact(currentPoint?.timestamp_utc ?? startUtc)}
+          </span>
+        </div>
+      )}
+
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.65rem" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
           <button type="button" onClick={stepBackward} className="btn-surface" title="Previous step" aria-label="Previous step">
@@ -143,7 +160,7 @@ export function PlaybackScrubber() {
           ))}
         </div>
 
-        <div style={{ flex: 1, minWidth: "200px", display: "grid", gap: "0.2rem" }}>
+        <div style={{ flex: 1, minWidth: "200px", display: "grid", gap: "0.25rem" }}>
           <input
             type="range"
             min={0}
@@ -158,16 +175,16 @@ export function PlaybackScrubber() {
           />
           {points.length > 0 && (
             <div
-              style={{ display: "flex", height: "4px", borderRadius: "999px", overflow: "hidden", gap: "1px" }}
-              title="Solar illumination strip (Gold = Sunlit, Dark = Shadow)"
+              style={{ display: "flex", height: "5px", borderRadius: "999px", overflow: "hidden", gap: "1px" }}
+              title="Solar illumination strip (Amber = Sunlit, Dark = Shadow)"
             >
               {points.map((pt, idx) => (
                 <span
                   key={pt.timestamp_utc}
                   style={{
                     flex: 1,
-                    background: !pt.is_sunlit ? "#1e293b" : pt.sun_visible_fraction < 0.99 ? "#fbbf24" : "#f59e0b",
-                    opacity: idx === currentIndex ? 1 : 0.72,
+                    background: !pt.is_sunlit ? "var(--border-subtle)" : "var(--accent-sun)",
+                    opacity: idx === currentIndex ? 1 : pt.sun_visible_fraction < 0.99 ? 0.5 : 0.78,
                   }}
                 />
               ))}
@@ -175,21 +192,25 @@ export function PlaybackScrubber() {
           )}
         </div>
 
-        <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", whiteSpace: "nowrap" }}>
-          Step <strong>{currentIndex + 1}</strong>/{totalSteps} • {formatUtcCompact(currentPoint?.timestamp_utc ?? startUtc)}
-        </span>
-
-        <div style={{ display: "inline-flex", gap: "0.4rem", flexWrap: "wrap" }}>
-          <button type="button" onClick={handleJumpSunset} className="btn-surface" style={{ fontSize: "0.76rem" }}>
-            <Sunset size={13} color="var(--accent-sun)" />
-            <span>Jump to Next Sunset</span>
-          </button>
-          <button type="button" onClick={handleJumpEarthset} className="btn-surface" style={{ fontSize: "0.76rem" }}>
-            <Radio size={13} color="var(--accent-dte)" />
-            <span>Jump to Next Earthset</span>
-          </button>
+        <div style={{ display: "inline-flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          <div className="control-with-help">
+            <button type="button" onClick={handleJumpSunset} className="btn-surface" style={{ fontSize: "0.78rem" }}>
+              <Sunset size={13} color="var(--accent-sun)" />
+              <span>Next Sunset</span>
+            </button>
+            <HelpPopover helpKey="jumpSunsetBtn" />
+          </div>
+          <div className="control-with-help">
+            <button type="button" onClick={handleJumpEarthset} className="btn-surface" style={{ fontSize: "0.78rem" }}>
+              <Radio size={13} color="var(--accent-dte)" />
+              <span>Next Earthset</span>
+            </button>
+            <HelpPopover helpKey="jumpEarthsetBtn" />
+          </div>
         </div>
       </div>
-    </section>
+    </div>
   );
+
+  return embedded ? innerContent : <section className="panel-card">{innerContent}</section>;
 }

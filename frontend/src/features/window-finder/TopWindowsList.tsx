@@ -1,6 +1,7 @@
 /** Ranked list of top candidate landing windows with Cockpit & Compare actions (F5.3). */
 
 import { Award, Compass, Plus } from "lucide-react";
+import { HelpPopover } from "../../components/ui";
 import type { TopWindow, WindowCandidate } from "../../types";
 
 export interface TopWindowsListProps {
@@ -21,13 +22,15 @@ export function TopWindowsList({ topWindows, candidateMap, isClassB, onSelectWin
   }
 
   return (
-    <section className="panel-card" style={{ padding: "0.85rem" }}>
-      <h3 className="panel-title">
-        <span>
-          <Award size={14} /> Top {topWindows.length} Recommended Landing Windows
-        </span>
-        <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>Sorted by score · ties broken by earliest UTC</span>
-      </h3>
+    <section className="panel-card" style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
+      <div className="panel-row">
+        <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
+          <Award size={15} color="var(--accent-ok)" aria-hidden="true" />
+          <h3 className="panel-title">Top {topWindows.length} Recommended Landing Windows</h3>
+          <HelpPopover helpKey="windowsScreen" align="left" />
+        </div>
+        <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>Sorted by score · ties broken by earliest UTC</span>
+      </div>
 
       <div style={{ display: "grid", gap: "0.55rem" }}>
         {topWindows.map((win) => {
@@ -35,14 +38,14 @@ export function TopWindowsList({ topWindows, candidateMap, isClassB, onSelectWin
           return (
             <div
               key={`${win.rank}-${win.start_utc}`}
-              className="site-card"
+              className="panel-inset"
               style={{
-                cursor: "default",
-                background: "#0b1120",
+                display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
                 flexWrap: "wrap",
+                gap: "0.6rem",
               }}
             >
               <div style={{ display: "grid", gap: "0.2rem" }}>

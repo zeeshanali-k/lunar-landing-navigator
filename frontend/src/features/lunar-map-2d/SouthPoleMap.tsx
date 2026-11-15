@@ -8,6 +8,7 @@
 
 import { type MouseEvent, useEffect, useRef, useState } from "react";
 import { Compass } from "lucide-react";
+import { HelpPopover } from "../../components/ui";
 import { useMissionStore, usePlaybackStore } from "../../state";
 import { LayerToggleBar } from "./LayerToggleBar";
 import {
@@ -83,22 +84,19 @@ export function SouthPoleMap() {
       : undefined;
 
   return (
-    <section className="panel-card">
-      <h2 className="panel-title">
-        <span>
-          <Compass size={13} /> 2D Lunar Map ({viewMode === "south_pole" ? "Polar Stereo" : "Global"})
-        </span>
+    <section className="panel-card" style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+      <div className="panel-row">
+        <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
+          <Compass size={14} color="var(--accent-primary)" aria-hidden="true" />
+          <h2 className="panel-title">2D Lunar Map ({viewMode === "south_pole" ? "Polar Stereo" : "Global"})</h2>
+          <HelpPopover helpKey="map2dSection" align="left" />
+        </div>
         {viewMode === "south_pole" && (
-          <button
-            type="button"
-            className="category-pill active"
-            onClick={() => setPoleZoom((z) => (z > 1.2 ? 1.0 : DEFAULT_POLE_ZOOM))}
-            style={{ textTransform: "none", letterSpacing: 0 }}
-          >
+          <button type="button" className="category-pill active" onClick={() => setPoleZoom((z) => (z > 1.2 ? 1.0 : DEFAULT_POLE_ZOOM))}>
             {poleZoom > 1.2 ? "Zoom: 84°S Core" : "Zoom: 80°S Wide"}
           </button>
         )}
-      </h2>
+      </div>
 
       <LayerToggleBar viewMode={viewMode} onViewModeChange={setViewMode} quickmapUrl={quickmapUrl} moonTrekUrl={moonTrekUrl} />
 
@@ -240,7 +238,7 @@ export function SouthPoleMap() {
               pointerEvents: "none",
               padding: "0.35rem 0.6rem",
               borderRadius: "0.4rem",
-              background: "rgba(7, 11, 20, 0.92)",
+              background: "var(--surface-popover)",
               border: "1px solid var(--accent-dte)",
               color: "var(--text-primary)",
               fontSize: "0.73rem",

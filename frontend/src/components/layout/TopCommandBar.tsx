@@ -1,17 +1,21 @@
-/** Aerospace command-center top navigation bar with mode toggle and shareable URL sync (F3.1). */
+/** Top navigation header with screen tabs, versatile theme toggle, and share/export popups. */
 
 import { useState } from "react";
-import { CalendarSearch, Check, Compass, Download, GitCompare, GraduationCap, Link2, Moon, Wifi, WifiOff } from "lucide-react";
+import { CalendarSearch, Check, Compass, Download, GitCompare, GraduationCap, Link2, Map, Moon, Sun, Wifi, WifiOff } from "lucide-react";
 import { copyScenarioLinkToClipboard, useComparisonStore, useMissionStore, type WorkspaceTab } from "../../state";
 import { MissionBriefingModal } from "../../features/briefing-export";
 import { ModeSwitchPill } from "../../features/persona-mode";
+import { HelpPopover, ThemeToggle } from "../ui";
+import { WORKSPACE_SCREENS } from "./navigationConfig";
 
-const WORKSPACE_TABS: { id: WorkspaceTab; label: string; icon: typeof Compass }[] = [
-  { id: "cockpit", label: "Mission Cockpit", icon: Compass },
-  { id: "compare", label: "Compare Scenarios", icon: GitCompare },
-  { id: "windows", label: "Landing Window Finder", icon: CalendarSearch },
-  { id: "explorer", label: "Explorer Guide", icon: GraduationCap },
-];
+const SCREEN_ICONS: Record<WorkspaceTab, typeof Compass> = {
+  cockpit: Compass,
+  terrain: Map,
+  sky: Sun,
+  compare: GitCompare,
+  windows: CalendarSearch,
+  explorer: GraduationCap,
+};
 
 export function TopCommandBar() {
   const [copied, setCopied] = useState(false);
@@ -24,7 +28,6 @@ export function TopCommandBar() {
   const selectedSite = useMissionStore((s) => s.selectedSite);
   const customCoords = useMissionStore((s) => s.customCoords);
   const getScenarioUrlParams = useMissionStore((s) => s.getScenarioUrlParams);
-
   const pinnedCount = useComparisonStore((s) => s.pinnedScenarios.length);
 
   const activeSiteTitle = customCoords
@@ -42,60 +45,66 @@ export function TopCommandBar() {
   return (
     <>
       <header className="top-command-bar">
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <Moon size={24} color="var(--accent-sun)" />
-          <div>
-            <div style={{ fontWeight: 700, fontSize: "1rem", lineHeight: 1.2 }}>Lunar Landing Site Navigator</div>
-            <div style={{ fontSize: "0.76rem", color: "var(--text-muted)" }}>{activeSiteTitle}</div>
+        <div className="top-bar-primary">
+          <div className="brand-lockup">
+            <div className="brand-badge">
+              <Moon size={20} color="var(--accent-sun)" aria-hidden="true" />
+            </div>
+            <div>
+              <div className="brand-title">Lunar Landing Site Navigator</div>
+              <div className="brand-subtitle">{activeSiteTitle}</div>
+            </div>
+          </div>
+
+          <div className="top-bar-actions">
+            <ThemeToggle />
+            <ModeSwitchPill />
+
+            <span className="status-pill" style={{ color: isOfflineFallback ? "var(--accent-sun)" : "var(--accent-ok)" }}>
+              {isOfflineFallback ? <WifiOff size={13} aria-hidden="true" /> : <Wifi size={13} aria-hidden="true" />}
+              <span>{isOfflineFallback ? "Offline Sample" : "Live API"}</span>
+            </span>
+
+            <div className="control-with-help">
+              <button type="button" onClick={() => void handleCopyLink()} className="btn-surface">
+                {copied ? <Check size={14} color="var(--accent-ok)" /> : <Link2 size={14} />}
+                <span>{copied ? "Copied!" : "Copy Link"}</span>
+              </button>
+              <HelpPopover helpKey="copyLinkBtn" />
+            </div>
+
+            <div className="control-with-help">
+              <button type="button" onClick={() => setBriefingOpen(true)} className="btn-primary">
+                <Download size={14} />
+                <span>Export</span>
+              </button>
+              <HelpPopover helpKey="exportBriefingBtn" />
+            </div>
           </div>
         </div>
 
-        <nav className="nav-tabs" aria-label="Workspace navigation">
-          {WORKSPACE_TABS.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
+        <nav className="nav-tabs" aria-label="Workspace screens">
+          {WORKSPACE_SCREENS.map((screen) => {
+            const Icon = SCREEN_ICONS[screen.id] ?? Compass;
+            const isActive = activeTab === screen.id;
             return (
-              <button key={tab.id} type="button" onClick={() => setActiveTab(tab.id)} className={`nav-tab ${isActive ? "active" : ""}`}>
-                <Icon size={15} />
-                <span>{tab.label}</span>
-                {tab.id === "compare" && pinnedCount > 0 && (
-                  <span
-                    style={{
-                      padding: "0.05rem 0.4rem",
-                      borderRadius: "999px",
-                      fontSize: "0.72rem",
-                      background: "var(--accent-dte)",
-                      color: "#070b14",
-                      fontWeight: 700,
-                    }}
-                  >
-                    {pinnedCount}
-                  </span>
-                )}
+              <button
+                key={screen.id}
+                type="button"
+                onClick={() => setActiveTab(screen.id)}
+                className={`nav-tab ${isActive ? "active" : ""}`}
+                title={screen.shortDescription}
+                aria-current={isActive ? "page" : undefined}
+              >
+                <Icon size={15} aria-hidden="true" />
+                <span>{screen.label}</span>
+                {screen.id === "compare" && pinnedCount > 0 && <span className="nav-count-badge">{pinnedCount}</span>}
               </button>
             );
           })}
         </nav>
-
-        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap" }}>
-          <ModeSwitchPill />
-
-          <span className="status-pill" style={{ color: isOfflineFallback ? "var(--accent-sun)" : "var(--accent-ok)" }}>
-            {isOfflineFallback ? <WifiOff size={13} /> : <Wifi size={13} />}
-            {isOfflineFallback ? "OFFLINE FIXTURE" : "LIVE API"}
-          </span>
-
-          <button type="button" onClick={() => void handleCopyLink()} className="btn-surface">
-            {copied ? <Check size={14} color="var(--accent-ok)" /> : <Link2 size={14} />}
-            <span>{copied ? "Scenario Link Copied!" : "Copy Scenario Link"}</span>
-          </button>
-
-          <button type="button" onClick={() => setBriefingOpen(true)} className="btn-surface">
-            <Download size={14} />
-            <span>Export Briefing</span>
-          </button>
-        </div>
       </header>
+
       <MissionBriefingModal open={briefingOpen} onClose={() => setBriefingOpen(false)} />
     </>
   );
