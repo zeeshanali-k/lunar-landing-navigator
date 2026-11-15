@@ -237,7 +237,7 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 | 5 | 2D map and persona mode are built but are P1, mounted unconditionally in the cockpit | `frontend/src/features/lunar-map-2d/`, `frontend/src/features/persona-mode/` | MAJOR | in `FE-001` acceptance |
 | 6 | Horizon silhouette and timeline were placeholders, the two P0 visualisations REQ-11 requires | `frontend/src/components/layout/AppShell.tsx` | BLOCKER for P0 | `PARTIAL` — M4 SVG panels merged as `00f7e77`; `FE-002` must verify acceptance |
 | 7 | No Class B badge, spherical-limb notice, or provenance footer in the UI | `frontend/src/components/`, `frontend/src/features/` | BLOCKER for P0 | `PARTIAL` — M4 spherical-limb notice added; badge and footer still open |
-| 8 | No `step`, `array_az`, or `min_comms` controls; values exist in state and URL but no UI writes them | `frontend/src/features/time-controls/` | BLOCKER for P0 | `PARTIAL` — M4 array/mast selector added; step and `min_comms` still open |
+| 8 | No `step`, `array_az`, or `min_comms` controls; values exist in state and URL but no UI writes them | `frontend/src/features/time-controls/` | BLOCKER for P0 | `PARTIAL` — M4 array/mast selector added; step, `array_az`, and `min_comms` still open |
 | 9 | Educational glossary asserts unsourced science (1.54° tilt, 40 K, ±6.5° libration, "uninterrupted" DTE) and generates narrative from booleans | `frontend/src/features/persona-mode/educationalGlossary.ts` | MAJOR | open — deliberately deferred, see below |
 | 10 | Registry holds 6 sites, not the 16 REQ-05 requires | `backend/config/curated_sites.yaml` | BLOCKER for P0 | `DONE` — closed by `DATA-001` |
 | 11 | `contracts/openapi-draft.yaml` still hand-maintained alongside Pydantic | `contracts/` | MAJOR | in `ARCH-002` acceptance |
@@ -335,7 +335,8 @@ Remaining:
   highlight countdowns under 12 h. Open issue 6.
 - Add controls for `step_minutes` (10 or 60), `fixed_array_azimuth_deg`, and `min_comms_elev_deg`;
   changing any writes the store and the canonical URL. The M4 `SolarArraySelector` covers array
-  type and mast height; step and minimum comms elevation are still missing. Open issue 8.
+  type and mast height; step, fixed array azimuth, and minimum comms elevation are still missing.
+  Open issue 8.
 - Add the persistent provenance footer: LOLA, JPL Horizons, QuickMap, Moon Trek, CSA; state whether
   the active site uses measured terrain or the spherical limb.
 - Extend `frontend/src/__tests__/horizonMath.test.ts` and `timelineSegments.test.ts` to assert the
@@ -367,7 +368,7 @@ Remaining:
 
 - Issue 5: P1 map/persona mounts in the P0 cockpit; `FE-001` owns the routing fix.
 - Issue 7: Class B badge, notice, and provenance footer; `FE-002`.
-- Issue 8: step and min-comms controls; `FE-002`.
+- Issue 8: step, fixed array azimuth, and min-comms controls; `FE-002`.
 - Issue 9: the educational glossary’s unsourced science needs a human decision (supply citations or
   approve deleting the numeric claims); it is P1 persona-mode work, not a P0 blocker.
 - Issue 14: `ARCH-002` deletes the hand-written types but `frontend/src/types/index.ts` is outside
