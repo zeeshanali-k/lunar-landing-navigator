@@ -30,16 +30,22 @@ async def naive_timestamp_handler(request: Request, exc: NaiveTimestampError) ->
     return JSONResponse(status_code=422, content=_envelope("VALIDATION_ERROR", str(exc)))
 
 
-async def ephemeris_range_handler(request: Request, exc: EphemerisRangeExceededError) -> JSONResponse:
+async def ephemeris_range_handler(
+    request: Request, exc: EphemerisRangeExceededError
+) -> JSONResponse:
     return JSONResponse(status_code=422, content=_envelope("EPHEMERIS_RANGE_EXCEEDED", str(exc)))
 
 
 async def request_validation_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
     return JSONResponse(
         status_code=422,
-        content=_envelope("VALIDATION_ERROR", "Request validation failed.", {"errors": exc.errors()}),
+        content=_envelope(
+            "VALIDATION_ERROR", "Request validation failed.", {"errors": exc.errors()}
+        ),
     )
 
 
 async def internal_error_handler(request: Request, exc: Exception) -> JSONResponse:
-    return JSONResponse(status_code=500, content=_envelope("INTERNAL_ERROR", "Unexpected internal error."))
+    return JSONResponse(
+        status_code=500, content=_envelope("INTERNAL_ERROR", "Unexpected internal error.")
+    )

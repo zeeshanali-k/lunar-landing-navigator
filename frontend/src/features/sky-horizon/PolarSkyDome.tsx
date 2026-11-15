@@ -1,6 +1,7 @@
 /** Zenith-centered Polar Sky-Dome Radar Plot with Rim Magnification & Earth Libration (F4.4). */
 
 import { useMemo, useState } from "react";
+import { HelpPopover } from "../../components/ui";
 import { usePlaybackStore } from "../../state";
 import type { HorizonProfilePoint, TimeseriesPoint } from "../../types";
 import { azElevToSkyDomeSVG, interpolateHorizonElevDeg } from "./horizonMath";
@@ -95,27 +96,44 @@ export function PolarSkyDome({ horizonProfile, timeseries, currentIndex, onSelec
   return (
     <section className="panel-card" style={{ padding: "0.75rem 0.9rem", gap: "0.45rem" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-        <strong style={{ fontSize: "0.86rem" }}>Polar Sky-Dome Radar</strong>
-        <button type="button" onClick={() => setRimMagnified((prev) => !prev)} className={`category-pill ${rimMagnified ? "active" : ""}`}>
-          {rimMagnified ? "Rim Zoom (-5°..+25°)" : "Full Dome (-5°..90°)"}
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
+          <strong style={{ fontSize: "0.86rem" }}>Polar Sky-Dome Radar</strong>
+          <HelpPopover helpKey="horizonSection" align="left" />
+        </div>
+        <div className="control-with-help">
+          <button
+            type="button"
+            onClick={() => setRimMagnified((prev) => !prev)}
+            className={`category-pill ${rimMagnified ? "active" : ""}`}
+          >
+            {rimMagnified ? "Rim Zoom (-5°..+25°)" : "Full Dome (-5°..90°)"}
+          </button>
+          <HelpPopover helpKey="rimZoomBtn" />
+        </div>
       </div>
 
       <svg
         viewBox={`0 0 ${SIZE} ${SIZE}`}
         style={{
           width: "100%",
-          maxWidth: "240px",
+          maxWidth: "280px",
           height: "auto",
           margin: "0 auto",
           display: "block",
-          background: "#070c17",
+          background: "var(--chart-bg)",
+          border: "1px solid var(--border-subtle)",
           borderRadius: "0.5rem",
         }}
       >
-        <circle cx={CX} cy={CY} r={MAX_R} fill="#0b1222" stroke="#334155" />
+        <circle cx={CX} cy={CY} r={MAX_R} fill="var(--surface-inset)" stroke="var(--border-strong)" />
         {terrainMaskPath && (
-          <path d={terrainMaskPath} fill="rgba(71, 85, 105, 0.55)" fillRule="evenodd" stroke="#94a3b8" strokeWidth="1.2" />
+          <path
+            d={terrainMaskPath}
+            fill="var(--chart-horizon-fill)"
+            fillRule="evenodd"
+            stroke="var(--chart-horizon-stroke)"
+            strokeWidth="1.2"
+          />
         )}
 
         {ringElevations.map((elev) => {
@@ -127,10 +145,10 @@ export function PolarSkyDome({ horizonProfile, timeseries, currentIndex, onSelec
                 cy={CY}
                 r={r}
                 fill="none"
-                stroke={elev === 0 ? "#64748b" : "#1e293b"}
+                stroke={elev === 0 ? "var(--border-strong)" : "var(--chart-grid)"}
                 strokeDasharray={elev === 0 ? "4 3" : undefined}
               />
-              <text x={CX + 3} y={CY - r + 10} fontSize="8.5" fill="#94a3b8">
+              <text x={CX + 3} y={CY - r + 10} fontSize="8.5" fill="var(--chart-text)">
                 {elev}°
               </text>
             </g>
@@ -141,8 +159,8 @@ export function PolarSkyDome({ horizonProfile, timeseries, currentIndex, onSelec
           const end = azElevToSkyDomeSVG(c.az, -5, CX, CY, MAX_R, rimMagnified);
           return (
             <g key={c.label}>
-              <line x1={CX} y1={CY} x2={end.x} y2={end.y} stroke="#1e293b" />
-              <text x={end.x + c.dx} y={end.y + c.dy} textAnchor="middle" fontSize="9.5" fill="#cbd5e1">
+              <line x1={CX} y1={CY} x2={end.x} y2={end.y} stroke="var(--chart-grid)" />
+              <text x={end.x + c.dx} y={end.y + c.dy} textAnchor="middle" fontSize="9.5" fill="var(--chart-text)">
                 {c.label}
               </text>
             </g>

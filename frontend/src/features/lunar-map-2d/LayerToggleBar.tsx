@@ -6,6 +6,7 @@
  */
 
 import { ExternalLink, Globe2 } from "lucide-react";
+import { HelpPopover } from "../../components/ui";
 import type { MapViewMode } from "./mapProjection";
 
 export interface LayerToggleBarProps {
@@ -44,16 +45,16 @@ export function LayerToggleBar({ viewMode, onViewModeChange, quickmapUrl, moonTr
         </button>
       </div>
 
-      <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", alignItems: "center" }}>
         {quickmapUrl && (
           <a
             href={quickmapUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-surface"
-            style={{ textDecoration: "none", padding: "0.25rem 0.55rem", fontSize: "0.74rem" }}
+            style={{ padding: "0.25rem 0.55rem", fontSize: "0.74rem" }}
           >
-            <span>Inspect in NASA Quickmap</span>
+            <span>NASA QuickMap</span>
             <ExternalLink size={11} />
           </a>
         )}
@@ -63,12 +64,13 @@ export function LayerToggleBar({ viewMode, onViewModeChange, quickmapUrl, moonTr
             target="_blank"
             rel="noopener noreferrer"
             className="btn-surface"
-            style={{ textDecoration: "none", padding: "0.25rem 0.55rem", fontSize: "0.74rem" }}
+            style={{ padding: "0.25rem 0.55rem", fontSize: "0.74rem" }}
           >
-            <span>Open in Moon Trek</span>
+            <span>Moon Trek</span>
             <ExternalLink size={11} />
           </a>
         )}
+        {(quickmapUrl || moonTrekUrl) && <HelpPopover helpKey="externalLinksBtn" />}
       </div>
     </div>
   );

@@ -50,7 +50,9 @@ def mission_sample_count(duration_days: float, step_minutes: int) -> int:
     rejects a non-integral count so a bad caller cannot silently truncate it.
     """
     if not math.isfinite(duration_days) or duration_days <= 0:
-        raise MissionTimeError(f"duration_days must be a positive finite number; got {duration_days!r}")
+        raise MissionTimeError(
+            f"duration_days must be a positive finite number; got {duration_days!r}"
+        )
     if step_minutes <= 0:
         raise MissionTimeError(f"step_minutes must be positive; got {step_minutes!r}")
     samples = duration_days * MINUTES_PER_DAY / step_minutes

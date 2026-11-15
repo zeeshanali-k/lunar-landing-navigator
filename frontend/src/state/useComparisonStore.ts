@@ -1,7 +1,7 @@
 /** Multi-scenario comparison Zustand store supporting up to 4 pinned scenarios (F3.1). */
 
 import { create } from "zustand";
-import { compareScenarios, isAbortError } from "../services";
+import { compareScenarios, describeApiError, isAbortError } from "../services";
 import type { CompareResponse, CompareScenarioInput } from "../types";
 
 const MAX_PINNED_SCENARIOS = 4;
@@ -105,7 +105,7 @@ export const useComparisonStore = create<ComparisonState>((set, get) => ({
       }
       set({
         loading: false,
-        error: err instanceof Error ? err.message : "Failed to compare scenarios.",
+        error: describeApiError(err, "Failed to compare scenarios."),
       });
     }
   },

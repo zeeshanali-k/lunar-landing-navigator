@@ -1,6 +1,7 @@
 /** Earth-vs-Moon Environmental Contrast Panel with live site metrics (F4.7). */
 
 import { useMemo } from "react";
+import { HelpPopover } from "../../components/ui";
 import { usePlaybackStore } from "../../state";
 import type { EvaluateResponse } from "../../types";
 
@@ -64,9 +65,12 @@ export function EarthMoonContrastCard({ evaluation, currentIndex, personaMode = 
   ];
 
   return (
-    <section className="panel-card" style={{ padding: "0.85rem 1rem", gap: "0.65rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
-        <strong style={{ fontSize: "0.88rem" }}>Earth vs. Moon Environmental Contrast</strong>
+    <section className="panel-card" style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+      <div className="panel-row">
+        <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
+          <strong style={{ fontSize: "0.88rem" }}>Earth vs. Moon Environmental Contrast</strong>
+          <HelpPopover helpKey="explorerScreen" align="left" />
+        </div>
         <span style={{ fontSize: "0.74rem", color: "var(--text-muted)" }}>
           Mode: {personaMode === "explorer" ? "Explorer / Educator" : "Mission Planner"} · Site: {site.name}
         </span>
@@ -76,27 +80,22 @@ export function EarthMoonContrastCard({ evaluation, currentIndex, personaMode = 
         {cards.map((card) => (
           <div
             key={card.title}
+            className="panel-inset"
             style={{
-              background: "#0b1120",
-              border: "1px solid #1e293b",
-              borderRadius: "0.55rem",
-              padding: "0.7rem 0.8rem",
               display: "grid",
               gap: "0.35rem",
             }}
           >
-            <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#e2e8f0" }}>{card.title}</div>
-            <div style={{ fontSize: "0.74rem", color: "#94a3b8" }}>
-              <strong style={{ color: "#38bdf8" }}>Earth:</strong> {card.earth}
+            <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-primary)" }}>{card.title}</div>
+            <div style={{ fontSize: "0.76rem", color: "var(--text-muted)" }}>
+              <strong style={{ color: "var(--accent-dte)" }}>Earth:</strong> {card.earth}
             </div>
-            <div style={{ fontSize: "0.74rem", color: "#cbd5e1" }}>
-              <strong style={{ color: "#f59e0b" }}>Moon:</strong> {card.moon}
+            <div style={{ fontSize: "0.76rem", color: "var(--text-primary)" }}>
+              <strong style={{ color: "var(--accent-sun)" }}>Moon:</strong> {card.moon}
             </div>
-            <div style={{ fontSize: "0.73rem", color: "#10b981", marginTop: "0.15rem" }}>{card.siteMetric}</div>
+            <div style={{ fontSize: "0.74rem", color: "var(--accent-ok)", marginTop: "0.15rem", fontWeight: 600 }}>{card.siteMetric}</div>
             {personaMode === "explorer" && (
-              <p style={{ margin: "0.15rem 0 0", fontSize: "0.72rem", color: "var(--text-muted)", lineHeight: 1.35 }}>
-                {card.explorerNote}
-              </p>
+              <p style={{ margin: "0.15rem 0 0", fontSize: "0.74rem", color: "var(--text-muted)", lineHeight: 1.4 }}>{card.explorerNote}</p>
             )}
           </div>
         ))}

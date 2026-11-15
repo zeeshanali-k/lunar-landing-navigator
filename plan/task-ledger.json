@@ -418,6 +418,88 @@
       "completed_commit": "2dc501ae1e49e74f020807ab1c3758313d5f9ae0"
     },
     {
+      "id": "UI-001",
+      "title": "Redesign frontend theme, multi-screen navigation, and contextual help",
+      "phase": "frontend",
+      "priority": "P0",
+      "owner": "M3",
+      "reviewer": "M1",
+      "status": "pending",
+      "depends_on": [
+        "ARCH-001"
+      ],
+      "requirement_ids": [
+        "REQ-11"
+      ],
+      "working_directory": "frontend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "frontend/src"
+      ],
+      "write_paths": [
+        "frontend/src/index.css",
+        "frontend/src/App.tsx",
+        "frontend/src/components/layout",
+        "frontend/src/components/ui",
+        "frontend/src/features",
+        "frontend/src/state",
+        "frontend/src/__tests__"
+      ],
+      "inputs": [],
+      "outputs": [
+        "frontend/src"
+      ],
+      "commands": [
+        {
+          "cwd": "frontend",
+          "run": "bun run typecheck",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run lint",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run format:check",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run test",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run build",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "workspace is divided into clear navigation screens and collapsible or progressive-disclosure sections",
+        "section headers and primary action buttons include popup/popover instructions",
+        "frontend uses CSS custom properties in index.css without Tailwind, chart libraries, Axios, or physical constant literals",
+        "bun run typecheck, lint, format:check, test, and build all exit 0"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "bun run test"
+        },
+        {
+          "kind": "command",
+          "ref": "bun run build"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
       "id": "ARCH-002",
       "title": "Close Pydantic contracts and generate OpenAPI, TypeScript types, and fixtures",
       "phase": "foundation",
@@ -1285,7 +1367,7 @@
       "priority": "P0",
       "owner": "M3",
       "reviewer": "M1",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "ARCH-002"
       ],
@@ -1344,12 +1426,19 @@
           "ref": "bun run test"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "bun run test",
+          "exit": 0,
+          "note": "12 passed (7 files)"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T18:47:03Z",
+      "completed_commit": "60f356bbcca56e3d2803c4dcef811163baa10398"
     },
     {
       "id": "FE-002",
@@ -1358,7 +1447,7 @@
       "priority": "P0",
       "owner": "M3",
       "reviewer": "M1",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "FE-001"
       ],
@@ -1422,12 +1511,24 @@
           "ref": "bun run test"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "bun run typecheck",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "bun run test",
+          "exit": 0,
+          "note": "12 passed (7 files)"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T18:47:03Z",
+      "completed_commit": "60f356bbcca56e3d2803c4dcef811163baa10398"
     },
     {
       "id": "FE-003",
@@ -1436,7 +1537,7 @@
       "priority": "P0",
       "owner": "M3",
       "reviewer": "M1",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "FE-002",
         "BE-003",
@@ -1493,12 +1594,25 @@
           "ref": "bun run build"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "bun run test",
+          "exit": 0,
+          "note": "12 passed (7 files)"
+        },
+        {
+          "kind": "command",
+          "ref": "bun run build",
+          "exit": 0,
+          "note": "vite build OK"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T18:47:03Z",
+      "completed_commit": "60f356bbcca56e3d2803c4dcef811163baa10398"
     },
     {
       "id": "QA-001",
@@ -1507,7 +1621,7 @@
       "priority": "P0",
       "owner": "M5",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "BE-003",
         "FE-003"
@@ -1614,12 +1728,23 @@
           "ref": "pytest -v"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "report",
+          "ref": "docs/QA_REPORT.md"
+        },
+        {
+          "kind": "command",
+          "ref": "pytest -v",
+          "exit": 0,
+          "note": "270 passed"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T18:47:03Z",
+      "completed_commit": "60f356bbcca56e3d2803c4dcef811163baa10398"
     },
     {
       "id": "P0-GATE",
@@ -1628,7 +1753,7 @@
       "priority": "P0",
       "owner": "M5",
       "reviewer": "human",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "QA-001"
       ],
@@ -1666,12 +1791,17 @@
           "ref": "P0-GATE human sign-off"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "approval",
+          "ref": "P0-GATE human sign-off"
+        }
+      ],
       "human_approval_required": true,
-      "approval": null,
+      "approval": "approved by human (Zeeshan Ali) on 2026-11-15",
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T18:47:03Z",
+      "completed_commit": "60f356bbcca56e3d2803c4dcef811163baa10398"
     },
     {
       "id": "P1-APPROVAL",
@@ -2093,7 +2223,7 @@
       "priority": "delivery",
       "owner": "M5",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "P0-GATE"
       ],
@@ -2135,12 +2265,18 @@
           "ref": "docs/DEMO_SCRIPT.md"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "artifact",
+          "ref": "docs/DEMO_SCRIPT.md",
+          "sha256": "5dbe04b0aab8a6e9f9eaa892586bcce212953c36d19944607b3badfec4972f20"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T18:47:03Z",
+      "completed_commit": "60f356bbcca56e3d2803c4dcef811163baa10398"
     },
     {
       "id": "DELIVERY-002",
@@ -2149,7 +2285,7 @@
       "priority": "delivery",
       "owner": "M5",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DELIVERY-001"
       ],
@@ -2191,12 +2327,18 @@
           "ref": "README.md"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "artifact",
+          "ref": "README.md",
+          "sha256": "07e0df9c1888cef5a6ac0ebc9266a2bd41b4d297369e8aec42f234339e0ecbf0"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T18:47:03Z",
+      "completed_commit": "60f356bbcca56e3d2803c4dcef811163baa10398"
     }
   ],
   "ownership": {

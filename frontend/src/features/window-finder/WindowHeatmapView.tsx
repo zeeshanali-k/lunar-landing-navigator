@@ -1,8 +1,8 @@
 /** Annual landing-window screening heatmap over precomputed ephemeris data (P1-WINDOWS). */
 
 import { useEffect, useMemo, useState } from "react";
-import { CalendarSearch } from "lucide-react";
-import { isAbortError, scanWindows } from "../../services";
+import { CollapsibleSection, ScreenHeader } from "../../components/ui";
+import { describeApiError, isAbortError, scanWindows } from "../../services";
 import { useComparisonStore, useMissionStore } from "../../state";
 import type { DurationDays, SolarArrayType, CandidateWindow, WindowsResponse } from "../../types";
 import { TopWindowsList } from "./TopWindowsList";
@@ -43,7 +43,7 @@ export function WindowHeatmapView() {
       .catch((err: unknown) => {
         if (isAbortError(err)) return;
         setLoading(false);
-        setError(err instanceof Error ? err.message : "Failed to load landing windows.");
+        setError(describeApiError(err, "Failed to load landing windows."));
       });
     return () => controller.abort();
   }, [siteId, year, scanDuration, scanArray]);
@@ -80,70 +80,79 @@ export function WindowHeatmapView() {
 
   return (
     <div style={{ display: "grid", gap: "1rem" }}>
-      <section className="panel-card panel-row">
-        <div>
-          <h2 className="panel-title">
-            <span>
-              <CalendarSearch size={14} /> Annual Landing-Window Screening Heatmap
-            </span>
-          </h2>
-          <p style={{ margin: "0.2rem 0 0", fontSize: "0.76rem", color: "var(--text-muted)" }}>
-            {WINDOW_GRID_STEP_MINUTES}-minute screening grid (versus 10/60-min `evaluate`) · Polar seasonality: annual (~365d) cycle with
-            ~18.6-year nodal modulation
-          </p>
-        </div>
-        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center", fontSize: "0.78rem" }}>
-          <select value={siteId} onChange={(e) => setSiteId(e.target.value)} className="select-surface" aria-label="Window scan site">
-            {mission.sites.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-                {s.has_precomputed_terrain ? "" : " (Class B)"}
-              </option>
-            ))}
-          </select>
-          <select
-            value={year}
-            onChange={(e) => setYear(Number(e.target.value) as 2026 | 2027 | 2028)}
-            className="select-surface"
-            aria-label="Window scan year"
-          >
-            <option value={2026}>2026</option>
-            <option value={2027}>2027</option>
-            <option value={2028}>2028</option>
-          </select>
-          <select
-            value={scanDuration}
-            onChange={(e) => setScanDuration(Number(e.target.value) as DurationDays)}
-            className="select-surface"
-            aria-label="Window duration"
-          >
-            <option value={7}>7 days</option>
-            <option value={14}>14 days</option>
-            <option value={29.5}>29.5 days</option>
-          </select>
-          <select
-            value={scanArray}
-            onChange={(e) => setScanArray(e.target.value as SolarArrayType)}
-            className="select-surface"
-            aria-label="Window array type"
-          >
-            <option value="vertical_tracking">Vertical Tracking</option>
-            <option value="vertical_fixed">Vertical Fixed</option>
-            <option value="horizontal_fixed">Horizontal Fixed</option>
-          </select>
-        </div>
-      </section>
+      <ScreenHeader
+        eyebrow="Screen 5 of 6"
+        title="Landing Window Finder"
+        description={`Scans candidate ${WINDOW_GRID_STEP_MINUTES}-min launch windows across the lunar year to pinpoint optimal sunlight and Earth link timing.`}
+        helpKey="windowsScreen"
+        actions={
+          <div style={{ display: "flex", gap: "0.45rem", flexWrap: "wrap", alignItems: "center" }}>
+            <select value={siteId} onChange={(e) => setSiteId(e.target.value)} className="select-surface" aria-label="Window scan site">
+              {mission.sites.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                  {s.has_precomputed_terrain ? "" : " (Class B)"}
+                </option>
+              ))}
+            </select>
+            <select
+              value={year}
+              onChange={(e) => setYear(Number(e.target.value) as 2026 | 2027 | 2028)}
+              className="select-surface"
+              aria-label="Window scan year"
+            >
+              <option value={2026}>2026</option>
+              <option value={2027}>2027</option>
+              <option value={2028}>2028</option>
+            </select>
+            <select
+              value={scanDuration}
+              onChange={(e) => setScanDuration(Number(e.target.value) as DurationDays)}
+              className="select-surface"
+              aria-label="Window duration"
+            >
+              <option value={7}>7 days</option>
+              <option value={14}>14 days</option>
+              <option value={29.5}>29.5 days</option>
+            </select>
+            <select
+              value={scanArray}
+              onChange={(e) => setScanArray(e.target.value as SolarArrayType)}
+              className="select-surface"
+              aria-label="Window array type"
+            >
+              <option value="vertical_tracking">Vertical Tracking</option>
+              <option value="vertical_fixed">Vertical Fixed</option>
+              <option value="horizontal_fixed">Horizontal Fixed</option>
+            </select>
+          </div>
+        }
+      />
 
       {isClassB && (
         <div
           className="panel-card"
-          style={{ borderColor: "var(--accent-warn)", color: "#fde68a", padding: "0.65rem 1rem", fontSize: "0.82rem" }}
+          style={{
+            borderColor: "var(--accent-warn)",
+            background: "var(--surface-warn-soft)",
+            color: "var(--accent-warn)",
+            padding: "0.7rem 1rem",
+            fontSize: "0.82rem",
+          }}
         >
           <strong>Terrain model unavailable — spherical limb only</strong> (feasibility scores omitted; cells colored by sunlit fraction).
         </div>
       )}
       {error && (
-        <div className="panel-card" style={{ borderColor: "var(--accent-danger)", color: "#fca5a5", fontSize: "0.82rem" }}>
+        <div
+          className="panel-card"
+          style={{
+            borderColor: "var(--accent-danger)",
+            background: "var(--surface-danger-soft)",
+            color: "var(--accent-danger)",
+            fontSize: "0.82rem",
+          }}
+        >
           {error}
         </div>
       )}
@@ -154,15 +163,6 @@ export function WindowHeatmapView() {
         </div>
       ) : (
         <>
-          <WindowMonthGrid
-            totalWindows={data?.windows.length ?? 0}
-            monthGroups={monthGroups}
-            selectedWin={selectedWin}
-            isClassB={isClassB}
-            onSelectWin={setSelectedWin}
-            onLoadInCockpit={(utc) => void handleLoadInCockpit(utc)}
-          />
-
           <TopWindowsList
             topWindows={topWindows}
             candidateMap={candidateMap}
@@ -170,6 +170,23 @@ export function WindowHeatmapView() {
             onSelectWindow={(utc) => void handleLoadInCockpit(utc)}
             onPinWindow={handlePinWindow}
           />
+
+          <CollapsibleSection
+            title="Annual Monthly Calendar Heatmap"
+            subtitle="Explore every screened start date month by month"
+            badge={`${data?.windows.length ?? 0} windows`}
+            helpKey="windowsScreen"
+            defaultOpen={false}
+          >
+            <WindowMonthGrid
+              totalWindows={data?.windows.length ?? 0}
+              monthGroups={monthGroups}
+              selectedWin={selectedWin}
+              isClassB={isClassB}
+              onSelectWin={setSelectedWin}
+              onLoadInCockpit={(utc) => void handleLoadInCockpit(utc)}
+            />
+          </CollapsibleSection>
         </>
       )}
     </div>

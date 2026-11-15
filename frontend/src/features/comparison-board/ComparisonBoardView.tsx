@@ -1,6 +1,7 @@
 /** Side-by-side multi-scenario comparison workspace (P1-COMPARE, F5.1). */
 
-import { GitCompare, Layers, Pin, Sparkles, Trash2 } from "lucide-react";
+import { Layers, Pin, Sparkles, Trash2 } from "lucide-react";
+import { CollapsibleSection, HelpPopover, ScreenHeader } from "../../components/ui";
 import { useComparisonStore, useMissionStore } from "../../state";
 import type { ComparedScenario } from "../../types";
 import { buildCommsSegments, buildPowerSegments } from "../mission-timeline/timelineSegments";
@@ -9,9 +10,9 @@ import { ScenarioColumnCard } from "./ScenarioColumnCard";
 import { ScheduleShiftExplorer } from "./ScheduleShiftExplorer";
 import { SCENARIO_PALETTE, TradeoffRadarChart } from "./TradeoffRadarChart";
 
-const POWER_COLORS = { sunlit: "#f59e0b", grazing: "#d97706", dark: "#1e293b" } as const;
-const COMMS_COLORS = { dte_active: "#38bdf8", dte_blocked: "#334155" } as const;
-const TRACK_STYLE = { display: "flex", borderRadius: "4px", overflow: "hidden", background: "#0f172a" } as const;
+const POWER_COLORS = { sunlit: "#f59e0b", grazing: "#d97706", dark: "#334155" } as const;
+const COMMS_COLORS = { dte_active: "#0ea5e9", dte_blocked: "#475569" } as const;
+const TRACK_STYLE = { display: "flex", borderRadius: "4px", overflow: "hidden", background: "var(--surface-inset)" } as const;
 
 export function ComparisonBoardView() {
   const { pinnedScenarios, comparisonData, loading, error, pinScenario, setScenarios, unpinScenario, setBaselineIndex, clearComparison } =
@@ -58,34 +59,44 @@ export function ComparisonBoardView() {
 
   return (
     <div style={{ display: "grid", gap: "1rem" }}>
-      <section className="panel-card panel-row">
-        <div>
-          <h2 className="panel-title">
-            <span>
-              <GitCompare size={14} /> Side-by-Side Scenario Comparison (2–4 Scenarios)
-            </span>
-          </h2>
-          <p style={{ margin: "0.2rem 0 0", fontSize: "0.78rem", color: "var(--text-muted)" }}>
-            Pinned: {pinnedScenarios.length}/4 · Deltas evaluate each scenario minus Baseline #{(comparisonData?.baseline_index ?? 0) + 1}
-          </p>
-        </div>
-        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-          <button type="button" onClick={handlePinCurrent} className="btn-surface" style={{ borderColor: "var(--accent-dte)" }}>
-            <Pin size={13} /> Pin Current Cockpit Scenario
-          </button>
-          <button type="button" onClick={handleLoadPreset} className="btn-surface">
-            <Sparkles size={13} /> Load Artemis III Preset
-          </button>
-          {pinnedScenarios.length > 0 && (
-            <button type="button" onClick={clearComparison} className="btn-surface" style={{ color: "var(--accent-danger)" }}>
-              <Trash2 size={13} /> Clear All
+      <ScreenHeader
+        eyebrow="Screen 4 of 6"
+        title="Compare Scenarios"
+        description={`Compare up to 4 pinned mission configurations (${pinnedScenarios.length}/4 active). Deltas subtract Baseline #${(comparisonData?.baseline_index ?? 0) + 1}.`}
+        helpKey="compareScreen"
+        actions={
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center" }}>
+            <div className="control-with-help">
+              <button type="button" onClick={handlePinCurrent} className="btn-primary">
+                <Pin size={13} aria-hidden="true" />
+                <span>Pin Current Site</span>
+              </button>
+              <HelpPopover helpKey="pinCompareBtn" />
+            </div>
+            <button type="button" onClick={handleLoadPreset} className="btn-surface">
+              <Sparkles size={13} aria-hidden="true" />
+              <span>Load Preset Cohort</span>
             </button>
-          )}
-        </div>
-      </section>
+            {pinnedScenarios.length > 0 && (
+              <button type="button" onClick={clearComparison} className="btn-surface" style={{ color: "var(--accent-danger)" }}>
+                <Trash2 size={13} aria-hidden="true" />
+                <span>Clear</span>
+              </button>
+            )}
+          </div>
+        }
+      />
 
       {error && (
-        <div className="panel-card" style={{ borderColor: "var(--accent-danger)", color: "#fca5a5", fontSize: "0.82rem" }}>
+        <div
+          className="panel-card"
+          style={{
+            borderColor: "var(--accent-danger)",
+            background: "var(--surface-danger-soft)",
+            color: "var(--accent-danger)",
+            fontSize: "0.82rem",
+          }}
+        >
           {error}
         </div>
       )}
@@ -131,56 +142,71 @@ export function ComparisonBoardView() {
             ))}
           </div>
 
-          <section className="panel-card" style={{ padding: "0.85rem" }}>
-            <h3 className="panel-title">
-              <span>
-                <Layers size={13} /> Overlaid Multi-Scenario Power &amp; DTE Timeline Strips
-              </span>
-            </h3>
-            <div style={{ display: "grid", gap: "0.6rem" }}>
-              {scenarios.map((scen, idx) => {
-                const ts = scen.evaluation.timeseries;
-                const total = Math.max(1, ts.length);
-                return (
-                  <div
-                    key={scen.scenario_id}
-                    style={{ display: "grid", gap: "0.25rem", background: "#0b1120", padding: "0.55rem 0.7rem", borderRadius: "0.5rem" }}
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.74rem" }}>
-                      <strong style={{ color: SCENARIO_PALETTE[idx % SCENARIO_PALETTE.length] }}>{scen.label}</strong>
-                      <span style={{ color: "var(--text-muted)" }}>
-                        Sun {scen.evaluation.summary.sunlit_hours.toFixed(0)}h · DTE {scen.evaluation.summary.dte_comms_hours.toFixed(0)}h
-                      </span>
+          <CollapsibleSection
+            title="Overlaid Timelines & Trade-Off Radar"
+            subtitle="Inspect sunlit/comms tracks and sub-score trade-offs side-by-side"
+            helpKey="compareScreen"
+            defaultOpen={true}
+          >
+            <div style={{ display: "grid", gap: "1rem" }}>
+              <div style={{ display: "grid", gap: "0.6rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.82rem", fontWeight: 700 }}>
+                  <Layers size={14} aria-hidden="true" /> Overlaid Solar &amp; Comms Strips
+                </div>
+                {scenarios.map((scen, idx) => {
+                  const ts = scen.evaluation.timeseries;
+                  const total = Math.max(1, ts.length);
+                  return (
+                    <div key={scen.scenario_id} className="panel-inset" style={{ display: "grid", gap: "0.28rem" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem" }}>
+                        <strong style={{ color: SCENARIO_PALETTE[idx % SCENARIO_PALETTE.length] }}>{scen.label}</strong>
+                        <span style={{ color: "var(--text-muted)" }}>
+                          Sun {scen.evaluation.summary.sunlit_hours.toFixed(0)}h · DTE {scen.evaluation.summary.dte_comms_hours.toFixed(0)}h
+                        </span>
+                      </div>
+                      <div style={{ ...TRACK_STYLE, height: "10px" }} title="Solar illumination track">
+                        {buildPowerSegments(ts).map((seg, i) => (
+                          <div
+                            key={`p-${i}`}
+                            style={{
+                              width: `${((seg.endIndex - seg.startIndex + 1) / total) * 100}%`,
+                              background: POWER_COLORS[seg.state],
+                            }}
+                            title={seg.label}
+                          />
+                        ))}
+                      </div>
+                      <div style={{ ...TRACK_STYLE, height: "8px" }} title="DTE comms availability track">
+                        {buildCommsSegments(ts).map((seg, i) => (
+                          <div
+                            key={`c-${i}`}
+                            style={{
+                              width: `${((seg.endIndex - seg.startIndex + 1) / total) * 100}%`,
+                              background: COMMS_COLORS[seg.state],
+                            }}
+                            title={seg.label}
+                          />
+                        ))}
+                      </div>
                     </div>
-                    <div style={{ ...TRACK_STYLE, height: "10px" }} title="Solar illumination track">
-                      {buildPowerSegments(ts).map((seg, i) => (
-                        <div
-                          key={`p-${i}`}
-                          style={{ width: `${((seg.endIndex - seg.startIndex + 1) / total) * 100}%`, background: POWER_COLORS[seg.state] }}
-                          title={seg.label}
-                        />
-                      ))}
-                    </div>
-                    <div style={{ ...TRACK_STYLE, height: "8px" }} title="DTE comms availability track">
-                      {buildCommsSegments(ts).map((seg, i) => (
-                        <div
-                          key={`c-${i}`}
-                          style={{ width: `${((seg.endIndex - seg.startIndex + 1) / total) * 100}%`, background: COMMS_COLORS[seg.state] }}
-                          title={seg.label}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
+                  );
+                })}
+              </div>
 
-          <TradeoffRadarChart scenarios={scenarios} />
+              <TradeoffRadarChart scenarios={scenarios} />
+            </div>
+          </CollapsibleSection>
         </>
       ) : null}
 
-      <ScheduleShiftExplorer />
+      <CollapsibleSection
+        title="Launch-Delay Sensitivity Explorer"
+        subtitle="Simulate launching +14, +29.5, +90, or +180 days after your baseline date"
+        helpKey="delayExplorer"
+        defaultOpen={false}
+      >
+        <ScheduleShiftExplorer />
+      </CollapsibleSection>
     </div>
   );
 }

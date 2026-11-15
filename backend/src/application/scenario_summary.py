@@ -58,16 +58,19 @@ def build_summary(
         },
         "sunlit_hours": hours_in_state(sunlit_count, step_hours),
         "sunlit_fraction": sunlit_fraction,
-        "longest_dark_streak_hours": longest_consecutive_run(sunlit_flags, target=False) * step_hours,
+        "longest_dark_streak_hours": longest_consecutive_run(sunlit_flags, target=False)
+        * step_hours,
         "dte_comms_hours": hours_in_state(dte_count, step_hours),
         "dte_fraction": dte_fraction,
         "overlap_sun_and_dte_hours": hours_in_state(overlap_count, step_hours),
         "overlap_fraction": overlap_fraction,
-        "longest_comms_blackout_hours": longest_consecutive_run(dte_flags, target=False) * step_hours,
+        "longest_comms_blackout_hours": longest_consecutive_run(dte_flags, target=False)
+        * step_hours,
         "mean_solar_power_factor": mean_power,
         "mean_irradiance_w_m2": irradiance_w_m2(mean_power),
         "risk_warnings": risk_warnings(
-            longest_dark_streak_hours=longest_consecutive_run(sunlit_flags, target=False) * step_hours,
+            longest_dark_streak_hours=longest_consecutive_run(sunlit_flags, target=False)
+            * step_hours,
             dte_fraction=dte_fraction,
             mean_slope_deg=mean_slope_deg,
             mean_horizontal_power_factor=mean_horizontal_power,

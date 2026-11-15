@@ -32,7 +32,9 @@ COVERAGE_STOP = datetime(2029, 1, 1, tzinfo=UTC)
         (29.5, 10, 4248),
     ],
 )
-def test_mission_sample_counts(duration_days: float, step_minutes: int, expected_count: int) -> None:
+def test_mission_sample_counts(
+    duration_days: float, step_minutes: int, expected_count: int
+) -> None:
     assert mission_sample_count(duration_days, step_minutes) == expected_count
     assert len(sample_mission_times(START, duration_days, step_minutes)) == expected_count
 

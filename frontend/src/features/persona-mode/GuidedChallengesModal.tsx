@@ -1,7 +1,8 @@
 /** Explorer "Why Does This Happen?" Cockpit Banner and 3 Guided Mission Detective Challenges (F3.6). */
 
 import { useState, type CSSProperties } from "react";
-import { ArrowRight, BookOpen, Eye, HelpCircle, Lightbulb, Rocket, Sparkles } from "lucide-react";
+import { ArrowRight, Eye, HelpCircle, Lightbulb, Rocket, Sparkles } from "lucide-react";
+import { CollapsibleSection, ScreenHeader } from "../../components/ui";
 import { useMissionStore, usePlaybackStore } from "../../state";
 import { EDUCATIONAL_CALLOUTS, MISSION_CHALLENGES, getLiveExplorerInsight, type MissionChallenge } from "./educationalGlossary";
 
@@ -38,10 +39,11 @@ export function ExplorerCalloutBanner() {
       className="panel-card"
       aria-label="Explorer Educational Callout"
       style={{
-        borderColor: "rgba(245, 158, 11, 0.45)",
-        background: "rgba(245, 158, 11, 0.06)",
-        gap: "0.85rem",
-        padding: "1rem 1.15rem",
+        borderColor: "var(--accent-sun)",
+        background: "var(--surface-sun-soft)",
+        display: "flex",
+        flexDirection: "column",
+        gap: "0.75rem",
       }}
     >
       <div
@@ -62,7 +64,7 @@ export function ExplorerCalloutBanner() {
                 fontWeight: 700,
                 textTransform: "uppercase",
                 letterSpacing: "0.04em",
-                color: "#fcd34d",
+                color: "var(--accent-sun)",
               }}
             >
               Explorer Mode — Why Does This Happen?
@@ -70,13 +72,8 @@ export function ExplorerCalloutBanner() {
             <div style={{ fontSize: "0.86rem", color: "var(--text-primary)", marginTop: "0.25rem", lineHeight: 1.5 }}>{liveInsight}</div>
           </div>
         </div>
-        <button
-          type="button"
-          onClick={() => setActiveTab("explorer")}
-          className="btn-surface"
-          style={{ borderColor: "rgba(245, 158, 11, 0.45)", color: "#fcd34d", flexShrink: 0 }}
-        >
-          <Sparkles size={13} /> Open 3 Detective Challenges <ArrowRight size={13} />
+        <button type="button" onClick={() => setActiveTab("explorer")} className="btn-primary" style={{ flexShrink: 0 }}>
+          <Sparkles size={13} /> Open Detective Challenges <ArrowRight size={13} />
         </button>
       </div>
 
@@ -142,42 +139,41 @@ export function GuidedChallengesView() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <section className="panel-card">
-        <h2 className="panel-title">
-          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
-            <Rocket size={14} color="var(--accent-sun)" /> Guided Mission Detective Challenges (3)
+      <ScreenHeader
+        eyebrow="Screen 6 of 6"
+        title="Explorer Guide & Guided Missions"
+        description="Launch real south pole detective investigations, open plain-language physics notes, and compare Moon vs Earth."
+        helpKey="explorerScreen"
+      />
+
+      <section className="panel-card" style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+        <div className="panel-row">
+          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", fontWeight: 700, fontSize: "0.9rem" }}>
+            <Rocket size={15} color="var(--accent-sun)" aria-hidden="true" /> Guided Mission Detective Challenges (3)
           </span>
-          <span style={{ fontSize: "0.74rem", fontWeight: 500, color: "var(--text-muted)", textTransform: "none" }}>
-            Launch real NASA &amp; international lunar scenarios in the Cockpit to investigate each mystery
+          <span style={{ fontSize: "0.76rem", color: "var(--text-muted)" }}>
+            Load a target site directly into Overview to investigate each mystery
           </span>
-        </h2>
+        </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "0.75rem" }}>
           {MISSION_CHALLENGES.map((c) => {
             const state = revealed[c.id];
             return (
-              <div key={c.id} style={CALLOUT_BOX}>
-                <div
-                  style={{
-                    fontSize: "0.73rem",
-                    fontWeight: 700,
-                    color: "var(--accent-sun)",
-                    textTransform: "uppercase",
-                  }}
-                >
+              <div key={c.id} className="panel-inset" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--accent-sun)", textTransform: "uppercase" }}>
                   {c.title}
                 </div>
                 <div style={{ fontSize: "0.94rem", fontWeight: 700, color: "var(--text-primary)" }}>{c.question}</div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginTop: "0.2rem" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginTop: "0.15rem" }}>
                   <button
                     type="button"
                     onClick={() => void launchChallengeScenario(c)}
                     disabled={loadingId === c.id}
-                    className="btn-surface"
-                    style={{ borderColor: "var(--accent-dte)" }}
+                    className="btn-primary"
                   >
                     <Rocket size={12} />
-                    {loadingId === c.id ? "Loading..." : "Try Scenario in Cockpit ↗"}
+                    {loadingId === c.id ? "Loading..." : "Try Scenario"}
                   </button>
                   <button type="button" onClick={() => toggleReveal(c.id, "hint")} className="category-pill">
                     <HelpCircle size={11} style={{ marginRight: "0.25rem", verticalAlign: "-1px" }} />
@@ -189,12 +185,12 @@ export function GuidedChallengesView() {
                   </button>
                 </div>
                 {state === "hint" && (
-                  <p style={{ margin: "0.25rem 0 0", fontSize: "0.82rem", color: "#fcd34d", lineHeight: 1.45 }}>
+                  <p style={{ margin: "0.25rem 0 0", fontSize: "0.82rem", color: "var(--accent-warn)", lineHeight: 1.45 }}>
                     <strong>Hint:</strong> {c.hint}
                   </p>
                 )}
                 {state === "answer" && (
-                  <p style={{ margin: "0.25rem 0 0", fontSize: "0.82rem", color: "#6ee7b7", lineHeight: 1.45 }}>
+                  <p style={{ margin: "0.25rem 0 0", fontSize: "0.82rem", color: "var(--accent-ok)", lineHeight: 1.45 }}>
                     <strong>Answer:</strong> {c.answer}
                   </p>
                 )}
@@ -204,22 +200,20 @@ export function GuidedChallengesView() {
         </div>
       </section>
 
-      <section className="panel-card">
-        <h2 className="panel-title">
-          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
-            <BookOpen size={14} color="var(--accent-dte)" /> Why Does This Happen? — Polar Physics &amp; Artemis Partners
-          </span>
-        </h2>
+      <CollapsibleSection
+        title="Why Does This Happen? — Polar Physics & Artemis Partners"
+        subtitle="Plain-language cards explaining grazing sun, cold traps, and libration"
+        helpKey="explorerScreen"
+        defaultOpen={false}
+      >
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(290px, 1fr))", gap: "0.75rem" }}>
           {EDUCATIONAL_CALLOUTS.map((topic) => (
-            <div key={topic.id} style={CALLOUT_BOX}>
+            <div key={topic.id} className="panel-inset" style={{ display: "flex", flexDirection: "column", gap: "0.45rem" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem" }}>
                 <strong style={{ fontSize: "0.9rem" }}>{topic.title}</strong>
-                <span className="status-pill" style={{ fontSize: "0.68rem", padding: "0.15rem 0.5rem", color: "var(--accent-dte)" }}>
-                  {topic.tag}
-                </span>
+                <span className="tone-pill tone-info">{topic.tag}</span>
               </div>
-              <div style={{ fontSize: "0.82rem", color: "#fcd34d", fontWeight: 500 }}>{topic.summary}</div>
+              <div style={{ fontSize: "0.82rem", color: "var(--accent-sun)", fontWeight: 600 }}>{topic.summary}</div>
               <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--text-primary)", lineHeight: 1.45 }}>{topic.whyItHappens}</p>
               <div
                 style={{
@@ -234,7 +228,7 @@ export function GuidedChallengesView() {
             </div>
           ))}
         </div>
-      </section>
+      </CollapsibleSection>
     </div>
   );
 }

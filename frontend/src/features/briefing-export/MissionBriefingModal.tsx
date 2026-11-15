@@ -1,6 +1,7 @@
 /** Printable and downloadable mission briefing modal with NASA provenance (F5.4). */
 
 import { Download, FileJson, FileSpreadsheet, Printer, X } from "lucide-react";
+import { HelpPopover } from "../../components/ui";
 import { buildShareableScenarioUrl, useComparisonStore, useMissionStore } from "../../state";
 import { buildScenarioExportJson, buildTimeseriesCsv, PROVENANCE_CITATIONS, triggerBrowserDownload } from "./exportHelpers";
 
@@ -43,21 +44,32 @@ export function MissionBriefingModal({ open, onClose }: MissionBriefingModalProp
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: 50,
-        background: "rgba(7, 11, 20, 0.82)",
+        zIndex: 70,
+        background: "var(--surface-overlay)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         padding: "1rem",
       }}
     >
-      <div className="panel-card" style={{ maxWidth: "680px", width: "100%", maxHeight: "90vh", overflowY: "auto" }}>
-        <div className="panel-row" style={{ display: "flex" }}>
-          <h2 className="panel-title">
-            <span>
-              <Download size={14} /> Mission Briefing Export
-            </span>
-          </h2>
+      <div
+        className="panel-card"
+        style={{
+          maxWidth: "680px",
+          width: "100%",
+          maxHeight: "90vh",
+          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.85rem",
+        }}
+      >
+        <div className="panel-row">
+          <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
+            <Download size={15} color="var(--accent-primary)" aria-hidden="true" />
+            <h2 className="panel-title">Mission Briefing Export</h2>
+            <HelpPopover helpKey="exportBriefingBtn" align="left" />
+          </div>
           <button type="button" onClick={onClose} className="btn-surface" aria-label="Close briefing modal">
             <X size={14} /> Close
           </button>
@@ -65,16 +77,13 @@ export function MissionBriefingModal({ open, onClose }: MissionBriefingModalProp
 
         {!evaluation ? (
           <p style={{ margin: 0, fontSize: "0.84rem", color: "var(--text-muted)" }}>
-            No active evaluation loaded yet. Select a curated site in the Mission Cockpit first.
+            No active evaluation loaded yet. Select a site in Overview first.
           </p>
         ) : (
           <>
             <div
+              className="panel-inset"
               style={{
-                background: "#0b1120",
-                border: "1px solid var(--border-subtle)",
-                borderRadius: "0.5rem",
-                padding: "0.75rem",
                 display: "grid",
                 gap: "0.35rem",
                 fontSize: "0.8rem",
@@ -91,7 +100,9 @@ export function MissionBriefingModal({ open, onClose }: MissionBriefingModalProp
                 {evaluation.site.elevation_m !== null ? `${evaluation.site.elevation_m.toFixed(1)} m` : "N/A"} · Slope:{" "}
                 {evaluation.site.mean_slope_deg !== null ? `${evaluation.site.mean_slope_deg.toFixed(2)}°` : "N/A"}
               </div>
-              {isClassB && <div style={{ color: "#fde68a", fontSize: "0.76rem" }}>Terrain model unavailable — spherical limb only</div>}
+              {isClassB && (
+                <div style={{ color: "var(--accent-warn)", fontSize: "0.76rem" }}>Terrain model unavailable — spherical limb only</div>
+              )}
               <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginTop: "0.2rem" }}>
                 <span>
                   Feasibility:{" "}
