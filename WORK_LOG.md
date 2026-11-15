@@ -560,7 +560,7 @@ Remaining:
 - Evidence: `data/manifests/lola/manifest.json` sha256 `2d2b4554755ef1799930cc1968e1aa330c95145fd113d7356336605298957817`; image 115,520,000 bytes sha256 `e6591eeea35402ca5e124ca00f5bf0774381a2d4fa919144b455d82b8ff65fdc`; label 4,986 bytes sha256 `107c7558cbf8832e4119d3c8c2b1b272623344275c85378a9b0e03c22876eb33`.
 - Parsed label: 7600×7600, `LSB_INTEGER` 16-bit, `SCALING_FACTOR` 0.5, `OFFSET` 1737400, 80 m/pix, `POLAR STEREOGRAPHIC`, `PLANETOCENTRIC`, centre longitude 0, latitude bounds −90…−80, projection offsets 3799.5.
 - Open issues: none. The untracked manifest that existed in the main worktree reversed `MINIMUM_LATITUDE`/`MAXIMUM_LATITUDE` and lacked `parser_version` and the label hash; it was regenerated under this task, so that stale file should not be reused.
-- Proposed doc deltas: `DEVELOPMENT_PLAN.md` REQ-04 does not record `SCALING_FACTOR = 0.5` (elevation = DN × 0.5), which the product label makes load-bearing; consider adding it for `DATA-005`.
+- Proposed doc deltas: none. `SCALING_FACTOR = 0.5` (elevation = DN × 0.5) was verified against the live PDS label, which is byte-identical to the cached copy (sha256 `107c7558cbf8832e4119d3c8c2b1b272623344275c85378a9b0e03c22876eb33`); the label states `HEIGHT = (DN * SCALING_FACTOR)`. The label is the source of record and `pds_dem.read_elevations` reads the factor from it, so a plan restatement is unnecessary. This withdraws the proposal recorded in the Wave 1 entry above; no plan edit is requested.
 
 ```text
 ZETA HANDOFF — DATA-002 ready to merge
@@ -589,3 +589,35 @@ Do not merge if: the manifest or image hash differs, or any validator fails
 - Synced `bauerceptor` into the alpha worktree (fast-forward to `876e758`). Next: `agent-alpha` runs `DATA-003`; `ARCH-002` remains pending. No M3 signal (alpha does not unblock M3).
 - Proposed doc delta for human decision: `DEVELOPMENT_PLAN.md` REQ-04 omits `SCALING_FACTOR = 0.5` (elevation = DN × 0.5), which `DATA-005` needs. Not changed here.
 - Noted: `origin/feat/m5-comparison-qa-delivery` appeared on fetch; out of scope for this session and untouched.
+
+---
+
+### DATA-003 — done — agent-alpha
+
+- Branch/commit: `bauerceptor-alpha` @ `6f16004` (task work); the ledger closure is the branch tip.
+- Changed: `backend/src/cli/horizons_client.py` (locked request builder, retry-aware fetch, marker-tolerant parser, coverage validator, reference selection); `backend/src/cli/download_horizons.py` (registry/config loading, raw archive through `.part`, manifests, frozen references, resumable run); `backend/tests/unit/test_horizons_parser.py` (14 tests); `data/manifests/horizons/` (32 manifests); `data/manifests/references/horizons/` (32 frozen reference files).
+- Commands: `uv run --project backend --frozen python -m src.cli.download_horizons` — exit 0 (32 fetched, then 32 reused on rerun); `uv run --python 3.12 --frozen pytest tests/unit/test_horizons_parser.py -v` — exit 0 (14 passed).
+- Evidence: manifest aggregate `8aa65a3439e5c5cf76634ba6325b706c8b03540a6098b08f840ca89a3fc7cf43` over 32 files; representative `data/manifests/horizons/artemis-slater-plain.sun.json` sha256 `f9f71f5afa3f10707f85ce28b5ea459c7f1f652ba6f26b3a2d3da8c152a5308f`. Raw responses are 1,189,736 bytes each and stay ignored in the shared cache.
+- Coverage: every track has exactly 26,305 rows at 3,600 s from 2026-01-01T00:00:00Z to 2029-01-01T00:00:00Z. The first response is validated before the bulk fetch and every response is validated again.
+- Independent check: the archived `artemis-slater-plain.sun.txt` row block is byte-identical to a fresh Horizons fetch (rows sha256 `e6253285…`); only the header request-timestamp line differs, which is why the recorded raw hash covers the full response.
+- Marker handling: the real responses contain `*i` (daylight, interfering body up) and a bare `i` (night, interfering body up). A `*`-only or `*[im]`-only pattern would silently drop 13,051 rows per track; the parser accepts `*`, `*i`, `*m`, `i`, `m`, and the blank-flag four-token row, each covered by a test.
+- Decision: `SITE_COORD` altitude is **0.0 km** for all 16 sites because `curated_sites.yaml` carries no `elevation_m` and REQ-05 forbids hand-entering one. Every manifest records `site_coord_used.altitude_source = "reference_sphere_zero: registry has no elevation_m"`. A 1 km altitude error shifts topocentric Sun/Earth geometry by ~1e-3° or less, far inside the 0.05° tolerance, but the frozen request should be revisited if REQ-07 later requires pack-derived altitudes.
+- Open issue (for `BE-001`): REQ-07 requires interpolation error proven against **frozen off-grid** Horizons references, but no task owns an off-grid fetch. `DATA-003` acceptance asks only for hourly reference rows, and `BE-001`/`QA-001` have no download write paths. The frozen files here sample every 24th hourly row plus the final row per site and body. Severity: medium for `BE-001`; it blocks that off-grid test.
+- Proposed doc deltas: (1) state in REQ-07 that the frozen ephemeris uses `SITE_COORD` altitude 0.0 km until packs exist, or add `elevation_m` to the registry; (2) assign a short off-grid reference fetch (for example 30-minute steps over the 2027-11-01 reference window) to a data task so `BE-001` has frozen references. This entry also withdraws the `SCALING_FACTOR` proposal in the Wave 1 entry above: the factor was verified against the live PDS label and is read from the label, so no plan edit is needed.
+
+```text
+ZETA HANDOFF — DATA-003 ready to merge
+Branch: bauerceptor-alpha
+Worktree: /home/red/Projects/lunar-landing-alpha
+Commit: bauerceptor-alpha tip after this closure commit; task work commit 6f16004
+Task status: done
+Base: a43e602 (bauerceptor tip synced before the task)
+Commands: uv run --project backend --frozen python -m src.cli.download_horizons exit 0; uv run --python 3.12 --frozen pytest tests/unit/test_horizons_parser.py -v exit 0
+Evidence: data/manifests/horizons aggregate sha256 8aa65a3439e5c5cf76634ba6325b706c8b03540a6098b08f840ca89a3fc7cf43; artemis-slater-plain.sun.json sha256 f9f71f5afa3f10707f85ce28b5ea459c7f1f652ba6f26b3a2d3da8c152a5308f; 14 passed
+Changed paths: backend/src/cli/download_horizons.py, backend/src/cli/horizons_client.py, backend/tests/unit/test_horizons_parser.py, data/manifests/horizons/, data/manifests/references/horizons/, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: 32 manifests under data/manifests/horizons, 32 reference files under data/manifests/references/horizons
+Pre-merge checks: ruff check . exit 0; ruff format --check clean; 14 tests pass; validate_task_ledger.py, check_planning_docs.py, check_file_lengths.py exit 0
+M3 impact: none (this unblocks beta DATA-004/DATA-005 and charlie BE-001/BE-002 once merged)
+Known risks: two ledger tasks in a row on this branch (DATA-002 was integrated at 876e758); the raw cache is ignored and shared
+Do not merge if: any manifest is missing, a track's parsed_rows is not 26305, the manifest aggregate differs, or a validator fails
+```
