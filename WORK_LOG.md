@@ -282,6 +282,24 @@ The ledger acceptance is authoritative; the summary below is the remaining-work 
 Dependency order: `ARCH-002` → `FE-001` → `FE-002` → `FE-003`. `FE-003` also needs `BE-003` and
 `DATA-006`. Do not start a task before every `depends_on` entry is `done` and merged.
 
+### Can M3 start now?
+
+No M3 ledger task is eligible today. `FE-001` depends on `ARCH-002` (`M2`), which is still pending;
+`FE-002` depends on `FE-001`; `FE-003` depends on `FE-002`, `BE-003` (`M2`), and `DATA-006` (`M1`).
+
+The M1 raw data and packs do **not** block `FE-001` or `FE-002` directly: the frontend consumes API
+responses and generated types. M1 becomes a hard blocker for `FE-003` through `DATA-006`, and M2
+blocks `FE-003` through `BE-003`. The immediate blocker for the first M3 task is **M2, not M1**.
+
+The unblock path is the Wave 1 gate: `agent-charlie` completes `ARCH-002` and `agent-zeta` merges
+it. `FE-001` then becomes eligible and can run in parallel with the rest of the data/backend
+pipeline. `FE-002` follows. `FE-003` waits for `BE-003` and `DATA-006`.
+
+Until `ARCH-002` is merged, usairam can prepare without starting a task: merge `bauerceptor` into
+`feat/module-3-frontend-core`, read the plan and ledger, review the merged M4 panels, and plan the
+`FE-001`/`FE-002` changes. Do not set a task `in_progress`, do not commit task work, and do not
+hand-roll a temporary contract.
+
 ### FE-001 — app shell, stores, canonical URL, typed client
 
 Dependencies: `ARCH-002`. Write paths: `frontend/src/components/layout`, `frontend/src/state`,
