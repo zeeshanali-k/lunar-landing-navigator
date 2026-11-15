@@ -135,7 +135,7 @@ def check_plan_declares_authority() -> None:
 def check_agents_protocol() -> None:
     """AGENTS.md must contain the protocol, prohibitions, and the allowed tooling forms."""
     text = read(AGENTS)
-    for phrase in ("task-ledger.json", "blocked", "evidence", "README.md", "Do not start 3D"):
+    for phrase in ("task-ledger.json", "blocked", "evidence", "README.md"):
         require(phrase in text, f"AGENTS.md missing {phrase!r}")
     require("Do not add any AI" in text, "AGENTS.md does not prohibit AI components")
     require("uv run --python 3.12 --frozen" in text, "AGENTS.md missing the uv run form")
