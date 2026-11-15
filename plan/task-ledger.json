@@ -1103,7 +1103,7 @@
       "priority": "P0",
       "owner": "M2",
       "reviewer": "M1",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "BE-001",
         "DATA-005"
@@ -1164,12 +1164,24 @@
           "ref": "pytest tests/unit"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit",
+          "exit": 0,
+          "note": "241 passed"
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen ruff check .",
+          "exit": 0
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T17:07:18Z",
+      "completed_commit": "107000aa58dc11f7a3dd2597f95868f81e32a6e6"
     },
     {
       "id": "BE-003",
