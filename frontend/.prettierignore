@@ -1,0 +1,5 @@
+# Generated and build artifacts are not source; Prettier must not rewrite them.
+# public/data/fixtures is a byte-identical generated mirror of contracts/fixtures
+# (DATA-006) — reformatting it would break that invariant.
+dist/
+public/data/fixtures/

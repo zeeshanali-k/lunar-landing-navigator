@@ -1,6 +1,13 @@
-/** Deterministic 64x64 Shackleton Ridge terrain upsampler for coarse Track 0 fixtures (F4.1). */
+/** Synthetic 64x64 demonstration terrain upsampler for sub-64x64 display grids (F4.1).
+ *
+ * Real wire-contract patches are always 128x128 (grid_size is pinned in the
+ * generated TerrainPatch contract) and pass through unchanged. The upsampling
+ * branch below is reachable only for synthetic sub-64 grids — it generates a
+ * fictional cratered scene for demonstration, not measured lunar topography.
+ */
 
-import { radToDeg, type TerrainPatch } from "../../types";
+import { radToDeg } from "../../types";
+import type { LocalTerrainPatch } from "./meshBuilder";
 
 interface CraterSpec {
   xKm: number;
@@ -78,14 +85,14 @@ function evaluateShackletonElevation(xKm: number, northKm: number, centerM: numb
   return { elevM, isPsr: elevM < -550 ? 1 : psrFlag };
 }
 
-/** Upgrade coarse (<64x64) Track 0 TerrainPatch fixtures to realistic 64x64 lunar crater terrain. */
-export function prepareTerrainPatch(patch: TerrainPatch): TerrainPatch {
+/** Upgrade coarse (<64x64) synthetic display grids to 64x64 demonstration terrain. */
+export function prepareTerrainPatch(patch: LocalTerrainPatch): LocalTerrainPatch {
   if (patch.grid_size >= 64) {
     return patch;
   }
   const n = 64;
   const total = n * n;
-  const spanKm = patch.patch_radius_km * 2.0;
+  const spanKm = patch.extent_m / 1000.0;
   const stepM = (spanKm * 1000.0) / (n - 1);
   const elevations = new Array<number>(total);
   const slopes = new Array<number>(total);

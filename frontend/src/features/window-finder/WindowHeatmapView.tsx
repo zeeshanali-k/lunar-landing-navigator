@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CalendarSearch } from "lucide-react";
 import { isAbortError, scanWindows } from "../../services";
 import { useComparisonStore, useMissionStore } from "../../state";
-import type { DurationDays, SolarArrayType, WindowCandidate, WindowsResponse } from "../../types";
+import type { DurationDays, SolarArrayType, CandidateWindow, WindowsResponse } from "../../types";
 import { TopWindowsList } from "./TopWindowsList";
 import { WindowMonthGrid } from "./WindowMonthGrid";
 import { groupWindowsByMonth, rankTopWindows, WINDOW_GRID_STEP_MINUTES } from "./windowMath";
@@ -18,7 +18,7 @@ export function WindowHeatmapView() {
   const [scanArray, setScanArray] = useState<SolarArrayType>(mission.solarArrayType);
   const [year, setYear] = useState<2026 | 2027 | 2028>(2027);
   const [data, setData] = useState<WindowsResponse | null>(null);
-  const [selectedWin, setSelectedWin] = useState<WindowCandidate | null>(null);
+  const [selectedWin, setSelectedWin] = useState<CandidateWindow | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

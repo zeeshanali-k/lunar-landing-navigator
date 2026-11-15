@@ -3,7 +3,7 @@
 import { it } from "vitest";
 
 import { getWindowCellColor, groupWindowsByMonth, rankTopWindows, WINDOW_GRID_STEP_MINUTES } from "../features/window-finder/windowMath";
-import type { WindowCandidate } from "../types";
+import type { CandidateWindow } from "../types";
 
 function assert(condition: boolean, message: string): void {
   if (!condition) {
@@ -16,7 +16,7 @@ export function runWindowMathTests(): void {
   assert(WINDOW_GRID_STEP_MINUTES === 180, `expected 180-min step, got ${WINDOW_GRID_STEP_MINUTES}`);
 
   // 2. Descending score ranking with earliest start_utc tie-break
-  const candidates: WindowCandidate[] = [
+  const candidates: CandidateWindow[] = [
     { start_utc: "2027-11-10T00:00:00Z", feasibility_score: 88.0, sunlit_fraction: 0.8, dte_fraction: 0.7, longest_dark_streak_hours: 30 },
     { start_utc: "2027-02-01T00:00:00Z", feasibility_score: 91.5, sunlit_fraction: 0.9, dte_fraction: 0.7, longest_dark_streak_hours: 18 },
     {

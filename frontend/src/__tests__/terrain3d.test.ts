@@ -11,8 +11,9 @@ import {
   prepareTerrainPatch,
   sampleCenterSurfaceYKm,
   sampleTerrainVertexRGB,
+  type LocalTerrainPatch,
 } from "../features/terrain-3d";
-import type { TerrainPatch, TimeseriesPoint } from "../types";
+import type { TimeseriesPoint } from "../types";
 
 function assert(condition: boolean, message: string): void {
   if (!condition) {
@@ -78,11 +79,9 @@ export function runTerrain3dTests(): void {
   const steepSlopeRgb = sampleTerrainVertexRGB("slope", 100, 0, 200, 22.0);
   assert(steepSlopeRgb[0] > steepSlopeRgb[1], "steep slope should map to red");
 
-  const patch: TerrainPatch = {
-    site_id: "test-site",
-    frame: "local_enu",
+  const patch: LocalTerrainPatch = {
     grid_size: 2,
-    patch_radius_km: 10.0,
+    extent_m: 20000,
     center_elevation_m: 150.0,
     min_elevation_m: 0.0,
     max_elevation_m: 300.0,
@@ -108,14 +107,14 @@ export function runTerrain3dTests(): void {
   geom.dispose();
 
   // 5. Coarse (<64x64) terrain upsampling vs 64x64 passthrough
-  const coarsePatch: TerrainPatch = { ...patch, grid_size: 16, patch_radius_km: 20.0, center_elevation_m: 1200.0 };
+  const coarsePatch: LocalTerrainPatch = { ...patch, grid_size: 16, extent_m: 40000, center_elevation_m: 1200.0 };
   const upsampled = prepareTerrainPatch(coarsePatch);
   assert(upsampled.grid_size === 64, `expected upsampled grid_size=64, got ${upsampled.grid_size}`);
   assert(upsampled.elevations_m_flat.length === 4096, "expected 4096 upsampled elevations");
   assert(upsampled.slopes_deg_flat.length === 4096, "expected 4096 upsampled slopes");
   assert(upsampled.max_elevation_m > upsampled.min_elevation_m, "upsampled terrain should have crater relief");
 
-  const alreadyHiRes: TerrainPatch = { ...coarsePatch, grid_size: 64 };
+  const alreadyHiRes: LocalTerrainPatch = { ...coarsePatch, grid_size: 64 };
   assert(prepareTerrainPatch(alreadyHiRes) === alreadyHiRes, "64x64 terrain patch must pass through unchanged");
 
   // 6. Terrain-clearance LOS adjustment keeps Sun and Earth rays above intervening ridges

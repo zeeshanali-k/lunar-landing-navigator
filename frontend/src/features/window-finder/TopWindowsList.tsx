@@ -1,11 +1,11 @@
 /** Ranked list of top candidate landing windows with Cockpit & Compare actions (F5.3). */
 
 import { Award, Compass, Plus } from "lucide-react";
-import type { TopWindow, WindowCandidate } from "../../types";
+import type { TopWindow, CandidateWindow } from "../../types";
 
 export interface TopWindowsListProps {
   topWindows: TopWindow[];
-  candidateMap: Map<string, WindowCandidate>;
+  candidateMap: Map<string, CandidateWindow>;
   isClassB: boolean;
   onSelectWindow: (startUtc: string) => void;
   onPinWindow: (startUtc: string, rank: number) => void;

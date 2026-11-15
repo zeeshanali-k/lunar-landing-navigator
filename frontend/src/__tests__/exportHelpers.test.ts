@@ -16,6 +16,7 @@ function makeEval(isClassB: boolean): EvaluateResponse {
     site: {
       id: isClassB ? "cnsa-change-4-von-karman" : "artemis-cabeus-peak",
       name: isClassB ? "Chang'e-4 (Von Karman)" : "Peak near Cabeus B",
+      category: isClassB ? "international" : "artemis_iii",
       lat_deg: isClassB ? -45.45 : -82.26,
       lon_deg: isClassB ? 177.59 : -54.58,
       elevation_m: isClassB ? null : 1240,
@@ -36,6 +37,7 @@ function makeEval(isClassB: boolean): EvaluateResponse {
       dte_comms_hours: isClassB ? 0 : 212,
       dte_fraction: isClassB ? 0 : 0.631,
       overlap_sun_and_dte_hours: 0,
+      overlap_fraction: isClassB ? 0 : 0.4,
       longest_comms_blackout_hours: 336,
       mean_solar_power_factor: 0.45,
       mean_irradiance_w_m2: 612,

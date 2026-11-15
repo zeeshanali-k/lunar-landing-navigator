@@ -1,33 +1,49 @@
-"""Pydantic v2 schemas for Contract B (EvaluateRequest and EvaluateResponse)."""
+"""Pydantic v2 schemas for Contract B (EvaluateRequest and EvaluateResponse).
+
+These models are the single source of truth for the wire contract (REQ-06).
+Request models set ``extra="forbid"`` so a misspelled field fails validation
+instead of silently taking a default, and every value is restricted to the
+REQ-06 allowlists.
+"""
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Annotated
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
-SolarArrayType = Literal["horizontal_fixed", "vertical_fixed", "vertical_tracking"]
+from src.api.schemas.enums import (
+    DurationDays,
+    ObserverHeightM,
+    SiteCategory,
+    SolarArrayType,
+    StepMinutes,
+)
 
 
 class CustomCoordsSchema(BaseModel):
-    """Custom selenographic landing coordinates in degrees."""
+    """Custom selenographic coordinates (P1 only; never accepted by a P0 request)."""
 
-    lat_deg: float = Field(ge=-90.0, le=90.0)
-    lon_deg: float = Field(ge=-180.0, le=180.0)
+    model_config = ConfigDict(extra="forbid")
+
+    lat_deg: Annotated[float, Field(ge=-90.0, le=90.0)]
+    lon_deg: Annotated[float, Field(ge=-180.0, le=180.0)]
     label: str | None = None
 
 
 class EvaluateRequestSchema(BaseModel):
-    """Contract B evaluation request payload."""
+    """Contract B evaluation request payload (P0: curated sites only)."""
 
-    site_id: str | None = None
-    custom_coords: CustomCoordsSchema | None = None
+    model_config = ConfigDict(extra="forbid")
+
+    site_id: str
     start_utc: str
-    duration_days: float = Field(gt=0.0, le=366.0, default=14.0)
-    step_minutes: int = Field(ge=5, le=1440, default=60)
-    solar_array_type: SolarArrayType = "vertical_tracking"
-    observer_height_m: float = Field(ge=0.1, le=100.0, default=2.0)
-    min_comms_elev_deg: float = Field(ge=-5.0, le=45.0, default=5.0)
+    duration_days: DurationDays = DurationDays.D14
+    step_minutes: StepMinutes = StepMinutes.M60
+    solar_array_type: SolarArrayType = SolarArrayType.VERTICAL_TRACKING
+    fixed_array_azimuth_deg: Annotated[float, Field(ge=0.0, lt=360.0)] = 0.0
+    observer_height_m: ObserverHeightM = ObserverHeightM.H2_0
+    min_comms_elev_deg: Annotated[float, Field(ge=-5.0, le=45.0)] = 5.0
 
 
 class EvaluatedSiteSchema(BaseModel):
@@ -35,10 +51,12 @@ class EvaluatedSiteSchema(BaseModel):
 
     id: str
     name: str
+    category: SiteCategory
     lat_deg: float
     lon_deg: float
-    elevation_m: float
-    mean_slope_deg: float
+    elevation_m: float | None = None
+    mean_slope_deg: float | None = None
+    has_precomputed_terrain: bool
 
 
 class SubScoresSchema(BaseModel):
@@ -47,7 +65,7 @@ class SubScoresSchema(BaseModel):
     power_score: float
     thermal_score: float
     comms_score: float
-    terrain_score: float
+    terrain_score: float | None = None
 
 
 class NextEventsSchema(BaseModel):
@@ -60,9 +78,9 @@ class NextEventsSchema(BaseModel):
 
 
 class EvaluationSummarySchema(BaseModel):
-    """Aggregate mission summary metrics and risk warnings."""
+    """Aggregate mission summary metrics and risk warnings (REQ-09)."""
 
-    feasibility_score: float
+    feasibility_score: float | None = None
     sub_scores: SubScoresSchema
     sunlit_hours: float
     sunlit_fraction: float
@@ -70,13 +88,15 @@ class EvaluationSummarySchema(BaseModel):
     dte_comms_hours: float
     dte_fraction: float
     overlap_sun_and_dte_hours: float
+    overlap_fraction: float
+    longest_comms_blackout_hours: float
     mean_solar_power_factor: float
     mean_irradiance_w_m2: float
     risk_warnings: list[str]
     next_events_from_start: NextEventsSchema
 
 
-class HorizonPointSchema(BaseModel):
+class HorizonProfilePointSchema(BaseModel):
     """Single azimuth sample of the 360-degree lunar horizon mask."""
 
     azimuth_deg: float
@@ -98,6 +118,8 @@ class TimeseriesPointSchema(BaseModel):
     earth_elev_deg: float
     earth_horizon_elev_deg: float
     earth_clearance_deg: float
+    is_dte_geometric: bool
+    is_solar_conjunction: bool
     is_dte_visible: bool
     sun_earth_sep_deg: float
     hours_to_next_sunset: float | None = None
@@ -111,5 +133,5 @@ class EvaluateResponseSchema(BaseModel):
 
     site: EvaluatedSiteSchema
     summary: EvaluationSummarySchema
-    horizon_profile: list[HorizonPointSchema]
+    horizon_profile: list[HorizonProfilePointSchema]
     timeseries: list[TimeseriesPointSchema]

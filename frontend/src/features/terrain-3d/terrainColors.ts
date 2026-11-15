@@ -1,6 +1,6 @@
 /** Pure vertex color mapping utilities for 3D local_enu lunar terrain meshes (F4.1). */
 
-import type { TerrainPatch } from "../../types";
+import type { LocalTerrainPatch } from "./meshBuilder";
 
 export type TerrainSurfaceMode = "regolith" | "elevation" | "slope" | "psr";
 
@@ -10,6 +10,14 @@ export const SURFACE_MODE_LABELS: Record<TerrainSurfaceMode, string> = {
   slope: "Slope Hazard",
   psr: "PSR Frost",
 };
+
+const ALL_SURFACE_MODES: readonly TerrainSurfaceMode[] = ["regolith", "elevation", "slope", "psr"];
+
+/** Surface modes offered for a patch: PSR shading requires an explicit per-vertex
+ * mask, which wire patches never carry (psr_mask is null by contract). */
+export function offeredSurfaceModes(patch: LocalTerrainPatch | null): readonly TerrainSurfaceMode[] {
+  return patch?.psr_mask_flat ? ALL_SURFACE_MODES : ALL_SURFACE_MODES.filter((mode) => mode !== "psr");
+}
 
 type RGB = [number, number, number];
 
@@ -75,16 +83,18 @@ export function sampleTerrainVertexRGB(
 }
 
 /** Build a flat Float32Array RGB vertex color buffer (grid_size * grid_size * 3). */
-export function buildTerrainColorBuffer(patch: TerrainPatch, mode: TerrainSurfaceMode): Float32Array {
+export function buildTerrainColorBuffer(patch: LocalTerrainPatch, mode: TerrainSurfaceMode): Float32Array {
   const totalVertices = patch.grid_size * patch.grid_size;
   const colors = new Float32Array(totalVertices * 3);
   const { min_elevation_m: minE, max_elevation_m: maxE } = patch;
-  const psrMask = (patch as { psr_mask_flat?: number[] }).psr_mask_flat;
+  const psrMask = patch.psr_mask_flat;
 
   for (let i = 0; i < totalVertices; i += 1) {
     const elev = patch.elevations_m_flat[i] ?? patch.center_elevation_m;
     const slope = patch.slopes_deg_flat[i] ?? 0;
-    const psr = psrMask?.[i] ?? (elev < -550 ? 1 : 0);
+    // PSR is never inferred: without an explicit per-vertex mask (absent on wire
+    // patches by contract), no vertex is flagged.
+    const psr = psrMask?.[i] ?? 0;
     const [r, g, b] = sampleTerrainVertexRGB(mode, elev, minE, maxE, slope, psr);
     const offset = i * 3;
     colors[offset] = r;

@@ -31,6 +31,7 @@ function makeMockScenario(id: string, score: number, sunH: number, darkH: number
       site: {
         id: "artemis-cabeus-peak",
         name: "Peak near Cabeus B",
+        category: "artemis_iii",
         lat_deg: -82.26,
         lon_deg: -54.58,
         elevation_m: 1200,
@@ -46,6 +47,7 @@ function makeMockScenario(id: string, score: number, sunH: number, darkH: number
         dte_comms_hours: dteH,
         dte_fraction: 0.6,
         overlap_sun_and_dte_hours: 100,
+        overlap_fraction: 0.5,
         longest_comms_blackout_hours: 40,
         mean_solar_power_factor: 0.7,
         mean_irradiance_w_m2: 950,

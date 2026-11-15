@@ -1,6 +1,6 @@
 /** Deterministic screening-window ranking and calendar grouping helpers (P1-WINDOWS). */
 
-import type { TopWindow, WindowCandidate } from "../../types";
+import type { TopWindow, CandidateWindow } from "../../types";
 
 export const WINDOW_GRID_STEP_MINUTES = 180;
 
@@ -9,7 +9,7 @@ const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Se
 export interface MonthlyWindowGroup {
   monthKey: string;
   label: string;
-  windows: WindowCandidate[];
+  windows: CandidateWindow[];
 }
 
 function formatMonthLabel(monthKey: string): string {
@@ -21,7 +21,7 @@ function formatMonthLabel(monthKey: string): string {
 }
 
 /** Rank candidate windows by descending feasibility score, breaking ties by earliest start UTC. */
-export function rankTopWindows(windows: readonly WindowCandidate[], maxCount = 5): TopWindow[] {
+export function rankTopWindows(windows: readonly CandidateWindow[], maxCount = 5): TopWindow[] {
   const sorted = [...windows].sort((a, b) => {
     const scoreA = typeof a.feasibility_score === "number" ? a.feasibility_score : -Infinity;
     const scoreB = typeof b.feasibility_score === "number" ? b.feasibility_score : -Infinity;
@@ -41,8 +41,8 @@ export function rankTopWindows(windows: readonly WindowCandidate[], maxCount = 5
 }
 
 /** Group candidate windows chronologically by YYYY-MM month key. */
-export function groupWindowsByMonth(windows: readonly WindowCandidate[]): MonthlyWindowGroup[] {
-  const map = new Map<string, WindowCandidate[]>();
+export function groupWindowsByMonth(windows: readonly CandidateWindow[]): MonthlyWindowGroup[] {
+  const map = new Map<string, CandidateWindow[]>();
   const ordered = [...windows].sort((a, b) => a.start_utc.localeCompare(b.start_utc));
 
   for (const win of ordered) {

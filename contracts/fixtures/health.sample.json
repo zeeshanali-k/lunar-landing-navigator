@@ -1,0 +1,6 @@
+{
+  "architecture": "clean-hexagonal",
+  "frame": "local_enu",
+  "moon_radius_km": 1737.4,
+  "status": "ok"
+}

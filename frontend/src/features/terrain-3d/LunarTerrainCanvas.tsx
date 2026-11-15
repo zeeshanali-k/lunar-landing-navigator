@@ -13,7 +13,7 @@ import {
   updateTerrainGeometryColors,
   updateTerrainGeometryElevations,
 } from "./meshBuilder";
-import { SURFACE_MODE_LABELS, type TerrainSurfaceMode } from "./terrainColors";
+import { offeredSurfaceModes, SURFACE_MODE_LABELS, type TerrainSurfaceMode } from "./terrainColors";
 import { prepareTerrainPatch } from "./terrainPatchUpsampler";
 
 export interface LunarTerrainCanvasProps {
@@ -27,7 +27,6 @@ export interface LunarTerrainCanvasProps {
 
 const DEFAULT_CAMERA_POS: [number, number, number] = [-18, 15.5, 22];
 const EXAGGERATIONS: readonly number[] = [1, 2, 3];
-const SURFACE_MODES: readonly TerrainSurfaceMode[] = ["regolith", "elevation", "slope", "psr"];
 
 function pillStyle(active: boolean, accent: string): CSSProperties {
   return {
@@ -65,6 +64,7 @@ export function LunarTerrainCanvas({
   const preparedPatch = useMemo(() => (terrainPatch ? prepareTerrainPatch(terrainPatch) : null), [terrainPatch]);
   const hasTerrain = Boolean(!terrainUnavailable && preparedPatch);
   const activePoint = timeseries[Math.min(Math.max(0, resolvedIndex), Math.max(0, timeseries.length - 1))];
+  const surfaceModes = offeredSurfaceModes(preparedPatch);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -226,7 +226,7 @@ export function LunarTerrainCanvas({
           <strong style={{ fontSize: "0.85rem", marginRight: "0.35rem" }}>
             3D ENU Terrain ({preparedPatch.grid_size}×{preparedPatch.grid_size})
           </strong>
-          {SURFACE_MODES.map((mode) => (
+          {surfaceModes.map((mode) => (
             <button key={mode} type="button" onClick={() => setSurfaceMode(mode)} style={pillStyle(surfaceMode === mode, "#f59e0b")}>
               {SURFACE_MODE_LABELS[mode]}
             </button>

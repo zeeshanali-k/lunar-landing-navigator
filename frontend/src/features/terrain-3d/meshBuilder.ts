@@ -1,8 +1,26 @@
 /** Pure Three.js BufferGeometry builders for local_enu lunar terrain patches (F4.1). */
 
 import * as THREE from "three";
-import type { TerrainPatch } from "../../types";
 import { buildTerrainColorBuffer, type TerrainSurfaceMode } from "./terrainColors";
+
+/** Display-level terrain grid shape consumed by the 3D mesh builders.
+ *
+ * The wire contract `TerrainPatch` (grid_size pinned to 128, extent_m span)
+ * satisfies this shape structurally. Tests and synthetic demo grids may use
+ * other sizes. `psr_mask_flat` is display-only: wire patches never carry it
+ * because `psr_mask` is null by contract — PSR is never computed in this
+ * codebase.
+ */
+export interface LocalTerrainPatch {
+  grid_size: number;
+  extent_m: number;
+  center_elevation_m: number;
+  min_elevation_m: number;
+  max_elevation_m: number;
+  elevations_m_flat: number[];
+  slopes_deg_flat: number[];
+  psr_mask_flat?: number[];
+}
 
 function elevationToYKm(elevationM: number, centerElevationM: number, verticalExaggeration: number): number {
   return ((elevationM - centerElevationM) / 1000.0) * verticalExaggeration;
@@ -10,7 +28,7 @@ function elevationToYKm(elevationM: number, centerElevationM: number, verticalEx
 
 /** Build an indexed THREE.BufferGeometry in local_enu (+X East, +Y Up, -Z North). */
 export function buildTerrainGeometry(
-  patch: TerrainPatch,
+  patch: LocalTerrainPatch,
   surfaceMode: TerrainSurfaceMode,
   verticalExaggeration: number,
 ): THREE.BufferGeometry {
@@ -18,7 +36,7 @@ export function buildTerrainGeometry(
   const totalVertices = n * n;
   const positions = new Float32Array(totalVertices * 3);
   const uvs = new Float32Array(totalVertices * 2);
-  const spanKm = patch.patch_radius_km * 2.0;
+  const spanKm = patch.extent_m / 1000.0;
 
   for (let row = 0; row < n; row += 1) {
     const v = row / (n - 1);
@@ -73,7 +91,11 @@ export function buildTerrainGeometry(
 }
 
 /** Update Y elevations in-place when vertical exaggeration changes without reallocating buffers. */
-export function updateTerrainGeometryElevations(geometry: THREE.BufferGeometry, patch: TerrainPatch, verticalExaggeration: number): void {
+export function updateTerrainGeometryElevations(
+  geometry: THREE.BufferGeometry,
+  patch: LocalTerrainPatch,
+  verticalExaggeration: number,
+): void {
   const posAttr = geometry.getAttribute("position") as THREE.BufferAttribute | undefined;
   if (!posAttr) {
     return;
@@ -91,7 +113,7 @@ export function updateTerrainGeometryElevations(geometry: THREE.BufferGeometry, 
 }
 
 /** Update vertex colors in-place when switching between the surface modes. */
-export function updateTerrainGeometryColors(geometry: THREE.BufferGeometry, patch: TerrainPatch, mode: TerrainSurfaceMode): void {
+export function updateTerrainGeometryColors(geometry: THREE.BufferGeometry, patch: LocalTerrainPatch, mode: TerrainSurfaceMode): void {
   const colorAttr = geometry.getAttribute("color") as THREE.BufferAttribute | undefined;
   const nextColors = buildTerrainColorBuffer(patch, mode);
   if (!colorAttr || colorAttr.array.length !== nextColors.length) {
@@ -103,9 +125,9 @@ export function updateTerrainGeometryColors(geometry: THREE.BufferGeometry, patc
 }
 
 /** Bilinearly sample terrain surface Y (km) at arbitrary local ENU (xKm, zKm). */
-export function sampleSurfaceYKmAtXZ(patch: TerrainPatch, xKm: number, zKm: number, verticalExaggeration: number): number {
+export function sampleSurfaceYKmAtXZ(patch: LocalTerrainPatch, xKm: number, zKm: number, verticalExaggeration: number): number {
   const n = Math.max(2, patch.grid_size);
-  const spanKm = Math.max(1e-6, patch.patch_radius_km * 2.0);
+  const spanKm = Math.max(1e-6, patch.extent_m / 1000.0);
   const u = Math.max(0, Math.min(1, xKm / spanKm + 0.5));
   const v = Math.max(0, Math.min(1, -zKm / spanKm + 0.5));
   const colF = u * (n - 1);
@@ -125,6 +147,6 @@ export function sampleSurfaceYKmAtXZ(patch: TerrainPatch, xKm: number, zKm: numb
 }
 
 /** Bilinearly sample exact terrain surface Y (km) at (x=0, z=0) so the lander sits flush. */
-export function sampleCenterSurfaceYKm(patch: TerrainPatch, verticalExaggeration: number): number {
+export function sampleCenterSurfaceYKm(patch: LocalTerrainPatch, verticalExaggeration: number): number {
   return sampleSurfaceYKmAtXZ(patch, 0, 0, verticalExaggeration);
 }

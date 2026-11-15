@@ -1,7 +1,7 @@
 /** Monthly candidate-window heatmap grid and active selection bar (P1-WINDOWS). */
 
 import { Compass } from "lucide-react";
-import type { WindowCandidate } from "../../types";
+import type { CandidateWindow } from "../../types";
 import { getWindowCellColor, type MonthlyWindowGroup } from "./windowMath";
 
 const MONTH_CARD = {
@@ -25,9 +25,9 @@ const CELL_BASE = { width: "18px", height: "18px", borderRadius: "3px", padding:
 interface WindowMonthGridProps {
   totalWindows: number;
   monthGroups: MonthlyWindowGroup[];
-  selectedWin: WindowCandidate | null;
+  selectedWin: CandidateWindow | null;
   isClassB: boolean;
-  onSelectWin: (win: WindowCandidate) => void;
+  onSelectWin: (win: CandidateWindow) => void;
   onLoadInCockpit: (startUtc: string) => void;
 }
 

@@ -424,7 +424,7 @@
       "priority": "P0",
       "owner": "M2",
       "reviewer": "M1",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "ARCH-001"
       ],
@@ -444,7 +444,16 @@
         "backend/src/cli/export_openapi.py",
         "contracts/openapi.json",
         "contracts/fixtures",
+        "contracts/openapi-draft.yaml",
         "frontend/src/types/api.generated.ts",
+        "frontend/src/types/index.ts",
+        "frontend/src/types/site.ts",
+        "frontend/src/types/evaluation.ts",
+        "frontend/src/types/comparison.ts",
+        "frontend/src/types/windows.ts",
+        "frontend/src/state/useMissionStore.ts",
+        "frontend/src/features/site-explorer/SiteCard.tsx",
+        "frontend/src/features/site-explorer/SiteExplorerDrawer.tsx",
         "frontend/package.json",
         "backend/tests/integration/test_contract_parity.py"
       ],
@@ -488,12 +497,34 @@
           "ref": "frontend/src/types/api.generated.ts"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen python -m src.cli.export_openapi",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen pytest tests/integration/test_contract_parity.py -v",
+          "exit": 0,
+          "note": "14 passed, 1 skipped (frontend fixture mirror is DATA-006)"
+        },
+        {
+          "kind": "artifact",
+          "ref": "contracts/openapi.json",
+          "sha256": "5c00c4aedf228d390f2c7a12b18d526cbe1600c5b2ac8c0878fe220406f6c5ea"
+        },
+        {
+          "kind": "artifact",
+          "ref": "frontend/src/types/api.generated.ts",
+          "sha256": "f312f1a2fd0c686d21423a2499095a6e0584ac30a2c0e30c65c46a9dc3bbb529"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T15:38:07Z",
+      "completed_commit": "f03d00c"
     },
     {
       "id": "DATA-001",
@@ -581,7 +612,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DATA-001"
       ],
@@ -636,12 +667,30 @@
           "ref": "pytest tests/unit/test_pds_dem.py"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "artifact",
+          "ref": "data/manifests/lola/manifest.json",
+          "sha256": "2d2b4554755ef1799930cc1968e1aa330c95145fd113d7356336605298957817"
+        },
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_pds_dem.py",
+          "exit": 0,
+          "note": "10 passed"
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --project backend --frozen python -m src.cli.download_lola",
+          "exit": 0,
+          "note": "image 115520000 bytes sha256 e6591eeea35402ca5e124ca00f5bf0774381a2d4fa919144b455d82b8ff65fdc"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T13:59:03Z",
+      "completed_commit": "009d0bfd98b290753755fa9c3a2e8bf36ebb7425"
     },
     {
       "id": "DATA-003",
@@ -650,7 +699,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DATA-001"
       ],
@@ -706,12 +755,36 @@
           "ref": "pytest tests/unit/test_horizons_parser.py"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "artifact",
+          "ref": "data/manifests/horizons",
+          "sha256": "8aa65a3439e5c5cf76634ba6325b706c8b03540a6098b08f840ca89a3fc7cf43",
+          "note": "aggregate sha256 over 32 manifests: sha256 of sorted per-file sha256sum lines"
+        },
+        {
+          "kind": "artifact",
+          "ref": "data/manifests/horizons/artemis-slater-plain.sun.json",
+          "sha256": "f9f71f5afa3f10707f85ce28b5ea459c7f1f652ba6f26b3a2d3da8c152a5308f"
+        },
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_horizons_parser.py",
+          "exit": 0,
+          "note": "14 passed"
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --project backend --frozen python -m src.cli.download_horizons",
+          "exit": 0,
+          "note": "32 tracks, 26305 rows each; 32 fetched then 32 reused on rerun; raw sha256 recorded per manifest"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T14:35:18Z",
+      "completed_commit": "6f160042e84dbcc8faa27b00989e3d85a937abc7"
     },
     {
       "id": "DATA-004",
@@ -720,7 +793,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DATA-003",
         "ARCH-002"
@@ -771,12 +844,24 @@
           "ref": "pytest tests/unit/test_ephemeris_pack.py"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_ephemeris_pack.py",
+          "exit": 0,
+          "note": "57 passed"
+        },
+        {
+          "kind": "report",
+          "ref": "ephemeris-packs-built",
+          "note": "16 packs at backend/data/site_packs/*/ephemeris.json, sample_count 26305 each, 17 MB total; rebuild is byte-identical; sha256 of the sorted per-pack hash list is 2bc802e2601c11041be6bafc65cf563ed0f24a9d59e04bea34b86dc50ab83639. Every raw response was verified against its manifest SHA-256 and row count before parsing, and every pack records source_manifest_sha256 over its two source manifests."
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T16:20:00Z",
+      "completed_commit": "b9a472de8ebe23ec1da6281a76b8982191a01bd8"
     },
     {
       "id": "DATA-005",
@@ -785,7 +870,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DATA-002",
         "ARCH-002"
@@ -840,12 +925,24 @@
           "ref": "pytest tests/unit/test_dem_tiler.py tests/unit/test_raycaster.py"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_dem_tiler.py tests/unit/test_raycaster.py",
+          "exit": 0,
+          "note": "22 passed"
+        },
+        {
+          "kind": "report",
+          "ref": "terrain-packs-built",
+          "note": "9 terrain packs at backend/data/site_packs/*/terrain.json, one per artemis_iii site; each has 16384 finite elevations and slopes, three 360-sample horizons, and psr_mask null. Rebuild is byte-identical; sha256 of the sorted per-pack hash list is b8ad11d040ad1ee71562596156e06c41791e85cae930803b22f1047cac5cd025. No terrain pack exists for a Class B site. The DEM bytes and label were verified against the DATA-002 manifest before tiling; raycasts stop at the 120 km ceiling and never read outside the 80S-90S footprint."
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T16:28:00Z",
+      "completed_commit": "49be6b57ec05f37b4971afb89e401ebe56fd943d"
     },
     {
       "id": "DATA-006",
@@ -854,7 +951,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DATA-004",
         "DATA-005"
@@ -907,12 +1004,29 @@
           "ref": "data/manifests/site_packs/index.json"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "artifact",
+          "ref": "data/manifests/site_packs/index.json",
+          "sha256": "e92a9462a7c82f011a3b61c58d41932eeefcc9dd6385605f759f0bcea74f42df"
+        },
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_pack_index.py",
+          "exit": 0,
+          "note": "16 passed"
+        },
+        {
+          "kind": "report",
+          "ref": "offline-fixtures-generated",
+          "note": "The index lists all 16 sites in registry order with ephemeris/terrain pack paths and SHA-256 values; has_precomputed_terrain is true for the nine Class A sites and false for the seven Class B sites. The generator writes 9 pack-derived terrain fixtures plus the registry-derived sites fixture and the scenario manifest; the sorted fixture-tree SHA-256 is 78ecafe5e21f508ea87c8ca9eaaf90ed657009d07ac3f0729eb832099e1af1ec and frontend/public/data/fixtures is byte-identical. Regeneration is byte-identical. The ARCH-002 parity suite (15 passed) still passes against the regenerated tree."
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T16:41:53Z",
+      "completed_commit": "81ee5d266336581590cc9deac500b564d14150e2"
     },
     {
       "id": "BE-001",
@@ -921,7 +1035,7 @@
       "priority": "P0",
       "owner": "M2",
       "reviewer": "M1",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DATA-004",
         "ARCH-002"
@@ -968,12 +1082,19 @@
           "ref": "pytest tests/unit/test_mission_time.py tests/unit/test_interpolation.py"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_mission_time.py tests/unit/test_interpolation.py",
+          "exit": 0,
+          "note": "73 passed"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T16:45:36Z",
+      "completed_commit": "cea8affce96769226da1bee5b54ee71cbc7515e0"
     },
     {
       "id": "BE-002",
@@ -982,7 +1103,7 @@
       "priority": "P0",
       "owner": "M2",
       "reviewer": "M1",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "BE-001",
         "DATA-005"
@@ -1043,12 +1164,24 @@
           "ref": "pytest tests/unit"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit",
+          "exit": 0,
+          "note": "241 passed"
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen ruff check .",
+          "exit": 0
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T17:07:18Z",
+      "completed_commit": "107000aa58dc11f7a3dd2597f95868f81e32a6e6"
     },
     {
       "id": "BE-003",
@@ -1057,7 +1190,7 @@
       "priority": "P0",
       "owner": "M2",
       "reviewer": "M1",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "BE-002",
         "DATA-006"
@@ -1075,7 +1208,8 @@
         "backend/src/api",
         "backend/src/application",
         "backend/tests/integration",
-        "backend/src/api/main.py"
+        "backend/src/api/main.py",
+        "contracts/openapi.json"
       ],
       "inputs": [
         "backend/data/site_packs"
@@ -1119,12 +1253,30 @@
           "ref": "mypy src tests"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/integration",
+          "exit": 0,
+          "note": "29 passed"
+        },
+        {
+          "kind": "command",
+          "ref": "mypy src tests",
+          "exit": 0,
+          "note": "Success: no issues found in 65 source files"
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen ruff check .",
+          "exit": 0
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T17:55:28Z",
+      "completed_commit": "b36bedfa2385af24e607b5467719d3dd7019c6f6"
     },
     {
       "id": "FE-001",
@@ -2069,7 +2221,7 @@
       },
       "M5": {
         "scope": "comparison, windows, qa, delivery",
-        "owner": null
+        "owner": "devscion"
       }
     }
   }

@@ -92,9 +92,13 @@ export function checkEphemerisCoverage(startUtc: string, durationDays: DurationD
 /** Build the four fixed launch-delay sensitivity candidates (+14, +29.5, +90, +180 days). */
 export function buildDelaySensitivityCandidates(baseRequest: EvaluateRequest, siteName: string): DelayCandidate[] {
   const siteId = baseRequest.site_id ?? "site";
+  const durationDays = baseRequest.duration_days;
+  if (durationDays === undefined) {
+    throw new Error("Launch-delay coverage checks require an explicit duration_days on the base request.");
+  }
   return LAUNCH_DELAY_OFFSETS_DAYS.map((offsetDays) => {
     const shiftedStartUtc = shiftIsoUtcByDays(baseRequest.start_utc, offsetDays);
-    const coverage = checkEphemerisCoverage(shiftedStartUtc, baseRequest.duration_days);
+    const coverage = checkEphemerisCoverage(shiftedStartUtc, durationDays);
     return {
       offsetDays,
       shiftedStartUtc,

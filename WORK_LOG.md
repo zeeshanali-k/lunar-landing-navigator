@@ -15,13 +15,13 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | Governance (single plan, ownership, anti-tamper guards) | `DONE` — ledger `DOC-001`, `DOC-002`, `DOC-GATE`, `ARCH-001` closed with evidence | bauerceptor |
 | Human review gate | `DONE` — `DOC-GATE` closed 2026-11-15 with recorded approval | bauerceptor |
 | `M3` frontend corrected onto the plan | `DONE` (committed on `bauerceptor`, not yet merged to `main`) | bauerceptor |
-| `M3` frontend, P0 completeness | `PARTIAL` — M4 panels merged; `FE-001`/`FE-002`/`FE-003` remain (issues 5, 7, 8, 9, 14) | usairam |
-| `M1` data pipeline | `READY` — `DATA-001` done; `agent-alpha` takes `DATA-002`/`DATA-003`, `agent-beta` takes `DATA-004`–`DATA-006` | bauerceptor |
-| `M2` backend | `READY` — `agent-charlie` takes `ARCH-002` then `BE-001`–`BE-003` | bauerceptor |
-| Parallel session (revision 5) | `READY` — worktrees/branches defined; zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
-| `M4` 3D | `PARTIAL` — M4 SVG horizon/timeline/contrast merged as `00f7e77`; `terrain-3d` remains `.gitkeep` and gated | devscion |
-| `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
-| **P0 release** | **`NOT SHIPPABLE` — 5 blockers remain (1, 5, 6, 7, 8)** | — |
+| `M3` frontend, P0 completeness | `PARTIAL` — issues 5–8 fixed on `feat/module-3-frontend-core` (`801aa0a`); `ARCH-002` merged and pushed at `a0e75d6`, so `FE-001` is unblocked; #9 open | usairam |
+| `M1` data pipeline | `DONE` — `DATA-001`–`DATA-006` done; 16 ephemeris + 9 terrain packs, index, and byte-identical offline fixture mirror present | bauerceptor |
+| `M2` backend | `PARTIAL` — `ARCH-002`, `BE-001`, `BE-002` done; `agent-charlie` next `BE-003` (deps `BE-002` + `DATA-006` merged) | bauerceptor |
+| Parallel session (revision 5) | `IN PROGRESS` — `DATA-002`–`DATA-006`, `ARCH-002`, `BE-001`, and `BE-002` merged and pushed (tip `20d3fb4`); M3 unblocked; next `BE-003` (charlie); zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
+| `M4` 3D | `PARTIAL` — SVG horizon/timeline/contrast (`00f7e77`) and the Three.js 3D terrain viewer (PR #6, allowed by the `d0d0c54` revision) merged from `origin/main`; no M4 ledger task; gated behind `P0-GATE` | devscion |
+| `M5` comparison / QA / delivery | `IN PROGRESS` — owned by devscion; comparison board, window finder, briefing export, QA/delivery docs merged from `origin/main` (PR #5); ledger tasks `QA-001`, `P1-COMPARE`, `P1-WINDOWS`, `P1-DELAYS`, `DELIVERY-*` still pending | devscion |
+| **P0 release** | **`NOT SHIPPABLE` — 4 blockers remain (5, 6, 7, 8); offline evaluate fixtures still need generation (issue 28, `BE-002` physics now merged)** | — |
 
 ---
 
@@ -192,6 +192,52 @@ the 6-site registry. This branch's revision 5 and DATA-001 are newer and were pr
 | Type risk | The panels import from `frontend/src/types`; `ARCH-002` deletes the hand-written modules but the barrel `frontend/src/types/index.ts` is outside its `write_paths`. See open issue 14 |
 | P0 cockpit | The M4 `AppShell` still mounts `SouthPoleMap` and persona mode, so open issue 5 remains. The spherical-limb notice is added; the Class B badge and provenance footer remain with `FE-002` |
 
+### M3 branch verification — usairam (2026-11-15)
+
+Branch `feat/module-3-frontend-core` at `801aa0a`, based on `origin/main` `ebf8a23`. The branch has
+not merged this `bauerceptor` revision-5/16-site work.
+
+| Check | Result |
+|---|---|
+| Branch `bun run typecheck` / `bun run build` | pass |
+| Branch has `lint`, `format:check`, or `test` scripts | **no** — it predates `ARCH-001`; `urlSync.test.ts` cannot run there |
+| Test merge into `bauerceptor` | 9 conflicts: `WORK_LOG.md` and 8 frontend files |
+| Integrated result (throwaway worktree) | `typecheck`, `lint`, 3 tests (2 M4 + `urlSync`), `format:check`, `build` all pass |
+| `external_links` contract | present in `backend/src/api/schemas/site_schemas.py` and `contracts/fixtures/sites.sample.json` |
+| Issue 9 | glossary untouched; still open |
+
+Fixes verified on the branch:
+
+- **#5** — `SouthPoleMap` and the explorer/persona views moved to `map`/`explorer` P1 tabs; the
+  default P0 cockpit no longer mounts them.
+- **#6** — `PolarSkyDome`, `PanoramaHorizonChart`, `MissionTimelinePanel`, and
+  `SolarArraySelector` are mounted in the P0 cockpit.
+- **#7** — Class A/B badges, the spherical-limb banner, the provenance footer (LOLA, JPL Horizons,
+  QuickMap, Moon Trek, CSA), and removal of P0 custom coordinates from the drawer.
+- **#8** — Step (10/60), array azimuth, and minimum-comms controls; dismissible URL notices; an
+  `urlSync.test.ts` file.
+
+Integration fixes required before closing:
+
+- The branch has no `ARCH-001` toolchain. Merge `bauerceptor` into it to get `lint`,
+  `format:check`, and `test`; do not run a separate toolchain.
+- `urlSync.test.ts` called `runUrlSyncTests()` at import time and used the removed
+  `artemis-shackleton-ridge` ID. In the integration it is wired into Vitest and uses
+  `artemis-cabeus-peak`.
+- `urlSync.ts` accepted a non-canonical `mode` query parameter. The integration removes it so the
+  canonical eight keys stay exact.
+- The merge conflicts are formatting plus the store/route changes. Take the M3 frontend
+  implementation and keep the `bauerceptor` docs; `types/site.ts` auto-merges with nullable
+  terrain fields and `external_links`.
+- Do not rebase or rewrite the M3 branch; merge `bauerceptor` into it after the parallel session
+  and preserve its commits.
+
+Remaining after the merge: update `frontend/src/types/index.ts` against the generated
+`ARCH-002` types, run the full frontend toolchain, close `FE-001`/`FE-002` with evidence, keep
+`FE-003` waiting for `BE-003` + `DATA-006`, and resolve issue 9 editorially. Compare and Landing
+Window tabs remain visible as P1 placeholders in the top bar; decide whether to gate them with the
+P1 route.
+
 ### Coordinate source of record — IAU
 
 The `DATA-001` registry uses IAU/USGS Gazetteer of Planetary Nomenclature named-feature centres as
@@ -213,39 +259,57 @@ contracts merge.
 
 ### P0 blockers — the release cannot ship until these are closed
 
-Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially addresses 6, 7, and 8; they stay open until `FE-002` records the acceptance evidence. None were introduced by the governance work; they are the gap between what module 3 shipped and what REQ-11 requires. Numbers refer to the table below.
+Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially addresses 6, 7, and 8; the M3 branch `feat/module-3-frontend-core` (`801aa0a`) fixes 5–8 and is verified in a test merge. They stay open until that branch lands and `FE-001`/`FE-002` record the acceptance evidence. None were introduced by the governance work; they are the gap between what module 3 shipped and what REQ-11 requires. Numbers refer to the table below.
 
-**Status as of this revision: all five are explicit ledger acceptance criteria.** They were previously implicit — living in this file but absent from the ledger — which meant an agent could satisfy `FE-002` while leaving P0 broken. The acceptance lists now name each one, so a task cannot be marked done with the gap open. Issue 3 (test runner) and issue 12 (`uv.lock`) were closed by `ARCH-001`; issue 10 (registry) was closed by `DATA-001`. The M4 SVG horizon/timeline panels merged as `00f7e77` but do not close `FE-002` until its evidence is recorded.
+**Status as of this revision: all five are explicit ledger acceptance criteria.** They were previously implicit — living in this file but absent from the ledger — which meant an agent could satisfy `FE-002` while leaving P0 broken. The acceptance lists now name each one, so a task cannot be marked done with the gap open. Issue 3 (test runner) and issue 12 (`uv.lock`) were closed by `ARCH-001`; issue 10 (registry) was closed by `DATA-001`. The M4 SVG horizon/timeline panels merged as `00f7e77`, and the M3 branch `801aa0a` fixes 5–8; neither closes `FE-001`/`FE-002` until the branch merges and the evidence is recorded.
 
 | # | Blocker | Ledger requirement | Why it blocks P0 |
 |---|---|---|---|
 | 1 | No fixture generator, so offline mode has nothing to read | `DATA-006` acceptance; `FE-003` depends on it | P0 promises a demo with no network; fixtures were deleted as duplicates and their replacement does not exist yet |
-| 5 | 2D map and persona mode are P1 but mounted in the P0 cockpit | `FE-001` acceptance (P0 cockpit mounts no P1 feature) | Ships P1 surface area as if it were P0 and invites the fabricated-data path back |
-| 6 | Horizon silhouette and timeline are placeholders | `FE-002` acceptance, items 4–6 | These are the two visualisations REQ-11 names as the P0 core; today they render a count and a fake slot |
-| 7 | No Class B badge, spherical-limb notice, or provenance footer | `FE-002` acceptance, items 1–3 and 9 | A limb-only site would display as if it had measured terrain, which REQ-05 forbids |
-| 8 | No `step`, `array_az`, or `min_comms` controls | `FE-002` acceptance, item 8 | Three of the eight canonical scenario fields exist in state and URL but no UI writes them |
+| 5 | 2D map and persona mode are P1 but mounted in the P0 cockpit | `FE-001` acceptance (P0 cockpit mounts no P1 feature) | Verified fixed on `feat/module-3-frontend-core` (`801aa0a`); pending merge |
+| 6 | Horizon silhouette and timeline are placeholders | `FE-002` acceptance, items 4–6 | Verified fixed on `feat/module-3-frontend-core` (`801aa0a`); pending merge |
+| 7 | No Class B badge, spherical-limb notice, or provenance footer | `FE-002` acceptance, items 1–3 and 9 | Verified fixed on `feat/module-3-frontend-core` (`801aa0a`); pending merge |
+| 8 | No `step`, `array_az`, or `min_comms` controls | `FE-002` acceptance, item 8 | Verified fixed on `feat/module-3-frontend-core` (`801aa0a`); pending merge |
 | 10 | Registry holds 6 sites, not 16 | `DATA-001` acceptance | REQ-05 requires exactly 16; the demo would show less than half the curated set |
 
 ### Full list
 
 | # | Issue | Where | Severity | Status |
 |---|---|---|---|---|
-| 1 | Fixtures deleted but no generator exists yet, so offline mode has nothing to read | `frontend/public/data/fixtures/` (absent), `DATA-006` | `BLOCKED` on `M1` | in `DATA-006` acceptance |
+| 1 | Fixtures deleted but no generator exists yet, so offline mode has nothing to read | `frontend/public/data/fixtures/`, `DATA-006` | `PARTIAL` | `DONE` for sites/terrain/health via `DATA-006`; evaluate/compare/windows offline fixtures still gated on `BE-002` (issue 27) |
 | 2 | `evaluateScenario`/`compareScenarios`/`scanWindows` now require a scenario key; comparison and windows callers are typed but their scenarios are P1 | `frontend/src/services/`, `P1-COMPARE`, `P1-WINDOWS` | low | open |
 | 3 | No test runner or `test` script, so three ledger acceptance commands cannot run | `frontend/package.json`, `frontend/vitest.config.ts` | BLOCKER for P0 | `DONE` — closed by `ARCH-001` |
-| 4 | Wire types are hand-maintained; `api.generated.ts` does not exist | `frontend/src/types/`, `ARCH-002` | MAJOR | in `ARCH-002` acceptance |
-| 5 | 2D map and persona mode are built but are P1, mounted unconditionally in the cockpit | `frontend/src/features/lunar-map-2d/`, `frontend/src/features/persona-mode/` | MAJOR | in `FE-001` acceptance |
-| 6 | Horizon silhouette and timeline were placeholders, the two P0 visualisations REQ-11 requires | `frontend/src/components/layout/AppShell.tsx` | BLOCKER for P0 | `PARTIAL` — M4 SVG panels merged as `00f7e77`; `FE-002` must verify acceptance |
-| 7 | No Class B badge, spherical-limb notice, or provenance footer in the UI | `frontend/src/components/`, `frontend/src/features/` | BLOCKER for P0 | `PARTIAL` — M4 spherical-limb notice added; badge and footer still open |
-| 8 | No `step`, `array_az`, or `min_comms` controls; values exist in state and URL but no UI writes them | `frontend/src/features/time-controls/` | BLOCKER for P0 | `PARTIAL` — M4 array/mast selector added; step, `array_az`, and `min_comms` still open |
+| 4 | Wire types are hand-maintained; `api.generated.ts` does not exist | `frontend/src/types/`, `ARCH-002` | MAJOR | `DONE` — closed by `ARCH-002` (`a0e75d6`) |
+| 5 | 2D map and persona mode are built but are P1, mounted unconditionally in the cockpit | `frontend/src/features/lunar-map-2d/`, `frontend/src/features/persona-mode/` | MAJOR | `VERIFIED` on `feat/module-3-frontend-core` at `801aa0a`; pending merge |
+| 6 | Horizon silhouette and timeline were placeholders, the two P0 visualisations REQ-11 requires | `frontend/src/components/layout/AppShell.tsx` | BLOCKER for P0 | `VERIFIED` on `feat/module-3-frontend-core` at `801aa0a`; pending merge |
+| 7 | No Class B badge, spherical-limb notice, or provenance footer in the UI | `frontend/src/components/`, `frontend/src/features/` | BLOCKER for P0 | `VERIFIED` on `feat/module-3-frontend-core` at `801aa0a`; pending merge |
+| 8 | No `step`, `array_az`, or `min_comms` controls; values exist in state and URL but no UI writes them | `frontend/src/features/time-controls/` | BLOCKER for P0 | `VERIFIED` on `feat/module-3-frontend-core` at `801aa0a`; pending merge |
 | 9 | Educational glossary asserts unsourced science (1.54° tilt, 40 K, ±6.5° libration, "uninterrupted" DTE) and generates narrative from booleans | `frontend/src/features/persona-mode/educationalGlossary.ts` | MAJOR | open — deliberately deferred, see below |
 | 10 | Registry holds 6 sites, not the 16 REQ-05 requires | `backend/config/curated_sites.yaml` | BLOCKER for P0 | `DONE` — closed by `DATA-001` |
-| 11 | `contracts/openapi-draft.yaml` still hand-maintained alongside Pydantic | `contracts/` | MAJOR | in `ARCH-002` acceptance |
+| 11 | `contracts/openapi-draft.yaml` still hand-maintained alongside Pydantic | `contracts/` | MAJOR | `DONE` — `openapi-draft.yaml` deleted by `ARCH-002` (`a0e75d6`) |
 | 12 | `backend/uv.lock` absent, pytest not installed, so no Python check can run | `backend/` | BLOCKER for P0 | `DONE` — closed by `ARCH-001` |
-| 13 | Fixture `terrain.sample.json` is 16×16; production contract is 128×128 | `contracts/fixtures/` | MINOR | open |
-| 14 | `ARCH-002` deletes hand-written wire types but `frontend/src/types/index.ts` is outside its `write_paths`; the merged M4 panels import from that barrel | `frontend/src/types/index.ts`, `ARCH-002` | BLOCKER for `ARCH-002` | open — needs a human-approved ledger revision or `FE-001` ownership |
+| 13 | Fixture `terrain.sample.json` is 16×16; production contract is 128×128 | `contracts/fixtures/` | MINOR | `DONE` — `ARCH-002` regenerated it at 128×128; the parity test asserts production shape |
+| 14 | `ARCH-002` deletes hand-written wire types but `frontend/src/types/index.ts` is outside its `write_paths`; the merged M4 panels import from that barrel | `frontend/src/types/index.ts`, `ARCH-002` | BLOCKER for `ARCH-002` | `RESOLVED` — human-approved ledger revision (2026-11-15) adds the barrel, three consumers, and the acceptance-required deletions to `ARCH-002.write_paths` |
 | 15 | M4 test files exported runner functions but registered no Vitest tests, so they collected zero tests | `frontend/src/__tests__/` | MAJOR | `DONE` — wired into Vitest; 2 tests pass |
 | 16 | M4 code was merged to `main` without a ledger task or plan/registry update; `main` still carried revision 3, the 14-site ledger, and the 6-site registry | `frontend/src/features/sky-horizon/`, `frontend/src/features/mission-timeline/`, `frontend/src/features/earth-moon-contrast/`, `DEVELOPMENT_PLAN.md` | governance | `RECORDED` — Appendix F; M4 remains gated, no ledger task |
+| 17 | M3 branch lacks the `ARCH-001` toolchain; its `urlSync.test.ts` called the runner at import time and used the removed `artemis-shackleton-ridge` site | `frontend/package.json`, `frontend/src/__tests__/urlSync.test.ts` | MAJOR | `DONE IN INTEGRATION` — merge `bauerceptor` for the toolchain and use the Vitest `it` wiring/current site ID |
+| 18 | M3 branch is based on revision 3 / 6-site registry and must merge `bauerceptor` (revision 5 / 16-site) before closing | `DEVELOPMENT_PLAN.md`, `backend/config/curated_sites.yaml` | MAJOR | `OPEN` — merge `bauerceptor` after `ARCH-002` |
+| 19 | Compare and Landing Window P1 tabs remain visible as placeholders in the P0 top bar | `frontend/src/components/layout/TopCommandBar.tsx` | MINOR | `OPEN` — decide whether to gate them with the P1 route |
+| 20 | `SITE_COORD` altitude is `0.0 km` for all 16 sites because the registry has no `elevation_m`; each manifest records an explicit `altitude_source` | `data/manifests/horizons/*.json`, `DATA-003` | low | `RECORDED` — ≈1e-3° effect, inside the 0.05° tolerance; revisit if REQ-07 requires pack-derived altitudes |
+| 21 | REQ-07 needs interpolation error proven against frozen **off-grid** Horizons references, but no task owns an off-grid fetch; `BE-001`/`QA-001` have no download write paths | `data/manifests/references/horizons/`, `BE-001` | MAJOR | `OPEN` — only 24-hourly references exist; needs a small approved scope addition before `BE-001` |
+| 22 | REQ-08 does not state whether `geometric_limb_deg` uses the observer's local ground elevation or the terrain at the limb; the implementation uses observer-local ground (constant per azimuth, reproduces the flat-terrain analytic value) | `backend/src/infrastructure/raycaster.py`, `DEVELOPMENT_PLAN.md` REQ-08 | low | `RECORDED` — behaves as the formula implies; add an explicit sentence to REQ-08 if it is normative |
+| 23 | Cabeus (−82.26°) northern rays stop at the 80°S DEM boundary (~68 km), not 120 km; out-of-footprint samples are marked invalid and never counted, and the 120 km cap still holds for every grid | `backend/src/infrastructure/raycaster.py`, `backend/data/site_packs/artemis-cabeus-peak/terrain.json` | low | `RECORDED` — no fabricated values; REQ-08's "closest covered site" example (Mons Mouton ~141 km) should name Cabeus as the limiting case |
+| 24 | `source_manifest_sha256` convention (SHA-256 over the two source manifests concatenated in ascending path order) is defined only in the module docstring | `backend/src/infrastructure/ephemeris_pack.py`, REQ-06 | low | `RECORDED` — state it in REQ-06 if it is normative |
+| 25 | `backend/tests/integration/test_contracts_and_health.py` has 5 pre-existing failures (asserts removed `artemis-shackleton-ridge`, the old health shape, and fixture-substitution routes); `BE-003` owns replacing those routes | `backend/tests/integration/test_contracts_and_health.py` | MAJOR until `BE-003` | `OPEN` — predates `DATA-006`; `BE-003` replaces |
+| 26 | `ARCH-002`'s `fixture_synth` nests scenario keys under `scenarios` while `httpClient` reads top-level keys; `DATA-006` emits both shapes, so one must be made authoritative in REQ-10 | `backend/src/api/schemas/fixture_synth.py`, `frontend/src/services/httpClient.ts` | MINOR | `OPEN` — human-approved REQ-10 revision |
+| 27 | `export_openapi` still rewrites fixtures from `fixture_synth`; re-running it reverts the `DATA-006` manifest/sites fixture | `backend/src/cli/export_openapi.py`, `contracts/fixtures/` | MAJOR for offline demo | `OPEN` — single-writer decision required |
+| 28 | Offline evaluate/compare/windows fixtures are not generated; the REQ-09 physics now exists (`BE-002` merged), but the fixtures still need a generator | `contracts/fixtures/`, `frontend/public/data/fixtures/` | MAJOR for offline fallback | `OPEN` — `FE-003` (after `BE-003`) or a follow-up task |
+| 29 | Base `terrain.sample.json` is left as the `ARCH-002` flat placeholder because the parity test pins it to zeros; real terrain ships as `terrain.<site_id>.json` scenario fixtures | `contracts/fixtures/terrain.sample.json` | MINOR | `RECORDED` |
+| 30 | The M4 `terrainPatchUpsampler` fabricates a 12-crater "Shackleton" scene with invented depths/PSR flags; unreachable for wire-contract patches (grid_size pinned 128 ⇒ passthrough), so it is dead code today, but it would silently render fiction if a sub-64 fixture ever appears | `frontend/src/features/terrain-3d/terrainPatchUpsampler.ts` | MAJOR if ever reached | `OPEN` — human/devscion decision: delete it or keep it clearly labelled synthetic |
+| 31 | The 3D "PSR Frost" surface mode has no data source under the current contract (`psr_mask` is null by design; PSR is never computed); the button is now hidden for wire patches | `frontend/src/features/terrain-3d/terrainColors.ts`, `LunarTerrainCanvas.tsx` | MINOR | `OPEN` — keep hidden pending real PSR data, or remove the mode |
+| 32 | M4 3D code merged on `main` before `P0-GATE`; the `d0d0c54` revision removed the `AGENTS.md` prohibition but `DEVELOPMENT_PLAN.md` Appendix F still describes 3D as gated behind `P0-GATE` | `DEVELOPMENT_PLAN.md` Appendix F | governance | `OPEN` — plan text needs the same human-approved revision |
+| 33 | `QA-001`, `P1-COMPARE`, `P1-WINDOWS`, `P1-DELAYS`, `DELIVERY-001/002` remain `pending` in the ledger although their code and docs now exist on the branch (merged from `main` without ledger tasks); acceptance evidence must still be recorded when the DAG allows | `plan/task-ledger.json`, M5 docs | MAJOR for delivery | `OPEN` — needs an M5 closure pass |
+| 34 | `main` committed `package.json` with the `three` dependency but without regenerating `bun.lock`; frozen installs fail until the lockfile is rebuilt (done on `bauerceptor` in this merge) | `frontend/bun.lock` | MAJOR if unfixed | `FIXED` on `bauerceptor`; `main` remains broken until this merges back |
 
 ### Deliberately not fixed
 
@@ -264,10 +328,10 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 
 | Module | Agent | Next tasks | Blocked by |
 |---|---|---|---|
-| `M1` | `agent-alpha` | `DATA-002` → `DATA-003` | ready |
-| `M1` | `agent-beta` | `DATA-004` → `DATA-005` → `DATA-006` | `DATA-004` needs `DATA-003` + `ARCH-002`; `DATA-005` needs `DATA-002` + `ARCH-002`; `DATA-006` needs both packs |
-| `M2` | `agent-charlie` | `ARCH-002` → `BE-001` → `BE-002` → `BE-003` | `BE-001` needs `DATA-004` + `ARCH-002`; `BE-002` needs `BE-001` + `DATA-005`; `BE-003` needs `BE-002` + `DATA-006` |
-| `M3` | usairam | `FE-001` → `FE-002` → `FE-003`; see “M3 remaining work — handoff to usairam” | `ARCH-002`, `BE-003`, `DATA-006`; issue 9 human decision |
+| `M1` | `agent-alpha` | — (complete: `DATA-002`, `DATA-003` done) | — |
+| `M1` | `agent-beta` | — (complete: `DATA-004`, `DATA-005`, `DATA-006` done) | — |
+| `M2` | `agent-charlie` | `BE-003` | `BE-001`, `BE-002` done and merged; `BE-003` ready (`BE-002` + `DATA-006` merged) |
+| `M3` | usairam | `ARCH-002` merged and pushed at `a0e75d6`: merge `bauerceptor` into `feat/module-3-frontend-core`, apply the integration fixes, close `FE-001`/`FE-002`; `FE-003` after `BE-003` (`DATA-006` now merged) | `BE-003`; issue 9 human decision |
 | `M4` | devscion | not startable | `P0-GATE` |
 | `M5` | — | needs an owner | — |
 
@@ -287,24 +351,29 @@ Dependency order: `ARCH-002` → `FE-001` → `FE-002` → `FE-003`. `FE-003` al
 No M3 ledger task is eligible today. `FE-001` depends on `ARCH-002` (`M2`), which is still pending;
 `FE-002` depends on `FE-001`; `FE-003` depends on `FE-002`, `BE-003` (`M2`), and `DATA-006` (`M1`).
 
+Current state (2026-11-15): usairam has already pushed issues 5–8 on
+`feat/module-3-frontend-core` (`801aa0a`). A throwaway test merge into `bauerceptor` passed
+`typecheck`, `lint`, 3 tests, `format:check`, and `build`. Do not re-implement 5–8. The remaining
+work is the merge, the type-barrel update, and closing `FE-001`/`FE-002` with evidence.
+
 The M1 raw data and packs do **not** block `FE-001` or `FE-002` directly: the frontend consumes API
 responses and generated types. M1 becomes a hard blocker for `FE-003` through `DATA-006`, and M2
 blocks `FE-003` through `BE-003`. The immediate blocker for the first M3 task is **M2, not M1**.
 
 The unblock path is the Wave 1 gate: `agent-charlie` completes `ARCH-002`, and `agent-zeta` merges
-**and pushes** it. `FE-001` then becomes eligible and can run in parallel with the rest of the
-data/backend pipeline. `FE-002` follows. `FE-003` waits for `BE-003` and `DATA-006`.
+**and pushes** it. Then usairam merges `bauerceptor` into `feat/module-3-frontend-core`, applies the
+integration fixes (Vitest wiring/current site ID, no `mode` key, Prettier, type barrel), runs the
+frontend checks, and closes `FE-001`/`FE-002`. `FE-003` waits for `BE-003` and `DATA-006`.
 
-Until `ARCH-002` is merged and pushed, usairam can prepare without starting a task: merge
-`bauerceptor` into `feat/module-3-frontend-core`, read the plan and ledger, review the merged M4
-panels, and plan the `FE-001`/`FE-002` changes. Do not set a task `in_progress`, do not commit task
-work, and do not hand-roll a temporary contract.
+Until `ARCH-002` is merged and pushed, usairam should not start a new ledger task and should not
+redo the UI work. He can review the test-merge findings above and prepare the type-barrel change,
+but must not set a task `in_progress` or commit task work on a stale base.
 
 ### Who unblocks which M3 task
 
 | M3 task | Hard inputs | Agent signal | Final human message |
 |---|---|---|---|
-| `FE-001` | `ARCH-002` done, merged, and pushed | Charlie: `M3 HANDOFF READY — ARCH-002 done and verified; waiting for zeta merge.`; zeta: `M3 UNBLOCK — tell usairam to start FE-001 now.` | Tell usairam only after zeta has merged **and pushed** `ARCH-002`; give him the pushed `origin/bauerceptor` commit. |
+| `FE-001` | `ARCH-002` done, merged, and pushed | Charlie: `M3 HANDOFF READY — ARCH-002 done and verified; waiting for zeta merge.`; zeta: `M3 UNBLOCK — merge bauerceptor and finish FE-001/FE-002.` | Tell usairam only after zeta has merged **and pushed** `ARCH-002`: merge `bauerceptor` into `feat/module-3-frontend-core`, apply the integration fixes, run the checks, and close `FE-001`/`FE-002`; do not re-implement 5–8. |
 | `FE-002` | `FE-001` done | none from M1/M2 | usairam proceeds after `FE-001`; no agent wait. |
 | `FE-003` | `FE-002` done + `DATA-006` (M1) + `BE-003` (M2) merged and pushed | Beta: `M3 FE-003 INPUT READY — DATA-006 merged; FE-003 still needs BE-003 and FE-002.`; zeta: `M3 FE-003 INPUT READY — DATA-006 and BE-003 merged; FE-003 still needs FE-002.` | Tell usairam to start `FE-003` only when `FE-002` is done and zeta has **pushed** both inputs; give him the pushed `origin/bauerceptor` commit. |
 
@@ -340,6 +409,10 @@ zeta is the only writer and pusher of `bauerceptor`.
   commits with `ALLOW_PROTECTED=1`, fetches, and pushes `origin/bauerceptor`.
 - Only after the push succeeds does zeta sync the next worktrees and emit an M3 signal. If a check
   or the push fails, zeta does not push and does not unblock; it reports.
+- After every integration zeta emits `ZETA MERGED — <TASK-ID> integrated at <merge-commit>; pushed
+  origin/bauerceptor; checks green; synced <worktree>; next: <agent/task>.` On failure it emits
+  `ZETA BLOCKED — <TASK-ID> not merged; reason: <exact check/conflict>; no push; action:
+  <agent/human>.` A/B/C wait for `ZETA MERGED` before the next task.
 - No force-push, no rebase, no squash, no agent-branch push. `completed_commit` hashes stay
   resolvable.
 - If orchestrated with Herdr: use `herdr worktree open` for the existing agent worktrees, start one
@@ -367,6 +440,10 @@ Do not merge if: <conditions, if any>
 
 ### FE-001 — app shell, stores, canonical URL, typed client
 
+Status (2026-11-15): implemented on `feat/module-3-frontend-core` at `801aa0a`; remaining is the
+`bauerceptor` merge after `ARCH-002`, the generated-type barrel, and ledger closure. Do not
+re-implement the UI.
+
 Dependencies: `ARCH-002`. Write paths: `frontend/src/components/layout`, `frontend/src/state`,
 `frontend/src/services`, `frontend/src/App.tsx`, `frontend/src/types/coordinates.ts`,
 `frontend/src/types/index.ts`, `frontend/src/__tests__/urlSync.test.ts`.
@@ -393,6 +470,10 @@ Remaining:
 - Tests: `frontend/src/__tests__/urlSync.test.ts`; run `bun run test`. Evidence: `bun run test`.
 
 ### FE-002 — controls, KPI strip, horizon silhouette, timeline
+
+Status (2026-11-15): implemented on `feat/module-3-frontend-core` at `801aa0a`; remaining is the
+`bauerceptor` merge after `ARCH-002`, preserving the Vitest wiring and closing with evidence. Do not
+re-implement the UI.
 
 Dependencies: `FE-001`. Write paths: `frontend/src/components/layout`, `frontend/src/components/ui`,
 `frontend/src/features/mission-kpis`, `frontend/src/features/mission-timeline`,
@@ -483,3 +564,360 @@ Remaining:
 | `svgPointToLatLon` kept in the map module | Pure projection geometry for a P1 feature, not physics; removing it would break the map for no safety gain. |
 | Comparison store now passes a scenario key | The fallback contract requires one; typing it surfaced the missing P1 scenarios. |
 | Zeta is the only writer/pusher of `bauerceptor`; A/B/C hand off with `ZETA HANDOFF` | Concurrent merges and unpushed bases are the main failure mode. One merge at a time, push every green integration, then sync the next worktree. An M3 unblock is actionable only after the push. |
+| Extended `ARCH-002` `write_paths` by explicit human approval (2026-11-15) | The generated-types migration cannot be real without editing the type barrel (`frontend/src/types/index.ts`), the three consumers, and deleting `contracts/openapi-draft.yaml` plus the four hand-written wire modules. The ledger's acceptance already required those deletions; the revision aligns `write_paths` with acceptance. |
+
+---
+
+### DATA-002 — done — agent-alpha
+
+- Branch/commit: `bauerceptor-alpha` @ `009d0bf` (task work); the ledger closure is the branch tip.
+- Changed: `backend/src/infrastructure/pds_dem.py` (PDS3 label parser, size/hash verifier, elevation reader); `backend/src/cli/download_lola.py` (build-time acquisition with `.part`, verification, atomic rename, manifest writer); `backend/tests/unit/test_pds_dem.py` (10 tests); `data/manifests/lola/manifest.json` (generated provenance).
+- Commands: `uv run --project backend --frozen python -m src.cli.download_lola` — exit 0; `uv run --python 3.12 --frozen pytest tests/unit/test_pds_dem.py -v` — exit 0 (10 passed).
+- Evidence: `data/manifests/lola/manifest.json` sha256 `2d2b4554755ef1799930cc1968e1aa330c95145fd113d7356336605298957817`; image 115,520,000 bytes sha256 `e6591eeea35402ca5e124ca00f5bf0774381a2d4fa919144b455d82b8ff65fdc`; label 4,986 bytes sha256 `107c7558cbf8832e4119d3c8c2b1b272623344275c85378a9b0e03c22876eb33`.
+- Parsed label: 7600×7600, `LSB_INTEGER` 16-bit, `SCALING_FACTOR` 0.5, `OFFSET` 1737400, 80 m/pix, `POLAR STEREOGRAPHIC`, `PLANETOCENTRIC`, centre longitude 0, latitude bounds −90…−80, projection offsets 3799.5.
+- Open issues: none. The untracked manifest that existed in the main worktree reversed `MINIMUM_LATITUDE`/`MAXIMUM_LATITUDE` and lacked `parser_version` and the label hash; it was regenerated under this task, so that stale file should not be reused.
+- Proposed doc deltas: none. `SCALING_FACTOR = 0.5` (elevation = DN × 0.5) was verified against the live PDS label, which is byte-identical to the cached copy (sha256 `107c7558cbf8832e4119d3c8c2b1b272623344275c85378a9b0e03c22876eb33`); the label states `HEIGHT = (DN * SCALING_FACTOR)`. The label is the source of record and `pds_dem.read_elevations` reads the factor from it, so a plan restatement is unnecessary. This withdraws the proposal recorded in the Wave 1 entry above; no plan edit is requested.
+
+```text
+ZETA HANDOFF — DATA-002 ready to merge
+Branch: bauerceptor-alpha
+Worktree: /home/red/Projects/lunar-landing-alpha
+Commit: bauerceptor-alpha tip after this closure commit; task work commit 009d0bf
+Task status: done
+Base: abe3b0c (bauerceptor at session start)
+Commands: uv run --project backend --frozen python -m src.cli.download_lola exit 0; uv run --python 3.12 --frozen pytest tests/unit/test_pds_dem.py -v exit 0
+Evidence: data/manifests/lola/manifest.json sha256 2d2b4554755ef1799930cc1968e1aa330c95145fd113d7356336605298957817; image 115520000 bytes sha256 e6591eeea35402ca5e124ca00f5bf0774381a2d4fa919144b455d82b8ff65fdc; label sha256 107c7558cbf8832e4119d3c8c2b1b272623344275c85378a9b0e03c22876eb33
+Changed paths: backend/src/cli/download_lola.py, backend/src/infrastructure/pds_dem.py, backend/tests/unit/test_pds_dem.py, data/manifests/lola/manifest.json, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: data/manifests/lola/manifest.json sha256 2d2b4554755ef1799930cc1968e1aa330c95145fd113d7356336605298957817
+Pre-merge checks: ruff check and ruff format --check on the new files exit 0; validate_task_ledger.py, check_planning_docs.py, check_file_lengths.py exit 0
+M3 impact: none
+Known risks: the 115 MB raw image stays ignored at data/downloads/lola (shared cache); a rerun verifies it instead of re-downloading
+Do not merge if: the manifest or image hash differs, or any validator fails
+```
+
+### Wave 1 — DATA-002 integrated — agent-zeta
+
+- Merged `bauerceptor-alpha` @ `5806a99` into `bauerceptor` as `876e758` with `--no-ff`; pushed `abe3b0c..876e758` to `origin/bauerceptor`.
+- Scope verified: only `backend/src/cli/download_lola.py`, `backend/src/infrastructure/pds_dem.py`, `backend/tests/unit/test_pds_dem.py`, `data/manifests/lola/manifest.json`, plus `plan/task-ledger.json`, `plan/protected.sha256`, `WORK_LOG.md`. No out-of-scope path; branch contained the `bauerceptor` tip.
+- Re-ran `pytest tests/unit/test_pds_dem.py -v` — exit 0 (10 passed). Independently verified artefact hashes: manifest `2d2b4554…`, image 115,520,000 bytes `e6591eee…`, label `107c7558…`.
+- Validators after digest refresh: `validate_task_ledger.py` exit 0 (28 tasks, 6 done); `check_planning_docs.py` exit 0; `check_file_lengths.py` exit 0 (0 violations).
+- Cleared a merge blocker: the main worktree carried an untracked out-of-order `data/manifests/lola/manifest.json` (reversed latitude bounds, no label hash). Preserved outside the tree in the session scratchpad, not reused.
+- Synced `bauerceptor` into the alpha worktree (fast-forward to `876e758`). Next: `agent-alpha` runs `DATA-003`; `ARCH-002` remains pending. No M3 signal (alpha does not unblock M3).
+- Proposed doc delta withdrawn by alpha in `DATA-003`: `DEVELOPMENT_PLAN.md` REQ-04 omits `SCALING_FACTOR = 0.5`, but the live PDS label (byte-identical to the cache) states it and `read_elevations` reads it from the label, so no plan edit is needed.
+- Noted: `origin/feat/m5-comparison-qa-delivery` appeared on fetch; out of scope for this session and untouched.
+
+---
+
+### DATA-003 — done — agent-alpha
+
+- Branch/commit: `bauerceptor-alpha` @ `6f16004` (task work); the ledger closure is the branch tip.
+- Changed: `backend/src/cli/horizons_client.py` (locked request builder, retry-aware fetch, marker-tolerant parser, coverage validator, reference selection); `backend/src/cli/download_horizons.py` (registry/config loading, raw archive through `.part`, manifests, frozen references, resumable run); `backend/tests/unit/test_horizons_parser.py` (14 tests); `data/manifests/horizons/` (32 manifests); `data/manifests/references/horizons/` (32 frozen reference files).
+- Commands: `uv run --project backend --frozen python -m src.cli.download_horizons` — exit 0 (32 fetched, then 32 reused on rerun); `uv run --python 3.12 --frozen pytest tests/unit/test_horizons_parser.py -v` — exit 0 (14 passed).
+- Evidence: manifest aggregate `8aa65a3439e5c5cf76634ba6325b706c8b03540a6098b08f840ca89a3fc7cf43` over 32 files; representative `data/manifests/horizons/artemis-slater-plain.sun.json` sha256 `f9f71f5afa3f10707f85ce28b5ea459c7f1f652ba6f26b3a2d3da8c152a5308f`. Raw responses are 1,189,736 bytes each and stay ignored in the shared cache.
+- Coverage: every track has exactly 26,305 rows at 3,600 s from 2026-01-01T00:00:00Z to 2029-01-01T00:00:00Z. The first response is validated before the bulk fetch and every response is validated again.
+- Independent check: the archived `artemis-slater-plain.sun.txt` row block is byte-identical to a fresh Horizons fetch (rows sha256 `e6253285…`); only the header request-timestamp line differs, which is why the recorded raw hash covers the full response.
+- Marker handling: the real responses contain `*i` (daylight, interfering body up) and a bare `i` (night, interfering body up). A `*`-only or `*[im]`-only pattern would silently drop 13,051 rows per track; the parser accepts `*`, `*i`, `*m`, `i`, `m`, and the blank-flag four-token row, each covered by a test.
+- Decision: `SITE_COORD` altitude is **0.0 km** for all 16 sites because `curated_sites.yaml` carries no `elevation_m` and REQ-05 forbids hand-entering one. Every manifest records `site_coord_used.altitude_source = "reference_sphere_zero: registry has no elevation_m"`. A 1 km altitude error shifts topocentric Sun/Earth geometry by ~1e-3° or less, far inside the 0.05° tolerance, but the frozen request should be revisited if REQ-07 later requires pack-derived altitudes.
+- Open issue (for `BE-001`): REQ-07 requires interpolation error proven against **frozen off-grid** Horizons references, but no task owns an off-grid fetch. `DATA-003` acceptance asks only for hourly reference rows, and `BE-001`/`QA-001` have no download write paths. The frozen files here sample every 24th hourly row plus the final row per site and body. Severity: medium for `BE-001`; it blocks that off-grid test.
+- Proposed doc deltas: (1) state in REQ-07 that the frozen ephemeris uses `SITE_COORD` altitude 0.0 km until packs exist, or add `elevation_m` to the registry; (2) assign a short off-grid reference fetch (for example 30-minute steps over the 2027-11-01 reference window) to a data task so `BE-001` has frozen references. This entry also withdraws the `SCALING_FACTOR` proposal in the Wave 1 entry above: the factor was verified against the live PDS label and is read from the label, so no plan edit is needed.
+
+```text
+ZETA HANDOFF — DATA-003 ready to merge
+Branch: bauerceptor-alpha
+Worktree: /home/red/Projects/lunar-landing-alpha
+Commit: bauerceptor-alpha tip after this closure commit; task work commit 6f16004
+Task status: done
+Base: a43e602 (bauerceptor tip synced before the task)
+Commands: uv run --project backend --frozen python -m src.cli.download_horizons exit 0; uv run --python 3.12 --frozen pytest tests/unit/test_horizons_parser.py -v exit 0
+Evidence: data/manifests/horizons aggregate sha256 8aa65a3439e5c5cf76634ba6325b706c8b03540a6098b08f840ca89a3fc7cf43; artemis-slater-plain.sun.json sha256 f9f71f5afa3f10707f85ce28b5ea459c7f1f652ba6f26b3a2d3da8c152a5308f; 14 passed
+Changed paths: backend/src/cli/download_horizons.py, backend/src/cli/horizons_client.py, backend/tests/unit/test_horizons_parser.py, data/manifests/horizons/, data/manifests/references/horizons/, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: 32 manifests under data/manifests/horizons, 32 reference files under data/manifests/references/horizons
+Pre-merge checks: ruff check . exit 0; ruff format --check clean; 14 tests pass; validate_task_ledger.py, check_planning_docs.py, check_file_lengths.py exit 0
+M3 impact: none (this unblocks beta DATA-004/DATA-005 and charlie BE-001/BE-002 once merged)
+Known risks: two ledger tasks in a row on this branch (DATA-002 was integrated at 876e758); the raw cache is ignored and shared
+Do not merge if: any manifest is missing, a track's parsed_rows is not 26305, the manifest aggregate differs, or a validator fails
+```
+
+### Wave 2 — DATA-003 integrated — agent-zeta
+
+- Merged `bauerceptor-alpha` @ `f693452` into `bauerceptor` as `4b9402d` with `--no-ff`; pushed `a43e602..4b9402d` to `origin/bauerceptor`.
+- Scope verified: `backend/src/cli/download_horizons.py`, `backend/src/cli/horizons_client.py`, `backend/tests/unit/test_horizons_parser.py`, `data/manifests/horizons/` (32), `data/manifests/references/horizons/` (32), plus ledger, digest, `WORK_LOG.md`. No out-of-scope path.
+- Re-ran `pytest tests/unit/test_horizons_parser.py -v` — exit 0 (14 passed). Verified 32 manifests and 32 references; every track `parsed_rows` is 26305. Reproduced the recorded aggregate `8aa65a34…` exactly as `sha256sum *.json | sort -k2 | sha256sum` inside the horizons directory.
+- Validators after digest refresh: `validate_task_ledger.py` exit 0 (28 tasks, 7 done); `check_planning_docs.py` exit 0; `check_file_lengths.py` exit 0 (0 violations).
+- Cleared a merge blocker: two untracked out-of-order Apollo 11 manifests under `data/manifests/horizons/` were preserved to the session scratchpad, then the merge added the tracked set.
+- `agent-alpha` has no further task. `DATA-004`/`DATA-005` still also require `ARCH-002`, which is pending, so beta stays standby.
+- Open issues added: #20 (`SITE_COORD` altitude 0.0 km, recorded per manifest) and #21 (no task owns a frozen off-grid Horizons reference, which `BE-001` needs).
+- Noted: `origin/feat/m5-comparison-qa-delivery` advanced to `d0d0c54`; out of scope for this session and untouched.
+
+### ARCH-002 — done — agent-charlie
+
+- Branch/commit: `bauerceptor-charlie` @ `f03d00c` (task work); the ledger closure is the branch tip.
+- Changed: closed the Pydantic request/response models (`extra=forbid`, REQ-06 allowlists, nullable Class B terrain fields, required `site_id`); added `backend/src/cli/export_openapi.py`, `backend/src/api/schemas/enums.py`, `backend/src/api/schemas/fixture_synth.py`, and `backend/tests/integration/test_contract_parity.py`; generated `contracts/openapi.json` and `frontend/src/types/api.generated.ts`; regenerated `contracts/fixtures`; removed `contracts/openapi-draft.yaml` and the hand-written wire interfaces; rewired `frontend/src/types/index.ts` to the generated types; made the P0 store and site explorer curated-only (Class B null rendering, no custom-coordinate pinning).
+- Commands: `uv run --python 3.12 --frozen python -m src.cli.export_openapi` — exit 0; `uv run --python 3.12 --frozen pytest tests/integration/test_contract_parity.py -v` — exit 0 (14 passed, 1 skipped).
+- Evidence: `contracts/openapi.json` sha256 `5c00c4aedf228d390f2c7a12b18d526cbe1600c5b2ac8c0878fe220406f6c5ea`; `frontend/src/types/api.generated.ts` sha256 `f312f1a2fd0c686d21423a2499095a6e0584ac30a2c0e30c65c46a9dc3bbb529`.
+- Post-check: `bun run typecheck` exit 0; `bun run lint` exit 0; `bun run format:check` exit 0; `bun run test` exit 0 (2 passed).
+- Open issues: none. The four consumer write_paths (`index.ts`, `useMissionStore.ts`, `SiteCard.tsx`, `SiteExplorerDrawer.tsx`) were added to `ARCH-002` with human approval.
+- Proposed doc deltas: none.
+
+```text
+ZETA HANDOFF — ARCH-002 ready to merge
+Branch: bauerceptor-charlie
+Worktree: /home/red/Projects/lunar-landing-charlie
+Commit: bauerceptor-charlie tip after this closure commit; task work commit f03d00c
+Task status: done
+Base: 7c3b3a9 (bauerceptor tip before task work)
+Commands: uv run --python 3.12 --frozen python -m src.cli.export_openapi exit 0; uv run --python 3.12 --frozen pytest tests/integration/test_contract_parity.py -v exit 0
+Evidence: contracts/openapi.json sha256 5c00c4aedf228d390f2c7a12b18d526cbe1600c5b2ac8c0878fe220406f6c5ea; frontend/src/types/api.generated.ts sha256 f312f1a2fd0c686d21423a2499095a6e0584ac30a2c0e30c65c46a9dc3bbb529; parity 14 passed 1 skipped
+Changed paths: backend/src/api/schemas/*, backend/src/cli/export_openapi.py, backend/tests/integration/test_contract_parity.py, contracts/openapi.json, contracts/fixtures/*, contracts/openapi-draft.yaml (deleted), frontend/src/types/api.generated.ts, frontend/src/types/index.ts, frontend/src/types/{comparison,evaluation,site,windows}.ts (deleted), frontend/src/state/useMissionStore.ts, frontend/src/features/site-explorer/SiteCard.tsx, frontend/src/features/site-explorer/SiteExplorerDrawer.tsx, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: contracts/openapi.json sha256 5c00c4aedf228d390f2c7a12b18d526cbe1600c5b2ac8c0878fe220406f6c5ea; frontend/src/types/api.generated.ts sha256 f312f1a2fd0c686d21423a2499095a6e0584ac30a2c0e30c65c46a9dc3bbb529
+Pre-merge checks: parity 14 passed; bun run typecheck/lint/format:check/test all exit 0; validate_task_ledger.py and check_planning_docs.py exit 0
+M3 impact: FE-001 ready after merge
+Known risks: none
+Do not merge if: either artifact hash differs, the parity test fails, or bun run typecheck fails
+```
+
+### Wave 1 — ARCH-002 integrated — agent-zeta
+
+- Synced `bauerceptor` `05d9fcc` into `bauerceptor-charlie` (merge `e96e31e`): resolved `plan/task-ledger.json` to the human-approved **16-path** `write_paths` plus charlie's execution fields, kept both `WORK_LOG.md` sections, regenerated the digest. Confirmed charlie's only ledger deltas vs the merge base were `ARCH-002` execution fields and `write_paths`.
+- Re-ran on the synced branch: `export_openapi` exit 0 (deterministic, no diff); parity `14 passed, 1 skipped`; `bun run typecheck` / `lint` / `test` / `format:check` exit 0 (2 tests).
+- Merged `bauerceptor-charlie` into `bauerceptor` as `a0e75d6` with `--no-ff`; no conflicts. Re-ran the parity test and `bun run typecheck` on the integration branch — both pass.
+- Validators after digest refresh: `validate_task_ledger.py` exit 0 (28 tasks, **8 done**); `check_planning_docs.py` exit 0; `check_file_lengths.py` exit 0. Pushed `05d9fcc..a0e75d6`.
+- Artefacts match the handoff: `contracts/openapi.json` `5c00c4ae…`; `frontend/src/types/api.generated.ts` `f312f1a2…`.
+- Closed issues #4 (hand-written wire types), #11 (`openapi-draft.yaml`), and #13 (16×16 terrain fixture); #14 was resolved by the `05d9fcc` revision.
+- `FE-001` is unblocked and usairam has been given the instruction: merge `bauerceptor` (`a0e75d6`) into `feat/module-3-frontend-core`, apply the integration fixes, close `FE-001`/`FE-002`; do not re-implement issues 5–8.
+- Next: `agent-beta` may start `DATA-004`/`DATA-005`; `agent-charlie` waits for `DATA-004`/`DATA-005` before `BE-001`/`BE-002`.
+- Noted: `origin/main` advanced to `7c4877a` and `origin/feat/m4-3d-terrain` moved; out of scope for this session and untouched.
+
+### DATA-004 — done — agent-beta
+
+- Branch/commit: `bauerceptor-beta` @ `b9a472d` (task work); the ledger closure is the branch tip.
+- Changed: added `backend/src/infrastructure/ephemeris_pack.py` (build, validate, deterministic write), `backend/src/cli/build_ephemeris_packs.py` (manifest → verified raw → pack), and `backend/tests/unit/test_ephemeris_pack.py`; generated the 16 `backend/data/site_packs/{site}/ephemeris.json` packs. Every pack has `sample_count` 26305, four finite arrays of that length, `frame` `MOON_ME`, `longitude_convention` `east_positive`, `azimuth_convention` `clockwise_from_north`, the registry-derived `site_coord_used`, and `source_manifest_sha256` over its two source manifests.
+- Commands: `uv run --python 3.12 --frozen python -m src.cli.build_ephemeris_packs` — exit 0 (16 packs); `uv run --python 3.12 --frozen pytest tests/unit/test_ephemeris_pack.py -v` — exit 0 (57 passed).
+- Evidence: command evidence recorded in the ledger; the direct-sample test reproduces all 32 frozen Horizons reference files exactly. Rebuild is byte-identical; sha256 of the sorted per-pack hash list is `2bc802e2601c11041be6bafc65cf563ed0f24a9d59e04bea34b86dc50ab83639`.
+- Extras run (not ledger evidence): `ruff check`, `ruff format --check`, and `mypy` on the three new source files — all clean; `check_file_lengths.py` — 0 violations.
+- Open issues: none found in this task.
+- Proposed doc deltas: none. `source_manifest_sha256` is defined in the module docstring as the SHA-256 of the two source manifests concatenated in ascending path order; if the integrator prefers a different convention, it belongs in REQ-06 rather than a second implementation.
+- Note: the untracked out-of-order `scripts/fetch_horizons.py` and `data/downloads/` are untouched; raw bytes remain uncommitted.
+
+```text
+ZETA HANDOFF — DATA-004 ready to merge
+Branch: bauerceptor-beta
+Worktree: /home/red/Projects/lunar-landing-beta
+Commit: bauerceptor-beta tip after this closure commit; task work commit b9a472d
+Task status: done
+Base: 140b6b9 (bauerceptor tip before task work)
+Commands: uv run --python 3.12 --frozen python -m src.cli.build_ephemeris_packs exit 0; uv run --python 3.12 --frozen pytest tests/unit/test_ephemeris_pack.py -v exit 0
+Evidence: pytest 57 passed; 16 packs, sample_count 26305; aggregate pack-hash sha256 2bc802e2601c11041be6bafc65cf563ed0f24a9d59e04bea34b86dc50ab83639
+Changed paths: backend/src/infrastructure/ephemeris_pack.py, backend/src/cli/build_ephemeris_packs.py, backend/tests/unit/test_ephemeris_pack.py, backend/data/site_packs/*/ephemeris.json, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: 16 x backend/data/site_packs/{site}/ephemeris.json; per-pack hashes are printed by the generator and the aggregate is 2bc802e2...
+Pre-merge checks: generator and pytest exit 0; ruff check, ruff format --check, mypy on the new files clean; check_file_lengths.py 0 violations
+M3 impact: none (DATA-004 unblocks charlie's BE-001, not M3)
+Known risks: none
+Do not merge if: the generator or pytest fails, a pack's sample_count is not 26305, or the tree contains changes outside the changed paths above
+```
+
+### DATA-005 — done — agent-beta
+
+- Branch/commit: `bauerceptor-beta` @ `49be6b5` (task work); the ledger closure is the branch tip.
+- Changed: added `backend/src/infrastructure/dem_tiler.py` (south-polar stereographic projection, local-ENU patch resampling, slope), `backend/src/infrastructure/raycaster.py` (spherical destination, apparent elevation, limb, 360-degree profiles), `backend/src/cli/build_terrain_packs.py`, and the two required test files; generated 9 `backend/data/site_packs/{site}/terrain.json` packs for the nine `artemis_iii` sites only.
+- Commands: `uv run --python 3.12 --frozen python -m src.cli.build_terrain_packs` — exit 0 (9 packs); `uv run --python 3.12 --frozen pytest tests/unit/test_dem_tiler.py tests/unit/test_raycaster.py -v` — exit 0 (22 passed).
+- Evidence: each pack has 128x128 = 16384 finite elevations and slopes, spacing `40000/127`, rows south-to-north, columns west-to-east, three horizon profiles with azimuths 0..359, and `psr_mask` null. The DEM image and label were verified against the DATA-002 manifest hashes. Rebuild is byte-identical; sha256 of the sorted per-pack hash list is `b8ad11d040ad1ee71562596156e06c41791e85cae930803b22f1047cac5cd025`. No Class B site has a terrain pack.
+- Extras run (not ledger evidence): `ruff check`, `ruff format --check`, `mypy` on the five new files — clean; `pytest tests/unit` — 113 passed; `check_file_lengths.py` — 0 violations.
+- Observations to record, not fixed: the DEM's `-80` circle is fractionally outside the pixel-centre domain (the edge pixel centres reach about -79.99994), so coverage is clipped to pixel centres. Ray samples outside the footprint are marked invalid and never counted; for the lowest-latitude Class A site (Cabeus, -82.26) the northern rays therefore stop at the coverage boundary (about 68 km) rather than 120 km. The 120 km ceiling still holds for every sample grid, and no out-of-DEM value is fabricated.
+- Proposed doc deltas: REQ-08 does not state whether `geometric_limb_deg` uses the observer's local ground or the terrain at the limb. This implementation uses the observer's local ground elevation, which makes the limb constant per azimuth and reproduces the flat-terrain analytic value; if the integrator wants a terrain-dependent limb, it belongs in REQ-08 rather than a second implementation.
+- Open issues: none blocking.
+
+```text
+ZETA HANDOFF — DATA-005 ready to merge
+Branch: bauerceptor-beta
+Worktree: /home/red/Projects/lunar-landing-beta
+Commit: bauerceptor-beta tip after this closure commit; task work commit 49be6b5
+Task status: done
+Base: 140b6b9 (bauerceptor tip before task work; DATA-004 is the preceding commit pair b9a472d/dd555ef on this branch)
+Commands: uv run --python 3.12 --frozen python -m src.cli.build_terrain_packs exit 0; uv run --python 3.12 --frozen pytest tests/unit/test_dem_tiler.py tests/unit/test_raycaster.py -v exit 0
+Evidence: pytest 22 passed; 9 terrain packs, 16384 elevations/slopes each; aggregate pack-hash sha256 b8ad11d040ad1ee71562596156e06c41791e85cae930803b22f1047cac5cd025
+Changed paths: backend/src/infrastructure/dem_tiler.py, backend/src/infrastructure/raycaster.py, backend/src/cli/build_terrain_packs.py, backend/tests/unit/test_dem_tiler.py, backend/tests/unit/test_raycaster.py, backend/data/site_packs/*/terrain.json, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: 9 x backend/data/site_packs/{artemis-*}/terrain.json; per-pack hashes are printed by the generator and the aggregate is b8ad11d0...
+Pre-merge checks: generator and pytest exit 0; ruff check, ruff format --check, mypy on the new files clean; pytest tests/unit 113 passed; check_file_lengths.py 0 violations
+M3 impact: none (DATA-005 unblocks charlie's BE-002, not M3)
+Known risks: the northern rays from Cabeus stop at the DEM coverage boundary (about 68 km) instead of 120 km; every sample grid is still capped at 120 km and no value is fabricated
+Do not merge if: the generator or pytest fails, a pack is not 128x128 with 16384 finite values, a Class B site has a terrain pack, or the tree contains changes outside the changed paths above
+```
+
+### Wave 3 — DATA-004 integrated — agent-zeta
+
+- Merged `dd555ef` (DATA-004 closure) from `bauerceptor-beta` into `bauerceptor` as `8f36680` with `--no-ff`; no conflicts. Pushed `140b6b9..8f36680`.
+- Scope verified: 16 `ephemeris.json` packs under `backend/data/site_packs/`, `ephemeris_pack.py`, `build_ephemeris_packs.py`, `test_ephemeris_pack.py`, plus ledger, digest, `WORK_LOG.md`.
+- Verified 16 packs, `sample_count` 26305 with four finite arrays each; aggregate `2bc802e2…` reproduced with `sha256sum … | sort -k2 | sha256sum`. Test: 57 passed (full unit suite 113).
+- Validators: ledger 9 done; planning docs and file lengths exit 0.
+- Synced charlie to `8f36680` so `BE-001` can start (`DATA-004` + `ARCH-002` now merged).
+
+### Wave 4 — DATA-005 integrated — agent-zeta
+
+- Merged `a14a169` (DATA-005 closure; contains DATA-004) into `bauerceptor` as `1601cbd` with `--no-ff`; no conflicts. Pushed `8f36680..1601cbd`.
+- Scope verified: 9 `terrain.json` packs (the nine `artemis_iii` Class A sites only), `dem_tiler.py`, `raycaster.py`, `build_terrain_packs.py`, the two tests, plus ledger, digest, `WORK_LOG.md`. No Class B terrain pack.
+- Verified 128×128 = 16384 finite elevations and slopes, three 360-sample horizons, `psr_mask` null; aggregate `b8ad11d0…` reproduced with `sort -k2`. Tests: 79 required pass; `pytest tests/unit` 113 passed on the integration branch.
+- Validators: ledger **10 done**; planning docs and file lengths exit 0.
+- Open issues added (not blockers): #22 REQ-08 limb reference, #23 Cabeus DEM-boundary limitation, #24 `source_manifest_sha256` convention.
+- Next: `agent-beta` may start `DATA-006`; `agent-charlie` may start `BE-001` now and needs it before `BE-002`.
+
+### BE-001 — done — agent-charlie
+
+- Branch/commit: `bauerceptor-charlie` @ `cea8aff` (task work); the ledger closure is the branch tip.
+- Changed: added `backend/src/domain/mission_time.py` (UTC sampling and coverage validation with the 15-day lookahead) and `backend/src/domain/interpolation.py` (linear elevation and shortest-arc azimuth interpolation), plus the two required unit tests.
+- Commands: `uv run --python 3.12 --frozen pytest tests/unit/test_mission_time.py tests/unit/test_interpolation.py -v` — exit 0 (73 passed).
+- Evidence: 73 passed; sample counts 168/336/708 (60 min) and 1008/2016/4248 (10 min); sampling start-inclusive/end-exclusive; naive timestamps raise `NaiveTimestampError`; out-of-coverage requests, including the 15-day lookahead, raise `EphemerisRangeExceededError`; azimuth interpolation uses the shortest signed delta across 359°→0°; off-grid midpoint interpolation error is below 0.05° against frozen reference rows.
+- Extras run (not ledger evidence): `ruff check .` — clean.
+- Open issues: none blocking. Note: the frozen `data/manifests/references/horizons/*.reference.json` rows are daily selections of the hourly grid (not sub-hourly), so the off-grid accuracy assertion is a 2-hour-span midpoint leave-one-out against those frozen rows for the nine `artemis_iii` sites, where the Sun/Earth geometry is non-singular. Equatorial sites near zenith crossings sit outside a meaningful 0.05° linear-azimuth bound.
+- Proposed doc deltas: none.
+
+```text
+ZETA HANDOFF — BE-001 ready to merge
+Branch: bauerceptor-charlie
+Worktree: /home/red/Projects/lunar-landing-charlie
+Commit: bauerceptor-charlie tip after this closure commit; task work commit cea8aff
+Task status: done
+Base: bead176 (bauerceptor tip before task work)
+Commands: uv run --python 3.12 --frozen pytest tests/unit/test_mission_time.py tests/unit/test_interpolation.py -v exit 0
+Evidence: pytest 73 passed; ruff check . clean
+Changed paths: backend/src/domain/mission_time.py, backend/src/domain/interpolation.py, backend/tests/unit/test_mission_time.py, backend/tests/unit/test_interpolation.py, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: none (no required artifact evidence for BE-001)
+Pre-merge checks: pytest 73 passed; ruff check . clean
+M3 impact: none (BE-001 unblocks charlie's BE-002, not M3)
+Known risks: none
+Do not merge if: the pytest command fails, ruff check fails, or the tree contains changes outside the changed paths above
+```
+
+### DATA-006 — done — agent-beta
+
+- Branch/commit: `bauerceptor-beta` @ `81ee5d2` (task work); the ledger closure is the branch tip.
+- Changed: added `backend/src/cli/build_pack_index.py` and `backend/tests/unit/test_pack_index.py`; generated `data/manifests/site_packs/index.json` (16 sites, pack paths, presence, SHA-256); regenerated `contracts/fixtures/sites.sample.json` from the packs (elevation, mean slope, presence) and added nine `contracts/fixtures/terrain.<site_id>.json` Contract C fixtures; rewrote `contracts/fixtures/manifest.json`; created the byte-identical `frontend/public/data/fixtures` mirror.
+- Commands: `uv run --python 3.12 --frozen python -m src.cli.build_pack_index` — exit 0 (16 sites, 9 terrain packs, 11 generated files, 16 mirrored); `uv run --python 3.12 --frozen pytest tests/unit/test_pack_index.py -v` — exit 0 (16 passed).
+- Evidence: index SHA-256 `e92a9462a7c82f011a3b61c58d41932eeefcc9dd6385605f759f0bcea74f42df`; sorted fixture-tree SHA-256 `78ecafe5e21f508ea87c8ca9eaaf90ed657009d07ac3f0729eb832099e1af1ec`; regeneration is byte-identical; the ARCH-002 parity suite still passes (15 passed).
+- Fixture manifest carries both shapes it is consumed in: canonical scenario keys at the top level for `frontend/src/services/httpClient.ts` (`sites`, `health`, `terrain:<site_id>`) and the same mapping under `scenarios` for the ARCH-002 parity test. `synthetic` is true and the note says so.
+- Extras run (not ledger evidence): `ruff check`, `ruff format --check`, `mypy` on the two new files — clean; `file_lengths` 0 violations.
+- Open issues (found, not fixed):
+  - `backend/tests/integration/test_contracts_and_health.py` has 5 pre-existing failures: it asserts the removed `artemis-shackleton-ridge` site, a health shape without `moon_radius_km`, and the fixture-substitution routes. It predates this task and is untouched; `BE-003` owns replacing those routes. Severity: MAJOR until `BE-003`.
+  - `ARCH-002`'s `fixture_synth.build_fixture_manifest` nests scenario keys under `scenarios`, while `httpClient` reads top-level keys. DATA-006 reconciles both in one generated manifest; a human-approved revision should make one shape authoritative (REQ-10). Severity: MINOR.
+  - `export_openapi` still rewrites the fixture tree from `fixture_synth`; running it after DATA-006 reverts the manifest and sites fixture. The fixture generator should be unified, or `export_openapi` should stop writing fixtures. Severity: MAJOR for the offline demo. Blocked by: a human-approved ledger/plan revision.
+  - Offline evaluate/compare/windows scenario fixtures are not generated: an `EvaluateResponse` needs the REQ-09 physics owned by `BE-002`, and REQ-06 forbids a second implementation. The ARCH-002 base samples remain for those contracts. `FE-003` (after `BE-002`) or a follow-up task must generate them. Severity: MAJOR for the offline fallback.
+  - The base `terrain.sample.json` is left as the ARCH-002 flat placeholder because the parity test pins it to zeros; real terrain ships as `terrain.<site_id>.json` scenario fixtures instead. Severity: MINOR.
+- Proposed doc deltas: state the fixture manifest shape (flat canonical keys) in REQ-10; name the single fixture writer (currently both `export_openapi` and `build_pack_index`); decide whether offline evaluate scenarios are a P0 requirement and, if so, schedule them after `BE-002`.
+- M3 impact: `DATA-006` is an `FE-003` input only; `FE-003` still needs `BE-003` and `FE-002`.
+
+```text
+ZETA HANDOFF — DATA-006 ready to merge
+Branch: bauerceptor-beta
+Worktree: /home/red/Projects/lunar-landing-beta
+Commit: bauerceptor-beta tip after this closure commit; task work commit 81ee5d2
+Task status: done
+Base: bead176 (bauerceptor tip before task work; DATA-004/DATA-005 already merged)
+Commands: build_pack_index exit 0; pytest tests/unit/test_pack_index.py -v exit 0
+Evidence: index sha256 e92a9462a7c82f011a3b61c58d41932eeefcc9dd6385605f759f0bcea74f42df; fixture tree sha256 78ecafe5e21f508ea87c8ca9eaaf90ed657009d07ac3f0729eb832099e1af1ec; 16 passed; parity 15 passed
+Changed paths: backend/src/cli/build_pack_index.py, backend/tests/unit/test_pack_index.py, data/manifests/site_packs/index.json, contracts/fixtures/*, frontend/public/data/fixtures/*, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: data/manifests/site_packs/index.json; contracts/fixtures/{sites.sample.json,manifest.json,terrain.<site>.json}; byte-identical frontend mirror
+Pre-merge checks: generator and pytest exit 0; ruff/format/mypy clean; parity 15 passed; validators exit 0
+M3 impact: FE-003 input only (DATA-006 merged; FE-003 still needs BE-003 and FE-002)
+Known risks: pre-existing legacy integration failures in tests/integration/test_contracts_and_health.py (BE-003 replaces them); export_openapi can overwrite the generated fixture tree if re-run; offline evaluate scenarios are not generated until BE-002 exists
+Do not merge if: the generator or pytest fails, the mirror is not byte-identical, the index presence flags disagree with pack files, or the ARCH-002 parity suite fails
+```
+
+### Wave 5 — DATA-006 integrated — agent-zeta
+
+- Verified `bauerceptor-beta` before merge: `HEAD` `73d97cf` matches the handoff, clean tree, `DATA-006` `done` in the branch ledger, and `merge-base --is-ancestor bauerceptor bauerceptor-beta` exits 0. Changed paths are within `DATA-006.write_paths` plus the ledger, digest, and `WORK_LOG.md`.
+- Re-ran the task commands on the branch: `uv run --python 3.12 --frozen python -m src.cli.build_pack_index` — exit 0 (16 sites, 9 terrain packs, 11 generated, 16 mirrored; regeneration byte-identical, tree still clean); `uv run --python 3.12 --frozen pytest tests/unit/test_pack_index.py -v` — exit 0 (16 passed); `uv run --python 3.12 --frozen pytest tests/integration/test_contract_parity.py -v` — exit 0 (15 passed).
+- Evidence reproduced: `data/manifests/site_packs/index.json` sha256 `e92a9462a7c82f011a3b61c58d41932eeefcc9dd6385605f759f0bcea74f42df`; `diff -r contracts/fixtures frontend/public/data/fixtures` empty (byte-identical mirror); 16 `ephemeris.json` + 9 `terrain.json` packs present.
+- Merged `bauerceptor-beta` into `bauerceptor` as `89eb2c5` with `--no-ff --no-commit`; no conflicts. Refreshed the protected digest and ran `validate_task_ledger.py` (28 tasks, 11 done), `check_planning_docs.py` (exit 0), `check_file_lengths.py` (exit 0, 0 violations).
+- Pushed `bead176..89eb2c5` to `origin/bauerceptor`.
+- Recorded beta's findings as open issues #25–#29 (five pre-existing integration failures, fixture-manifest shape, `export_openapi` single-writer decision, offline evaluate scenarios gated on `BE-002`, `terrain.sample.json` placeholder). These need a human decision, not an agent fix.
+- Not synced `bauerceptor-charlie`: it has uncommitted `BE-001` closure work; `DATA-006` is only a `BE-003` input, so the sync belongs before `BE-003`.
+- Next: `agent-charlie` continues `BE-001` → `BE-002` → `BE-003`.
+
+### BE-001 integrated — agent-zeta
+
+- Verified `bauerceptor-charlie` before merge: `HEAD` `87b4a2f` matches the handoff, clean tree, `BE-001` `done` in the branch ledger with `pytest … test_mission_time.py test_interpolation.py` exit 0 (73 passed) and `completed_commit` `cea8aff`. Changed paths are within `BE-001.write_paths` plus the ledger, digest, and `WORK_LOG.md`.
+- Charlie did not contain the current `bauerceptor` tip (`5634ecb`), so I synced it first: `git merge bauerceptor` into `bauerceptor-charlie` (`b642d42`). Resolved the `WORK_LOG.md` and `plan/protected.sha256` conflicts only; the ledger auto-merged with both `DATA-006` and `BE-001` `done` (12 done). Refreshed the digest and re-ran the task commands on the synced branch: `pytest` exit 0 (73 passed), `ruff check .` exit 0.
+- Merged `bauerceptor-charlie` into `bauerceptor` as `5b2ac18` with `--no-ff --no-commit`; no conflicts. Refreshed the protected digest and ran `validate_task_ledger.py` (28 tasks, 12 done), `check_planning_docs.py` (exit 0), `check_file_lengths.py` (exit 0, 0 violations).
+- Pushed `5634ecb..5b2ac18` to `origin/bauerceptor`; synced `bauerceptor-charlie` to `5b2ac18`.
+- Next: `agent-charlie` starts `BE-002` (deps `BE-001` + `DATA-005` both merged).
+
+### BE-002 — done — agent-charlie
+
+- Branch/commit: `bauerceptor-charlie` @ `107000a` (task work); the ledger closure is the branch tip.
+- Changed: added `backend/src/domain/horizon_geometry.py`, `solar_power.py`, `comms_visibility.py`, `countdown_detector.py`, and `feasibility_scorer.py`, plus the five required unit tests.
+- Commands: `uv run --python 3.12 --frozen pytest tests/unit -v` — exit 0 (241 passed); `uv run --python 3.12 --frozen ruff check .` — exit 0.
+- Evidence: effective horizon `max(terrain, limb)`; `f_sun` zero/partial/full golden values; three array modes golden; DTE clearance-equality and conjunction suppression; Class B `terrain_score`/`feasibility_score` null while P/T/C reported; aggregates `count * step_hours` and streak clipping; countdown crossing times linearly interpolated.
+- Extras run (not ledger evidence): none beyond the two declared commands.
+- Open issues: none blocking. Note: countdown detection operates on continuous margin signals (`sun_occultation_margin_deg`, `dte_margin_deg`) rather than the clamped booleans, so crossing times are well-defined; the caller passes the margin arrays.
+- Proposed doc deltas: none.
+
+```text
+ZETA HANDOFF — BE-002 ready to merge
+Branch: bauerceptor-charlie
+Worktree: /home/red/Projects/lunar-landing-charlie
+Commit: bauerceptor-charlie tip after this closure commit; task work commit 107000a
+Task status: done
+Base: 66e324e (bauerceptor tip before task work)
+Commands: uv run --python 3.12 --frozen pytest tests/unit -v exit 0; uv run --python 3.12 --frozen ruff check . exit 0
+Evidence: pytest 241 passed; ruff check . clean
+Changed paths: backend/src/domain/horizon_geometry.py, backend/src/domain/solar_power.py, backend/src/domain/comms_visibility.py, backend/src/domain/countdown_detector.py, backend/src/domain/feasibility_scorer.py, backend/tests/unit/test_horizon_geometry.py, backend/tests/unit/test_solar_power.py, backend/tests/unit/test_comms_visibility.py, backend/tests/unit/test_countdown_detector.py, backend/tests/unit/test_feasibility_scorer.py, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: none (no required artifact evidence for BE-002)
+Pre-merge checks: pytest tests/unit 241 passed; ruff check . clean; validate_task_ledger.py, check_planning_docs.py, check_file_lengths.py all exit 0
+M3 impact: none (BE-002 unblocks charlie's BE-003, not M3)
+Known risks: none
+Do not merge if: the pytest suite fails, ruff check fails, or the tree contains changes outside the changed paths above
+```
+
+### BE-002 integrated — agent-zeta
+
+- Verified `bauerceptor-charlie` before merge: `HEAD` `625adf9` matches the handoff, clean tree, `BE-002` `done` in the branch ledger with `pytest tests/unit` exit 0 (241 passed) and `ruff check .` exit 0; `completed_commit` `107000a`. Changed paths are within `BE-002.write_paths` plus the ledger, digest, and `WORK_LOG.md`.
+- Charlie contained the current `bauerceptor` tip (`66e324e`), so no sync was needed. Re-ran the task commands on the branch: `pytest tests/unit` exit 0 (241 passed), `ruff check .` exit 0.
+- Merged `bauerceptor-charlie` into `bauerceptor` as `20d3fb4` with `--no-ff --no-commit`; no conflicts. Refreshed the protected digest and ran `validate_task_ledger.py` (28 tasks, 13 done), `check_planning_docs.py` (exit 0), `check_file_lengths.py` (exit 0, 0 violations).
+- Pushed `66e324e..20d3fb4` to `origin/bauerceptor`.
+- Next: `agent-charlie` starts `BE-003` (deps `BE-002` + `DATA-006` both merged).
+
+### origin/main (M5 + M4 3D) integrated — agent-zeta, human-directed
+
+- Human asked for `origin/main` to be pulled in: PR #5 (M5 — comparison board, window finder, briefing export, `docs/QA_REPORT.md`, `docs/DEMO_SCRIPT.md`, `scripts/smoke_test.sh`) and PR #6 (M4 — Three.js 3D terrain viewer), plus the `d0d0c54` governance revision (removes the `AGENTS.md` 3D prohibition, drops the `"Do not start 3D"` phrase from `check_planning_docs.py`, assigns `M5` to devscion, adds `three`/`@types/three`).
+- Merged `origin/main` `7c4877a` into `bauerceptor` at `23ad60f` (zeta had concurrently integrated `BE-002` at `20d3fb4`/`23ad60f`; that work is untouched — this merge contains no `backend/src` or `backend/tests` change). Conflict resolution: `plan/protected.sha256` (ours, then refreshed); `plan/OWNERS.md` auto-merged and was corrected (the main-side `M5` row was missing the Branch cell; two statements had gone stale — "M5 has no owner" and "`terrain-3d` remains `.gitkeep`"). The ledger `ownership.modules.M5.owner` mirrors the human-approved `devscion`.
+- Integration fixes required because the M5/M4 code was written against the pre-`ARCH-002` hand-written types:
+  - `frontend/bun.lock` regenerated to include `three@0.170.0` + `@types/three` — main added the dependency without the lockfile, so `bun install --frozen-lockfile` would have failed.
+  - `WindowCandidate` → `CandidateWindow` (the generated contract name) in `windowMath.ts`, `TopWindowsList.tsx`, `WindowHeatmapView.tsx`, `WindowMonthGrid.tsx`, `windowMath.test.ts`.
+  - terrain-3d aligned to the generated `TerrainPatch` contract: `patch_radius_km` → `extent_m` (`meshBuilder.ts`, `terrainPatchUpsampler.ts`); new display-only `LocalTerrainPatch` structural type (wire patches, `grid_size` pinned 128, pass through unchanged).
+  - Removed the fabricated PSR heuristic in `terrainColors.ts` (`elev < -550 m ⇒ PSR`): real terrain must never be flagged PSR client-side — `psr_mask` is null by contract and PSR is never computed in this codebase. The "PSR Frost" surface mode is now offered only when a real per-vertex mask exists (never for wire patches). See open issues 30–31.
+  - `terrainPatchUpsampler.ts` relabelled honestly: its 12-crater scene is synthetic demonstration data, unreachable for wire-contract patches.
+  - Test fixtures completed to the generated contract: `EvaluatedSite.category`, `EvaluationSummary.overlap_fraction` (`delayOffsets.test.ts`, `exportHelpers.test.ts`).
+  - `delayOffsets.ts` requires an explicit `duration_days` for launch-delay coverage checks (optional in the generated request type); it now throws a clear error instead of an invented default.
+  - `frontend/.prettierignore` (new) for `dist/` and `public/data/fixtures/`: `format:check` has been failing on the generated byte-identical fixture mirror since `DATA-006` (Wave 5 did not run it), and reformatting would break the mirror invariant. No source file was reformatted.
+- Commands (all exit 0): `bun run typecheck`, `lint`, `test` (6 passed), `build`, `format:check`; `pytest tests/unit` (241 passed, includes charlie's `BE-002`), `ruff check .`; `validate_task_ledger.py` (28 tasks, 14 done), `check_planning_docs.py`, `check_file_lengths.py` (0 violations; `LunarTerrainCanvas.tsx` exactly 280 after the PSR-gating logic moved to `terrainColors.ts`).
+- Not pushed; zeta pushes `bauerceptor` after its gate.
+- Open issues recorded: #30 synthetic upsampler scene + PSR mode have no data source under the current contract (needs a human/devscion decision); #31 M4 3D merged on main before `P0-GATE` while `DEVELOPMENT_PLAN.md` Appendix F still describes 3D as gated — plan text was not revised with the code; #32 `QA-001`/`P1-COMPARE`/`P1-WINDOWS`/`P1-DELAYS`/`DELIVERY-*` remain pending in the ledger although their code and docs now exist on the branch — acceptance evidence still required when the DAG allows; #33 main committed `package.json` without `bun.lock` (fixed here).
+- Next: `agent-charlie` continues `BE-003`; its `backend/src/api` + `backend/src/application` + `backend/tests/integration` scope is untouched by this merge.
+
+### BE-003 — done — agent-charlie
+
+- Branch/commit: `bauerceptor-charlie` @ `b36bedfa` (task work); the ledger closure is the branch tip.
+- Changed: removed the fixture-substitution routes (`backend/src/api/routes/compare.py`, `windows.py`) and `backend/src/api/dependencies.py`; added `backend/src/api/errors.py`, `backend/src/api/schemas/error_schemas.py`, and `backend/src/application/{errors,evaluation_service,pack_repository,scenario_summary,site_service}.py`; rewired `main.py` to register only health/sites/terrain/evaluate with REQ-10 exception handlers; regenerated `contracts/openapi.json`; rewrote `backend/tests/integration/test_contracts_and_health.py` (real P0 routes, sockets-disabled, no-download-client) and updated `test_contract_parity.py`. The summary aggregation was extracted into `scenario_summary.py` to keep `evaluation_service.py` under the 280-line hard limit.
+- Commands: `uv run --python 3.12 --frozen pytest tests/integration -v` — exit 0 (29 passed); `uv run --python 3.12 --frozen ruff check .` — exit 0; `uv run --python 3.12 --frozen mypy src tests` — exit 0 (Success: no issues found in 65 source files).
+- Evidence: pytest tests/integration 29 passed; mypy src tests clean; ruff check . clean.
+- Extras run (not ledger evidence): `uv run --python 3.12 --frozen pytest tests/unit` — 241 passed.
+- Out-of-scope fixes (human-approved 2026-11-15): `mypy src tests` surfaced four pre-existing errors in DATA-task files outside `BE-003.write_paths` — `import yaml` missing stubs in `backend/src/infrastructure/site_registry_loader.py`, `backend/src/cli/download_lola.py`, and `backend/src/cli/download_horizons.py` (fixed with `# type: ignore[import-untyped]`), plus a dict-unpack narrowing (`prior is not None`) in `backend/src/cli/download_lola.py`. These predate BE-003 (introduced by DATA-001/DATA-002/DATA-003). The human directed the fix so the required `mypy` command could pass; recommend `BE-003.write_paths` be extended to cover the three files in a future revision.
+- Open issues: none blocking.
+- Proposed doc deltas: extend `BE-003.write_paths` to include the three DATA-task files fixed under human approval; consider adding `types-PyYAML` to the dev dependency group so the `yaml` imports no longer need `type: ignore[import-untyped]`.
+
+```text
+ZETA HANDOFF — BE-003 ready to merge
+Branch: bauerceptor-charlie
+Worktree: /home/red/Projects/lunar-landing-charlie
+Commit: bauerceptor-charlie tip after this closure commit; task work commit b36bedfa
+Task status: done
+Base: 23ad60f (bauerceptor tip before task work)
+Commands: uv run --python 3.12 --frozen pytest tests/integration -v exit 0 (29 passed); uv run --python 3.12 --frozen ruff check . exit 0; uv run --python 3.12 --frozen mypy src tests exit 0
+Evidence: pytest 29 passed; ruff clean; mypy success (65 source files)
+Changed paths: backend/src/api/*, backend/src/application/*, backend/tests/integration/*, contracts/openapi.json, plus human-approved mypy fixes in backend/src/infrastructure/site_registry_loader.py, backend/src/cli/download_lola.py, backend/src/cli/download_horizons.py
+Artefacts: none (no required artifact evidence for BE-003)
+Pre-merge checks: pytest tests/integration 29 passed; ruff check . clean; mypy src tests clean; validate_task_ledger.py exit 0 (14 done); check_planning_docs.py exit 0; check_file_lengths.py exit 0
+M3 impact: BE-003 is an FE-003 input; after zeta merges BE-003 (with DATA-006 already merged), FE-003 still needs FE-002
+Known risks: none
+Do not merge if: pytest, ruff, or mypy fails, or the tree contains changes outside the paths above
+```

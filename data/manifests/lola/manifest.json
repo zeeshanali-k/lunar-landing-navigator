@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "task": "DATA-002",
+  "parser_version": "pds_dem/1.0.0",
+  "product": "ldem_80s_80m",
+  "base_url": "https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/polar/img",
+  "retrieved_utc": "2026-11-15T13:48:15Z",
+  "artefacts": {
+    "image": {
+      "original_url": "https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/polar/img/ldem_80s_80m.img",
+      "final_url": "https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/polar/img/ldem_80s_80m.img",
+      "retrieved_utc": "2026-11-15T13:48:15Z",
+      "http_status": 200,
+      "bytes": 115520000,
+      "sha256": "e6591eeea35402ca5e124ca00f5bf0774381a2d4fa919144b455d82b8ff65fdc",
+      "cached": true
+    },
+    "label": {
+      "original_url": "https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/polar/img/ldem_80s_80m.lbl",
+      "final_url": "https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/polar/img/ldem_80s_80m.lbl",
+      "retrieved_utc": "2026-11-15T13:48:14Z",
+      "http_status": 200,
+      "bytes": 4986,
+      "sha256": "107c7558cbf8832e4119d3c8c2b1b272623344275c85378a9b0e03c22876eb33",
+      "cached": true
+    }
+  },
+  "label_metadata": {
+    "file_name": "LDEM_80S_80M.IMG",
+    "record_bytes": 15200,
+    "file_records": 7600,
+    "image_name": "HEIGHT",
+    "lines": 7600,
+    "line_samples": 7600,
+    "sample_type": "LSB_INTEGER",
+    "sample_bits": 16,
+    "unit": "METER",
+    "scaling_factor": 0.5,
+    "offset_m": 1737400.0,
+    "map_projection_type": "POLAR STEREOGRAPHIC",
+    "latitude_type": "PLANETOCENTRIC",
+    "center_latitude_deg": -90.0,
+    "center_longitude_deg": 0.0,
+    "map_scale_m_per_px": 80.0,
+    "minimum_latitude_deg": -90.0,
+    "maximum_latitude_deg": -80.0,
+    "line_projection_offset_px": 3799.5,
+    "sample_projection_offset_px": 3799.5
+  },
+  "verification": {
+    "expected_bytes": 115520000,
+    "actual_bytes": 115520000,
+    "size_matches": true,
+    "sha256": "e6591eeea35402ca5e124ca00f5bf0774381a2d4fa919144b455d82b8ff65fdc",
+    "label_parsed": true
+  },
+  "generated_outputs": [],
+  "generated_output_notes": "DATA-002 derives no files from the DEM; DATA-005 builds the terrain packs."
+}
