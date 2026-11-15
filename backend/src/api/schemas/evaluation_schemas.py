@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field
 
 from src.api.schemas.enums import (
     DurationDays,
@@ -19,13 +19,6 @@ from src.api.schemas.enums import (
     SolarArrayType,
     StepMinutes,
 )
-
-
-def _curated_site_ids() -> frozenset[str]:
-    """Return the closed set of registry site IDs (REQ-05)."""
-    from src.infrastructure.site_registry_loader import load_curated_sites
-
-    return frozenset(site.id for site in load_curated_sites())
 
 
 class CustomCoordsSchema(BaseModel):
@@ -45,20 +38,12 @@ class EvaluateRequestSchema(BaseModel):
 
     site_id: str
     start_utc: str
-    duration_days: DurationDays = 14
-    step_minutes: StepMinutes = 60
-    solar_array_type: SolarArrayType = "vertical_tracking"
+    duration_days: DurationDays = DurationDays.D14
+    step_minutes: StepMinutes = StepMinutes.M60
+    solar_array_type: SolarArrayType = SolarArrayType.VERTICAL_TRACKING
     fixed_array_azimuth_deg: Annotated[float, Field(ge=0.0, lt=360.0)] = 0.0
-    observer_height_m: ObserverHeightM = 2.0
+    observer_height_m: ObserverHeightM = ObserverHeightM.H2_0
     min_comms_elev_deg: Annotated[float, Field(ge=-5.0, le=45.0)] = 5.0
-
-    @field_validator("site_id")
-    @classmethod
-    def _known_site_id(cls, value: str) -> str:
-        """Reject any site_id outside the 16-entry registry."""
-        if value not in _curated_site_ids():
-            raise ValueError(f"site_id must be one of the curated registry IDs; got {value!r}.")
-        return value
 
 
 class EvaluatedSiteSchema(BaseModel):

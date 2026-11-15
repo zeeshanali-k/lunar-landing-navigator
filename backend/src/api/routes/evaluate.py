@@ -2,35 +2,26 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
+from fastapi import APIRouter
 
-from fastapi import APIRouter, HTTPException
-
-from src.api.dependencies import load_contract_fixture
+from src.api.schemas.enums import DurationDays, ObserverHeightM, SolarArrayType, StepMinutes
 from src.api.schemas.evaluation_schemas import EvaluateRequestSchema, EvaluateResponseSchema
-from src.domain.constants import validate_selenographic_coords
+from src.application.evaluation_service import evaluate_scenario
 
 router = APIRouter(tags=["evaluate"])
 
 
 @router.post("/evaluate", response_model=EvaluateResponseSchema)
-def evaluate_scenario(payload: EvaluateRequestSchema) -> EvaluateResponseSchema:
-    """Evaluate illumination, DTE comms, countdowns, and score for a scenario (Contract B)."""
-    if payload.site_id is None and payload.custom_coords is None:
-        raise HTTPException(
-            status_code=422,
-            detail="Either site_id or custom_coords must be provided.",
-        )
-
-    result = deepcopy(load_contract_fixture("evaluate.sample.json"))
-    if payload.custom_coords is not None:
-        lat_clamped, lon_deg = validate_selenographic_coords(
-            payload.custom_coords.lat_deg,
-            payload.custom_coords.lon_deg,
-        )
-        result["site"]["id"] = f"custom-{lat_clamped:.4f}_{lon_deg:.4f}"
-        result["site"]["name"] = payload.custom_coords.label or "Custom Landing Coordinates"
-        result["site"]["lat_deg"] = lat_clamped
-        result["site"]["lon_deg"] = lon_deg
-
+def evaluate_scenario_endpoint(payload: EvaluateRequestSchema) -> EvaluateResponseSchema:
+    """Evaluate illumination, DTE comms, countdowns, and score for a scenario."""
+    result = evaluate_scenario(
+        site_id=payload.site_id,
+        start_utc=payload.start_utc,
+        duration_days=float(DurationDays(payload.duration_days).value),
+        step_minutes=int(StepMinutes(payload.step_minutes).value),
+        solar_array_type=str(SolarArrayType(payload.solar_array_type).value),
+        fixed_array_azimuth_deg=float(payload.fixed_array_azimuth_deg),
+        observer_height_m=float(ObserverHeightM(payload.observer_height_m).value),
+        min_comms_elev_deg=float(payload.min_comms_elev_deg),
+    )
     return EvaluateResponseSchema.model_validate(result)

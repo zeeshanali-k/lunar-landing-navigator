@@ -76,7 +76,7 @@ class TerrainPatchSchema(BaseModel):
     site_id: str
     model: Literal["lola_80s_80m"] = "lola_80s_80m"
     frame: Literal["local_enu"] = "local_enu"
-    grid_size: Literal[128] = GRID_SIZE
+    grid_size: Literal[128] = 128
     extent_m: float = EXTENT_M
     spacing_m: float = SPACING_M
     row_direction: Literal["south_to_north"] = "south_to_north"
