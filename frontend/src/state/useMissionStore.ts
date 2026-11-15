@@ -9,7 +9,6 @@ import { create } from "zustand";
 import {
   evaluateScenario,
   fetchHealth,
-  fetchCustomTerrain,
   fetchSites,
   fetchSiteTerrain,
   isAbortError,
@@ -159,18 +158,9 @@ export const useMissionStore = create<MissionState>((set, get) => ({
   refreshScenario: async () => {
     const seq = ++activeRefreshSeq;
     const state = get();
-    const {
-      customCoords,
-      selectedSiteId,
-      startUtc,
-      durationDays,
-      stepMinutes,
-      solarArrayType,
-      fixedArrayAzimuthDeg,
-      observerHeightM,
-      minCommsElevDeg,
-    } = state;
-    if (!customCoords && !selectedSiteId) return;
+    const { selectedSiteId, startUtc, durationDays, stepMinutes, solarArrayType, fixedArrayAzimuthDeg, observerHeightM, minCommsElevDeg } =
+      state;
+    if (!selectedSiteId) return;
 
     const urlParams = toUrlParams(state);
     syncScenarioToUrl(urlParams);
@@ -179,8 +169,7 @@ export const useMissionStore = create<MissionState>((set, get) => ({
     try {
       const evaluationData = await evaluateScenario(
         {
-          site_id: customCoords ? null : selectedSiteId,
-          custom_coords: customCoords,
+          site_id: selectedSiteId,
           start_utc: startUtc,
           duration_days: durationDays,
           step_minutes: stepMinutes,
@@ -196,7 +185,7 @@ export const useMissionStore = create<MissionState>((set, get) => ({
       let terrainPatch: TerrainPatch | null = null;
       let terrainUnavailable = false;
       try {
-        terrainPatch = customCoords ? await fetchCustomTerrain(customCoords) : await fetchSiteTerrain(selectedSiteId ?? DEFAULT_SITE_ID);
+        terrainPatch = await fetchSiteTerrain(selectedSiteId);
       } catch (terrainErr: unknown) {
         // A Class B site has no measured terrain. That is a documented state,
         // not an error, and must not be filled with another site's patch.

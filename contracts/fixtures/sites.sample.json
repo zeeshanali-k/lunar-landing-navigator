@@ -1,98 +1,258 @@
 [
   {
-    "id": "artemis-shackleton-ridge",
-    "name": "Shackleton Connecting Ridge",
-    "category": "artemis_iii",
     "agency": "NASA",
-    "lat_deg": -89.45,
-    "lon_deg": 135.2,
-    "elevation_m": 1240.0,
-    "mean_slope_deg": 4.8,
-    "has_precomputed_terrain": true,
-    "summary": "High-elevation ridge connecting Shackleton and de Gerlache craters with extended illumination.",
+    "category": "artemis_iii",
+    "elevation_m": null,
     "external_links": {
-      "quickmap_url": "https://quickmap.lroc.asu.edu/?extent=-180,-90,180,-80&proj=22&lat=-89.45&lon=135.2",
-      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=135.2&y=-89.45&z=6&p=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A104903"
-    }
+      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=-54.5800&y=-82.2600",
+      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-82.2600&lon=-54.5800"
+    },
+    "has_precomputed_terrain": false,
+    "id": "artemis-cabeus-peak",
+    "lat_deg": -82.26,
+    "lon_deg": -54.58,
+    "mean_slope_deg": null,
+    "name": "Peak near Cabeus B",
+    "summary": "Artemis III candidate landing region at a massif peak beside Cabeus B crater in the south polar highlands."
   },
   {
-    "id": "artemis-mons-mouton",
-    "name": "Mons Mouton (Leibnitz Beta Plateau)",
-    "category": "artemis_iii",
     "agency": "NASA",
-    "lat_deg": -84.65,
-    "lon_deg": 31.2,
-    "elevation_m": 5320.0,
-    "mean_slope_deg": 3.9,
-    "has_precomputed_terrain": true,
-    "summary": "Broad flat-topped massif near the lunar South Pole offering high Earth visibility and gentle slopes.",
+    "category": "artemis_iii",
+    "elevation_m": null,
     "external_links": {
-      "quickmap_url": "https://quickmap.lroc.asu.edu/?extent=-180,-90,180,-80&proj=22&lat=-84.65&lon=31.2",
-      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=31.2&y=-84.65&z=6&p=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A104903"
-    }
+      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=-4.0000&y=-86.9000",
+      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-86.9000&lon=-4.0000"
+    },
+    "has_precomputed_terrain": false,
+    "id": "artemis-haworth",
+    "lat_deg": -86.9,
+    "lon_deg": -4.0,
+    "mean_slope_deg": null,
+    "name": "Haworth",
+    "summary": "Artemis III candidate landing region on the Haworth crater rim in the south polar highlands."
   },
   {
+    "agency": "NASA",
+    "category": "artemis_iii",
+    "elevation_m": null,
+    "external_links": {
+      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=-1.6700&y=-85.9800",
+      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-85.9800&lon=-1.6700"
+    },
+    "has_precomputed_terrain": false,
     "id": "artemis-malapert-massif",
+    "lat_deg": -85.98,
+    "lon_deg": -1.67,
+    "mean_slope_deg": null,
     "name": "Malapert Massif",
+    "summary": "Artemis III candidate landing region on the Mons Malapert massif near the lunar south pole."
+  },
+  {
+    "agency": "NASA",
     "category": "artemis_iii",
-    "agency": "NASA",
-    "lat_deg": -85.97,
-    "lon_deg": -2.7,
-    "elevation_m": 4950.0,
-    "mean_slope_deg": 6.4,
-    "has_precomputed_terrain": true,
-    "summary": "Prominent Earth-facing peak at the South Pole with strong direct-to-Earth communications clearance.",
+    "elevation_m": null,
     "external_links": {
-      "quickmap_url": "https://quickmap.lroc.asu.edu/?extent=-180,-90,180,-80&proj=22&lat=-85.97&lon=-2.7",
-      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=-2.7&y=-85.97&z=6&p=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A104903"
-    }
+      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=31.0000&y=-84.6000",
+      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-84.6000&lon=31.0000"
+    },
+    "has_precomputed_terrain": false,
+    "id": "artemis-mons-mouton-plateau",
+    "lat_deg": -84.6,
+    "lon_deg": 31.0,
+    "mean_slope_deg": null,
+    "name": "Mons Mouton Plateau",
+    "summary": "Artemis III candidate landing region on the plateau of Mons Mouton, a distinct region from Mons Mouton on the same massif."
   },
   {
-    "id": "clps-mare-crisium",
-    "name": "Mare Crisium (Blue Ghost)",
-    "category": "clps_commercial",
+    "agency": "NASA",
+    "category": "artemis_iii",
+    "elevation_m": null,
+    "external_links": {
+      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=31.0000&y=-84.6000",
+      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-84.6000&lon=31.0000"
+    },
+    "has_precomputed_terrain": false,
+    "id": "artemis-mons-mouton",
+    "lat_deg": -84.6,
+    "lon_deg": 31.0,
+    "mean_slope_deg": null,
+    "name": "Mons Mouton",
+    "summary": "Artemis III candidate landing region on the Mons Mouton massif, a distinct region from Mons Mouton Plateau on the same massif."
+  },
+  {
+    "agency": "NASA",
+    "category": "artemis_iii",
+    "elevation_m": null,
+    "external_links": {
+      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=53.2700&y=-85.2800",
+      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-85.2800&lon=53.2700"
+    },
+    "has_precomputed_terrain": false,
+    "id": "artemis-nobile-rim-1",
+    "lat_deg": -85.28,
+    "lon_deg": 53.27,
+    "mean_slope_deg": null,
+    "name": "Nobile Rim 1",
+    "summary": "Artemis III candidate landing region on the rim of Nobile crater, one of two Nobile Rim regions."
+  },
+  {
+    "agency": "NASA",
+    "category": "artemis_iii",
+    "elevation_m": null,
+    "external_links": {
+      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=53.2700&y=-85.2800",
+      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-85.2800&lon=53.2700"
+    },
+    "has_precomputed_terrain": false,
+    "id": "artemis-nobile-rim-2",
+    "lat_deg": -85.28,
+    "lon_deg": 53.27,
+    "mean_slope_deg": null,
+    "name": "Nobile Rim 2",
+    "summary": "Artemis III candidate landing region on the rim of Nobile crater, the second of the two Nobile Rim regions."
+  },
+  {
+    "agency": "NASA",
+    "category": "artemis_iii",
+    "elevation_m": null,
+    "external_links": {
+      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=-88.3400&y=-88.4800",
+      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-88.4800&lon=-88.3400"
+    },
+    "has_precomputed_terrain": false,
+    "id": "artemis-degerlache-rim-2",
+    "lat_deg": -88.48,
+    "lon_deg": -88.34,
+    "mean_slope_deg": null,
+    "name": "de Gerlache Rim 2",
+    "summary": "Artemis III candidate landing region on the rim of de Gerlache crater near the lunar south pole."
+  },
+  {
+    "agency": "NASA",
+    "category": "artemis_iii",
+    "elevation_m": null,
+    "external_links": {
+      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=111.2900&y=-88.0800",
+      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-88.0800&lon=111.2900"
+    },
+    "has_precomputed_terrain": false,
+    "id": "artemis-slater-plain",
+    "lat_deg": -88.08,
+    "lon_deg": 111.29,
+    "mean_slope_deg": null,
+    "name": "Slater Plain",
+    "summary": "Artemis III candidate landing region in the Slater Plain area of the south polar highlands."
+  },
+  {
     "agency": "NASA / Firefly",
-    "lat_deg": 18.56,
-    "lon_deg": 61.81,
-    "elevation_m": -3450.0,
-    "mean_slope_deg": 2.1,
-    "has_precomputed_terrain": true,
-    "summary": "Smooth mid-latitude basalt basin near Mons Latreille targeted by CLPS Blue Ghost Mission 1.",
+    "category": "clps_commercial",
+    "elevation_m": null,
     "external_links": {
-      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=18.56&lon=61.81",
-      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=61.81&y=18.56&z=5&p=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A104903"
-    }
+      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=61.9200&y=18.4700",
+      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=18.4700&lon=61.9200"
+    },
+    "has_precomputed_terrain": false,
+    "id": "clps-mare-crisium",
+    "lat_deg": 18.47,
+    "lon_deg": 61.92,
+    "mean_slope_deg": null,
+    "name": "Mare Crisium (Blue Ghost)",
+    "summary": "Firefly Blue Ghost Mission 1 landing site on the mare basalt plain beside Mons Latreille in Mare Crisium."
   },
   {
-    "id": "apollo-11-tranquillitatis",
-    "name": "Apollo 11 (Mare Tranquillitatis)",
-    "category": "apollo_historic",
     "agency": "NASA",
-    "lat_deg": 0.674,
-    "lon_deg": 23.473,
-    "elevation_m": -1860.0,
-    "mean_slope_deg": 1.6,
-    "has_precomputed_terrain": true,
-    "summary": "Tranquility Base historic first crewed lunar landing site with minimal horizon obstruction.",
+    "category": "clps_commercial",
+    "elevation_m": null,
     "external_links": {
-      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=0.674&lon=23.473",
-      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=23.473&y=0.674&z=5&p=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A104903"
-    }
+      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=-39.5900&y=36.0700",
+      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=36.0700&lon=-39.5900"
+    },
+    "has_precomputed_terrain": false,
+    "id": "clps-gruithuisen-domes",
+    "lat_deg": 36.07,
+    "lon_deg": -39.59,
+    "mean_slope_deg": null,
+    "name": "Gruithuisen Domes",
+    "summary": "CLPS candidate landing region at the Gruithuisen Domes, a pair of silicic volcanic domes near Mons Gruithuisen Delta."
   },
   {
-    "id": "change-4-von-karman",
-    "name": "Chang'e-4 (Von Karman Crater)",
-    "category": "international",
-    "agency": "CNSA",
-    "lat_deg": -45.457,
-    "lon_deg": 177.588,
-    "elevation_m": -5930.0,
-    "mean_slope_deg": 2.9,
-    "has_precomputed_terrain": true,
-    "summary": "Historic first lunar far-side landing inside South Pole-Aitken basin; 0% direct-to-Earth visibility.",
+    "agency": "NASA",
+    "category": "clps_commercial",
+    "elevation_m": null,
     "external_links": {
-      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-45.457&lon=177.588",
-      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=177.588&y=-45.457&z=5&p=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A104903"
-    }
+      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=27.3200&y=45.1300",
+      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=45.1300&lon=27.3200"
+    },
+    "has_precomputed_terrain": false,
+    "id": "clps-lacus-mortis",
+    "lat_deg": 45.13,
+    "lon_deg": 27.32,
+    "mean_slope_deg": null,
+    "name": "Lacus Mortis",
+    "summary": "CLPS candidate landing region in Lacus Mortis, a basalt-flooded crater on the northeastern near side."
+  },
+  {
+    "agency": "NASA",
+    "category": "apollo_historic",
+    "elevation_m": null,
+    "external_links": {
+      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=23.4700&y=0.6700",
+      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=0.6700&lon=23.4700"
+    },
+    "has_precomputed_terrain": false,
+    "id": "apollo-11-tranquillitatis",
+    "lat_deg": 0.67,
+    "lon_deg": 23.47,
+    "mean_slope_deg": null,
+    "name": "Apollo 11 (Mare Tranquillitatis)",
+    "summary": "Apollo 11 Tranquility Base, the first crewed lunar landing, in Mare Tranquillitatis."
+  },
+  {
+    "agency": "NASA",
+    "category": "apollo_historic",
+    "elevation_m": null,
+    "external_links": {
+      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=3.1500&y=25.7200",
+      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=25.7200&lon=3.1500"
+    },
+    "has_precomputed_terrain": false,
+    "id": "apollo-15-hadley-rille",
+    "lat_deg": 25.72,
+    "lon_deg": 3.15,
+    "mean_slope_deg": null,
+    "name": "Apollo 15 (Hadley Rille)",
+    "summary": "Apollo 15 landing site at Hadley Rille below the Apennine mountains."
+  },
+  {
+    "agency": "ISRO",
+    "category": "international",
+    "elevation_m": null,
+    "external_links": {
+      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=32.3200&y=-69.3700",
+      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-69.3700&lon=32.3200"
+    },
+    "has_precomputed_terrain": false,
+    "id": "isro-chandrayaan-3-shiv-shakti",
+    "lat_deg": -69.37,
+    "lon_deg": 32.32,
+    "mean_slope_deg": null,
+    "name": "Chandrayaan-3 (Shiv Shakti Point)",
+    "summary": "Chandrayaan-3 Vikram landing site, named Statio Shiv Shakti, in the lunar southern highlands."
+  },
+  {
+    "agency": "CNSA",
+    "category": "international",
+    "elevation_m": null,
+    "external_links": {
+      "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=177.6000&y=-45.4500",
+      "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-45.4500&lon=177.6000"
+    },
+    "has_precomputed_terrain": false,
+    "id": "cnsa-change-4-von-karman",
+    "lat_deg": -45.45,
+    "lon_deg": 177.6,
+    "mean_slope_deg": null,
+    "name": "Chang'e-4 (Von K\u00e1rm\u00e1n Crater)",
+    "summary": "Chang'e-4 landing site, named Statio Tianhe, inside Von K\u00e1rm\u00e1n crater on the lunar far side."
   }
 ]

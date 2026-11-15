@@ -1,0 +1,12 @@
+{
+  "note": "synthetic contract sample; not measured terrain and not an evaluation",
+  "scenarios": {
+    "health": {
+      "file": "health.sample.json"
+    },
+    "sites": {
+      "file": "sites.sample.json"
+    }
+  },
+  "synthetic": true
+}
