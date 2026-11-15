@@ -12,7 +12,7 @@
 import { type DurationDays, type ObserverHeightM, type SolarArrayType, type StepMinutes } from "../types";
 
 export type PersonaMode = "planner" | "explorer";
-export type WorkspaceTab = "cockpit" | "compare" | "windows" | "explorer";
+export type WorkspaceTab = "cockpit" | "map" | "compare" | "windows" | "explorer";
 
 export interface ScenarioUrlParams {
   siteId: string | null;
@@ -161,45 +161,26 @@ function buildSearchParams(params: ScenarioUrlParams): URLSearchParams {
 
 /** The canonical scenario key used for fixture lookups and comparison. */
 export function scenarioKey(params: ScenarioUrlParams): string {
-  const query = new URLSearchParams();
-  if (params.siteId) {
-    query.set("site", params.siteId);
-  }
-  query.set("start", params.startUtc);
-  query.set("days", String(params.durationDays));
-  query.set("step", String(params.stepMinutes));
-  query.set("array", params.solarArrayType);
-  query.set("array_az", String(params.fixedArrayAzimuthDeg));
-  query.set("mast", String(params.observerHeightM));
-  query.set("min_comms", String(params.minCommsElevDeg));
-  return query.toString();
+  return buildSearchParams(params).toString();
 }
 
 /** Update browser URL query params in-place without triggering a reload. */
 export function syncScenarioToUrl(params: ScenarioUrlParams): void {
-  if (typeof window === "undefined") {
-    return;
-  }
-  const query = buildSearchParams(params).toString();
-  const nextUrl = `${window.location.pathname}?${query}${window.location.hash}`;
+  if (typeof window === "undefined") return;
+  const nextUrl = `${window.location.pathname}?${buildSearchParams(params).toString()}${window.location.hash}`;
   window.history.replaceState(null, "", nextUrl);
 }
 
 /** Build a complete shareable URL for the current mission scenario. */
 export function buildShareableScenarioUrl(params: ScenarioUrlParams): string {
-  if (typeof window === "undefined") {
-    return `?${buildSearchParams(params).toString()}`;
-  }
-  return `${window.location.origin}${window.location.pathname}?${buildSearchParams(params).toString()}`;
+  const qs = buildSearchParams(params).toString();
+  if (typeof window === "undefined") return `?${qs}`;
+  return `${window.location.origin}${window.location.pathname}?${qs}`;
 }
 
 /** Copy the shareable scenario URL to clipboard; returns true on success. */
-export async function copyScenarioLinkToClipboard(
-  params: ScenarioUrlParams,
-): Promise<boolean> {
-  if (typeof navigator === "undefined" || !navigator.clipboard) {
-    return false;
-  }
+export async function copyScenarioLinkToClipboard(params: ScenarioUrlParams): Promise<boolean> {
+  if (typeof navigator === "undefined" || !navigator.clipboard) return false;
   try {
     await navigator.clipboard.writeText(buildShareableScenarioUrl(params));
     return true;

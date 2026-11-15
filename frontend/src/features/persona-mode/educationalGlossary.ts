@@ -1,7 +1,6 @@
-import type { ObserverHeightM } from "../../types";
-/** Plain-English Explorer glossary, physics callouts, and Mission Detective Challenges (F3.6). */
+/** Conceptual Explorer glossary, mission context callouts, and guided challenges (F3.6). */
 
-import type { SolarArrayType } from "../../types";
+import type { ObserverHeightM, SolarArrayType } from "../../types";
 
 export interface EducationalCallout {
   id: string;
@@ -26,72 +25,72 @@ export interface MissionChallenge {
 export const EDUCATIONAL_CALLOUTS: EducationalCallout[] = [
   {
     id: "grazing-sunlight",
-    title: "South Pole Grazing Sunlight & Vertical Masts",
-    tag: "SOLAR PHYSICS",
-    summary: "At the lunar poles, the Sun skims sideways around the horizon instead of climbing overhead.",
+    title: "Polar Grazing Sunlight & Array Orientation",
+    tag: "SOLAR GEOMETRY",
+    summary: "Near the lunar poles, the Sun travels near the local horizon and sweeps across azimuths.",
     whyItHappens:
-      "The Moon's spin axis is tilted by only 1.54°, so sunlight arrives almost horizontally (-2° to +3.5° elevation) and sweeps 360° in azimuth every 29.5 days. A flat horizontal panel catches just sin(elev) ~ 5-14% of full sunlight, whereas a tall vertical tracking mast faces the sideways Sun head-on.",
-    plannerMetricNote: "Planner metrics: Sun Elev (deg), Solar Power Factor (%), Mean Irradiance (W/m²).",
+      "Because solar elevation remains shallow at high latitudes, horizontal panels receive sunlight obliquely whereas vertical panels oriented toward or tracking the Sun intercept the beam closer to normal incidence. Elevation above surrounding crater rims also changes when sunlight is obstructed.",
+    plannerMetricNote: "Planner metrics: Sun Elev (deg), Solar Power Factor (%), Mean Irradiance (W/m2).",
   },
   {
     id: "zero-atmosphere-shadows",
-    title: "Zero Atmosphere & Razor-Sharp PSR Shadows",
-    tag: "THERMAL & PSR",
-    summary: "With no air to scatter sky light, sunlit crater rims sit inches from cryogenic darkness.",
+    title: "Airless Shadows & Permanently Shadowed Regions",
+    tag: "TERRAIN MASKING",
+    summary: "Without an atmosphere to scatter sunlight, sunlit ridges border deep terrain shadows.",
     whyItHappens:
-      "Because the Moon is in vacuum, crater walls block sunlight completely rather than creating soft twilight. Deep interiors stay near 40 K (-233 °C) as Permanently Shadowed Regions (PSRs) for billions of years, preserving trapped water-ice deposits vital for Artemis rocket propellant and life support.",
-    plannerMetricNote: "Planner metrics: Sun Visible Disk (%), Longest Dark Streak (h), PSR Ice overlay.",
+      "In vacuum, any azimuth where the local topographic horizon exceeds solar elevation puts the surface in direct shadow. Elevated rim crests can stay illuminated across extended intervals while adjacent crater floors remain shielded from direct solar heating.",
+    plannerMetricNote: "Planner metrics: Longest Sunlit Streak (h), Longest Dark Streak (h), Sunlit Hours.",
   },
   {
     id: "earth-libration-wobble",
-    title: "Earth Libration Wobble & DTE Line-of-Sight",
-    tag: "ORBITAL COMMS",
-    summary: "Earth does not sit frozen in the polar sky—it slowly bobs above and behind crater rims.",
+    title: "Earth Libration & Direct-to-Earth Contact",
+    tag: "COMMS GEOMETRY",
+    summary: "From near-side polar sites, Earth appears low on the horizon and shifts position over time.",
     whyItHappens:
-      "Although the Moon is tidally locked around 0°E, its elliptical orbit and 6.7° axial tilt relative to Earth cause optical libration: Earth appears to nod by ±6.5° in elevation and ±7.9° in azimuth over 27.3 days. When Earth dips below local mountain ridges, Direct-to-Earth (DTE) radio drops out.",
-    plannerMetricNote: "Planner metrics: Earth Clearance (deg), Countdown to Earthset/Earthrise, DTE Hours.",
+      "Orbital eccentricity and axial inclination cause Earth to trace an apparent libration path in both azimuth and elevation. When Earth's elevation drops below the local terrain mask plus the minimum communications threshold, Direct-to-Earth links require a relay asset.",
+    plannerMetricNote: "Planner metrics: Earth Elev (deg), Earth Clearance (deg), DTE Comms Hours.",
   },
   {
     id: "csa-international-artemis",
-    title: "CSA & International Artemis Contributions",
-    tag: "ARTEMIS PARTNERS",
-    summary: "Canada, Europe, Japan, and the US share polar surface infrastructure dependent on light & comms.",
+    title: "CSA & International Artemis Operations",
+    tag: "MISSION CONTEXT",
+    summary: "International surface robotics rely on overlapping illumination and Earth visibility windows.",
     whyItHappens:
-      "The Canadian Space Agency (CSA) is building the Lunar Utility Vehicle (LUV) and Gateway's AI-enabled Canadarm3 robotics to haul cargo across polar terrain. Alongside ESA's Argonaut lander and JAXA's Pressurized Rover, every partner vehicle schedules traverses around sunlit ridges and DTE comms windows.",
-    plannerMetricNote: "Planner metrics: Slope Hazard (< 10 deg safe rover grade), Sun + DTE Overlap (h).",
+      "Surface assets such as the Canadian Space Agency (CSA) Lunar Utility Vehicle and partner landers schedule high-power operations when sunlit intervals and Direct-to-Earth line-of-sight coincide, using terrain horizon profiles and slope assessments from orbital datasets.",
+    plannerMetricNote: "Planner metrics: Sun + DTE Overlap (h), Feasibility Score, Slope Hazard.",
   },
 ];
 
 export const MISSION_CHALLENGES: MissionChallenge[] = [
   {
     id: "challenge-farside-comms",
-    title: "Challenge 1: The Silent Far Side",
-    question: "Why does Chang'e-4 have 0% Direct-to-Earth comms?",
-    hint: "Load Chang'e-4 in the Cockpit, then switch the 2D Map to 'Global Moon' view and look at Earth clearance.",
+    title: "Challenge 1: Far-Side Direct-to-Earth Geometry",
+    question: "Why does Chang'e-4 show no Direct-to-Earth communication intervals?",
+    hint: "Select Chang'e-4 in the Mission Cockpit and inspect the Horizon Profile and Comms timeline track.",
     answer:
-      "Von Karman Crater lies at 177.6°E on the lunar far side, permanently facing away from 0°E (Earth). Earth stays roughly 35° below the horizon at all times, forcing CNSA to communicate via the Queqiao relay satellite positioned at Earth–Moon L2.",
+      "Von Karman Crater lies on the lunar far side, where the spherical lunar limb permanently blocks direct line-of-sight to Earth. Missions on the far side rely on an orbital relay satellite rather than direct Earth visibility.",
     siteId: "change-4-von-karman",
     solarArrayType: "horizontal_fixed",
     observerHeightM: 2.0,
   },
   {
     id: "challenge-mast-vs-flat",
-    title: "Challenge 2: Height Wins at the Poles",
-    question: "Why does a 10m vertical tracking solar mast beat a flat panel at Shackleton?",
-    hint: "Try Shackleton Ridge with a 10m Vertical Tracking array, then compare Solar Power Factor against Horizontal Fixed at 2m.",
+    title: "Challenge 2: Mast Height & Vertical Tracking",
+    question: "How do mast height and array orientation affect Shackleton Ridge power availability?",
+    hint: "Compare Horizontal Fixed at 2.0m against Vertical Tracking at 10.0m in the Mission Cockpit controls.",
     answer:
-      "Two effects combine: first, raising the receiver to 10m lifts it higher above nearby crater rim shadows, increasing sunlit hours; second, tilting panels vertically faces the 1°–5° grazing Sun directly (~100% power factor vs. ~14% on flat panels).",
+      "Vertical tracking aligns the collecting surface toward the low-angle polar Sun instead of receiving grazing horizontal incidence, while raising the mast increases clearance above foreground terrain ridges in the computed LOLA profile.",
     siteId: "artemis-shackleton-ridge",
     solarArrayType: "vertical_tracking",
     observerHeightM: 10.0,
   },
   {
     id: "challenge-malapert-peak",
-    title: "Challenge 3: The Polar Radio Tower",
-    question: "Why is Malapert Massif called the 'Peak of Eternal Light & Comms'?",
-    hint: "Inspect Malapert Massif at 85.97°S, -2.7°E on the 2D Polar Map—notice its elevation and alignment toward 0°E EARTH.",
+    title: "Challenge 3: Polar Earth-Facing Ridges",
+    question: "Why do elevated near-side peaks like Malapert Massif support strong DTE clearance?",
+    hint: "Load Malapert Massif and inspect the Earth Clearance values across a 14-day or 29.5-day scenario.",
     answer:
-      "Rising nearly +4,950 m high almost directly on the 0°E Earth-facing meridian (-2.7°E), Malapert Massif towers above surrounding craters and looks straight toward Earth across nearly all libration cycles, giving uninterrupted DTE comms clearance.",
+      "Malapert Massif sits on an elevated near-side ridge facing the Earthward meridian, placing Earth above local foreground relief for extended portions of the libration cycle as computed in the mission telemetry.",
     siteId: "artemis-malapert-massif",
     solarArrayType: "vertical_tracking",
     observerHeightM: 10.0,
@@ -105,14 +104,11 @@ export function getLiveExplorerInsight(
   solarArrayType: SolarArrayType,
 ): string {
   const lightMsg = isSunlit
-    ? `${siteName} is currently catching low-angle polar sunlight above the crater rim.`
-    : `${siteName} is in crisp lunar shadow right now because surrounding ridges block the grazing Sun.`;
+    ? `${siteName} has direct solar illumination above the active horizon profile at this step.`
+    : `${siteName} is currently shadowed below the active horizon profile at this step.`;
   const commsMsg = isDteVisible
-    ? "Earth sits clear above the terrain horizon, enabling direct radio contact."
-    : "Earth is hidden behind terrain or the Moon's curvature here, so a relay link is needed.";
-  const arrayMsg =
-    solarArrayType === "horizontal_fixed"
-      ? "Tip: Switching from Horizontal Fixed panels to Vertical Tracking dramatically boosts polar power!"
-      : "Vertical arrays are well suited here to catch low-elevation polar sunlight.";
+    ? "Earth meets the minimum elevation clearance for Direct-to-Earth contact."
+    : "Earth is below the required terrain or limb clearance at this step.";
+  const arrayMsg = `Configured array mode: ${solarArrayType.replace("_", " ")}.`;
   return `${lightMsg} ${commsMsg} ${arrayMsg}`;
 }

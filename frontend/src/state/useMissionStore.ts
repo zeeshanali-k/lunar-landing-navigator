@@ -1,38 +1,20 @@
 /** Core mission state store coordinating site selection, evaluation, terrain, and URL sync (F3.1).
  *
- * The store holds scenario state and delegates every computation to the API. It
- * does not clamp, rescale, or reinterpret a value: out-of-range input is rejected
- * by the backend with a 422 and surfaced as an error (REQ-06, REQ-10).
+ * Delegates every computation to the backend API without clamping or rescaling (REQ-06, REQ-10).
  */
 
 import { create } from "zustand";
 import {
-  evaluateScenario,
-  fetchHealth,
-  fetchCustomTerrain,
-  fetchSites,
-  fetchSiteTerrain,
-  isAbortError,
-  isOfflineFallbackActive,
-  subscribeOfflineStatus,
+  evaluateScenario, fetchCustomTerrain, fetchHealth, fetchSites, fetchSiteTerrain,
+  isAbortError, isOfflineFallbackActive, subscribeOfflineStatus,
 } from "../services";
-import {
-  type CustomCoords,
-  type DurationDays,
-  type EvaluateResponse,
-  type ObserverHeightM,
-  type SiteSummary,
-  type SolarArrayType,
-  type StepMinutes,
-  type TerrainPatch,
+import type {
+  CustomCoords, DurationDays, EvaluateRequest, EvaluateResponse, ObserverHeightM,
+  SiteSummary, SolarArrayType, StepMinutes, TerrainPatch,
 } from "../types";
 import {
-  scenarioKey,
-  parseScenarioFromUrl,
-  syncScenarioToUrl,
-  type PersonaMode,
-  type ScenarioUrlParams,
-  type WorkspaceTab,
+  parseScenarioFromUrl, scenarioKey, syncScenarioToUrl,
+  type PersonaMode, type ScenarioUrlParams, type WorkspaceTab,
 } from "./urlSync";
 import { usePlaybackStore } from "./usePlaybackStore";
 
@@ -68,29 +50,19 @@ export interface MissionState {
   setCustomCoordinates: (coords: CustomCoords) => Promise<void>;
   setSchedule: (startUtc: string, durationDays?: DurationDays) => Promise<void>;
   setStepMinutes: (stepMinutes: StepMinutes) => Promise<void>;
-  setHardwareConfig: (
-    solarArrayType: SolarArrayType,
-    observerHeightM: ObserverHeightM,
-    fixedArrayAzimuthDeg?: number,
-    minCommsElevDeg?: number,
-  ) => Promise<void>;
+  setHardwareConfig: (solarArrayType: SolarArrayType, observerHeightM: ObserverHeightM, fixedArrayAzimuthDeg?: number, minCommsElevDeg?: number) => Promise<void>;
   setPersonaMode: (mode: PersonaMode) => void;
   setActiveTab: (tab: WorkspaceTab) => void;
+  dismissNotices: () => void;
   getScenarioUrlParams: () => ScenarioUrlParams;
 }
 
 function toUrlParams(s: MissionState): ScenarioUrlParams {
-  return {
-    siteId: s.selectedSiteId,
-    startUtc: s.startUtc,
-    durationDays: s.durationDays,
-    stepMinutes: s.stepMinutes,
-    solarArrayType: s.solarArrayType,
-    fixedArrayAzimuthDeg: s.fixedArrayAzimuthDeg,
-    observerHeightM: s.observerHeightM,
-    minCommsElevDeg: s.minCommsElevDeg,
-    personaMode: s.personaMode,
-  };
+  return { siteId: s.selectedSiteId, startUtc: s.startUtc, durationDays: s.durationDays, stepMinutes: s.stepMinutes, solarArrayType: s.solarArrayType, fixedArrayAzimuthDeg: s.fixedArrayAzimuthDeg, observerHeightM: s.observerHeightM, minCommsElevDeg: s.minCommsElevDeg, personaMode: s.personaMode };
+}
+
+function toEvaluateRequest(s: MissionState): EvaluateRequest {
+  return { site_id: s.customCoords ? null : s.selectedSiteId, custom_coords: s.customCoords, start_utc: s.startUtc, duration_days: s.durationDays, step_minutes: s.stepMinutes, solar_array_type: s.solarArrayType, fixed_array_azimuth_deg: s.fixedArrayAzimuthDeg, observer_height_m: s.observerHeightM, min_comms_elev_deg: s.minCommsElevDeg };
 }
 
 export const useMissionStore = create<MissionState>((set, get) => ({
@@ -116,6 +88,7 @@ export const useMissionStore = create<MissionState>((set, get) => ({
   loading: false,
   error: null,
   getScenarioUrlParams: () => toUrlParams(get()),
+  dismissNotices: () => set({ notices: [] }),
 
   initializeMission: async () => {
     if (!offlineSubscribed) {
@@ -139,15 +112,19 @@ export const useMissionStore = create<MissionState>((set, get) => ({
     }));
     try {
       const [sites, health] = await Promise.all([fetchSites(), fetchHealth()]);
-      set({ moonRadiusKm: health.moon_radius_km });
-      const { selectedSiteId } = get();
-      const matched = sites.find((s) => s.id === selectedSiteId) ?? sites[0] ?? null;
-      set({
+      const requestedId = parsed.siteId;
+      const matched = sites.find((s) => s.id === get().selectedSiteId) ?? sites[0] ?? null;
+      const extraNotice = requestedId && !sites.some((s) => s.id === requestedId)
+        ? [`Unknown site "${requestedId}"; fell back to ${matched?.id ?? DEFAULT_SITE_ID}.`]
+        : [];
+      set((s) => ({
+        moonRadiusKm: health.moon_radius_km,
         sites,
         selectedSite: matched,
         selectedSiteId: matched?.id ?? DEFAULT_SITE_ID,
+        notices: [...s.notices, ...extraNotice],
         isOfflineFallback: isOfflineFallbackActive(),
-      });
+      }));
       await get().refreshScenario();
     } catch (err: unknown) {
       if (!isAbortError(err)) {
@@ -159,49 +136,20 @@ export const useMissionStore = create<MissionState>((set, get) => ({
   refreshScenario: async () => {
     const seq = ++activeRefreshSeq;
     const state = get();
-    const {
-      customCoords,
-      selectedSiteId,
-      startUtc,
-      durationDays,
-      stepMinutes,
-      solarArrayType,
-      fixedArrayAzimuthDeg,
-      observerHeightM,
-      minCommsElevDeg,
-    } = state;
-    if (!customCoords && !selectedSiteId) return;
-
+    if (!state.customCoords && !state.selectedSiteId) return;
     const urlParams = toUrlParams(state);
     syncScenarioToUrl(urlParams);
-
     set({ loading: true, error: null });
     try {
-      const evaluationData = await evaluateScenario(
-        {
-          site_id: customCoords ? null : selectedSiteId,
-          custom_coords: customCoords,
-          start_utc: startUtc,
-          duration_days: durationDays,
-          step_minutes: stepMinutes,
-          solar_array_type: solarArrayType,
-          fixed_array_azimuth_deg: fixedArrayAzimuthDeg,
-          observer_height_m: observerHeightM,
-          min_comms_elev_deg: minCommsElevDeg,
-        },
-        scenarioKey(urlParams),
-      );
+      const evaluationData = await evaluateScenario(toEvaluateRequest(state), scenarioKey(urlParams));
       if (seq !== activeRefreshSeq) return;
-
       let terrainPatch: TerrainPatch | null = null;
       let terrainUnavailable = false;
       try {
-        terrainPatch = customCoords
-          ? await fetchCustomTerrain(customCoords)
-          : await fetchSiteTerrain(selectedSiteId ?? DEFAULT_SITE_ID);
+        terrainPatch = state.customCoords
+          ? await fetchCustomTerrain(state.customCoords)
+          : await fetchSiteTerrain(state.selectedSiteId ?? DEFAULT_SITE_ID);
       } catch (terrainErr: unknown) {
-        // A Class B site has no measured terrain. That is a documented state,
-        // not an error, and must not be filled with another site's patch.
         const message = terrainErr instanceof Error ? terrainErr.message : "";
         if (message.includes("TERRAIN_NOT_AVAILABLE") || message.includes("409")) {
           terrainUnavailable = true;
@@ -210,64 +158,29 @@ export const useMissionStore = create<MissionState>((set, get) => ({
         }
       }
       if (seq !== activeRefreshSeq) return;
-
       usePlaybackStore.getState().setTotalSteps(evaluationData.timeseries.length);
-      set({
-        evaluationData,
-        terrainPatch,
-        terrainUnavailable,
-        isOfflineFallback: isOfflineFallbackActive(),
-        loading: false,
-        error: null,
-      });
+      set({ evaluationData, terrainPatch, terrainUnavailable, isOfflineFallback: isOfflineFallbackActive(), loading: false, error: null });
     } catch (err: unknown) {
       if (isAbortError(err) || seq !== activeRefreshSeq) return;
       set({ loading: false, error: err instanceof Error ? err.message : "Scenario evaluation failed." });
     }
   },
-
   selectSite: async (siteId) => {
-    const matched = get().sites.find((s) => s.id === siteId) ?? null;
-    set({ selectedSiteId: siteId, selectedSite: matched, customCoords: null });
+    set({ selectedSiteId: siteId, selectedSite: get().sites.find((s) => s.id === siteId) ?? null, customCoords: null });
     usePlaybackStore.getState().jumpToIndex(0);
     await get().refreshScenario();
   },
-
   setCustomCoordinates: async (coords) => {
     set({ selectedSiteId: null, selectedSite: null, customCoords: coords });
     usePlaybackStore.getState().jumpToIndex(0);
     await get().refreshScenario();
   },
-
-  setSchedule: async (startUtc, durationDays) => {
-    set((s) => ({ startUtc, durationDays: durationDays ?? s.durationDays }));
+  setSchedule: async (startUtc, durationDays) => { set((s) => ({ startUtc, durationDays: durationDays ?? s.durationDays })); await get().refreshScenario(); },
+  setStepMinutes: async (stepMinutes) => { set({ stepMinutes }); await get().refreshScenario(); },
+  setHardwareConfig: async (solarArrayType, observerHeightM, fixedArrayAzimuthDeg, minCommsElevDeg) => {
+    set((s) => ({ solarArrayType, observerHeightM, fixedArrayAzimuthDeg: fixedArrayAzimuthDeg ?? s.fixedArrayAzimuthDeg, minCommsElevDeg: minCommsElevDeg ?? s.minCommsElevDeg }));
     await get().refreshScenario();
   },
-
-  setStepMinutes: async (stepMinutes) => {
-    set({ stepMinutes });
-    await get().refreshScenario();
-  },
-
-  setHardwareConfig: async (
-    solarArrayType,
-    observerHeightM,
-    fixedArrayAzimuthDeg,
-    minCommsElevDeg,
-  ) => {
-    set((s) => ({
-      solarArrayType,
-      observerHeightM,
-      fixedArrayAzimuthDeg: fixedArrayAzimuthDeg ?? s.fixedArrayAzimuthDeg,
-      minCommsElevDeg: minCommsElevDeg ?? s.minCommsElevDeg,
-    }));
-    await get().refreshScenario();
-  },
-
-  setPersonaMode: (personaMode) => {
-    set({ personaMode });
-    syncScenarioToUrl(toUrlParams(get()));
-  },
-
+  setPersonaMode: (personaMode) => { set({ personaMode }); syncScenarioToUrl(toUrlParams(get())); },
   setActiveTab: (activeTab) => set({ activeTab }),
 }));

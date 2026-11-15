@@ -18,8 +18,8 @@ export interface SiteSummary {
   agency: string;
   lat_deg: number;
   lon_deg: number;
-  elevation_m: number;
-  mean_slope_deg: number;
+  elevation_m: number | null;
+  mean_slope_deg: number | null;
   has_precomputed_terrain: boolean;
   summary: string;
   external_links: ExternalLinks;

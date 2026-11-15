@@ -1,4 +1,4 @@
-/** Aerospace command-center top navigation bar with mode toggle and shareable URL sync (F3.1). */
+/** Aerospace command-center top navigation bar with P0/P1 routes and URL sync (F3.1). */
 
 import { useState } from "react";
 import {
@@ -8,6 +8,7 @@ import {
   GitCompare,
   GraduationCap,
   Link2,
+  Map as MapIcon,
   Moon,
   Wifi,
   WifiOff,
@@ -24,7 +25,8 @@ const WORKSPACE_TABS: { id: WorkspaceTab; label: string; icon: typeof Compass }[
   { id: "cockpit", label: "Mission Cockpit", icon: Compass },
   { id: "compare", label: "Compare Scenarios", icon: GitCompare },
   { id: "windows", label: "Landing Window Finder", icon: CalendarSearch },
-  { id: "explorer", label: "Explorer Guide", icon: GraduationCap },
+  { id: "map", label: "2D Polar Map (P1)", icon: MapIcon },
+  { id: "explorer", label: "Explorer Guide (P1)", icon: GraduationCap },
 ];
 
 export function TopCommandBar() {
@@ -35,14 +37,10 @@ export function TopCommandBar() {
   const isOfflineFallback = useMissionStore((s) => s.isOfflineFallback);
   const evaluationData = useMissionStore((s) => s.evaluationData);
   const selectedSite = useMissionStore((s) => s.selectedSite);
-  const customCoords = useMissionStore((s) => s.customCoords);
   const getScenarioUrlParams = useMissionStore((s) => s.getScenarioUrlParams);
 
   const pinnedCount = useComparisonStore((s) => s.pinnedScenarios.length);
-
-  const activeSiteTitle = customCoords
-    ? `${customCoords.label || "Custom Pin"} (${customCoords.lat_deg.toFixed(2)}°, ${customCoords.lon_deg.toFixed(2)}°)`
-    : (selectedSite?.name ?? evaluationData?.site.name ?? "Loading site...");
+  const activeSiteTitle = selectedSite?.name ?? evaluationData?.site.name ?? "Loading site...";
 
   const handleCopyLink = async (): Promise<void> => {
     const ok = await copyScenarioLinkToClipboard(getScenarioUrlParams());
@@ -99,7 +97,7 @@ export function TopCommandBar() {
       </nav>
 
       <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap" }}>
-        <ModeSwitchPill />
+        {activeTab === "explorer" && <ModeSwitchPill />}
 
         <span
           className="status-pill"

@@ -1,68 +1,104 @@
 /** Responsive aerospace command-center workspace shell connecting all modules (F3.1). */
 
-import { Layers, Trash2 } from "lucide-react";
+import { Trash2, X } from "lucide-react";
 import { SouthPoleMap } from "../../features/lunar-map-2d";
 import { OperationalKpiStrip } from "../../features/mission-kpis";
+import { MissionTimelineChart } from "../../features/mission-timeline";
 import { ExplorerCalloutBanner, GuidedChallengesView } from "../../features/persona-mode";
 import { SiteExplorerDrawer } from "../../features/site-explorer";
+import { HorizonProfileChart } from "../../features/sky-horizon";
 import { DateAndDurationBar, PlaybackScrubber } from "../../features/time-controls";
 import { useComparisonStore, useMissionStore } from "../../state";
+import { DataProvenanceFooter } from "./DataProvenanceFooter";
 import { TopCommandBar } from "./TopCommandBar";
 
 export function AppShell() {
   const activeTab = useMissionStore((s) => s.activeTab);
   const selectedSiteId = useMissionStore((s) => s.selectedSiteId);
+  const selectedSite = useMissionStore((s) => s.selectedSite);
   const evaluationData = useMissionStore((s) => s.evaluationData);
-  const terrainPatch = useMissionStore((s) => s.terrainPatch);
+  const terrainUnavailable = useMissionStore((s) => s.terrainUnavailable);
+  const notices = useMissionStore((s) => s.notices);
+  const dismissNotices = useMissionStore((s) => s.dismissNotices);
   const error = useMissionStore((s) => s.error);
 
   const pinnedScenarios = useComparisonStore((s) => s.pinnedScenarios);
   const unpinScenario = useComparisonStore((s) => s.unpinScenario);
 
+  const hasTerrain =
+    (evaluationData?.site.has_precomputed_terrain ?? selectedSite?.has_precomputed_terrain ?? true) &&
+    !terrainUnavailable;
+
   return (
     <div className="app-shell">
       <TopCommandBar />
       <main className="shell-main">
+        {notices.length > 0 && (
+          <div
+            className="panel-card"
+            data-testid="url-notices-banner"
+            style={{
+              borderColor: "var(--accent-dte)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "0.75rem",
+              fontSize: "0.82rem",
+            }}
+          >
+            <span>URL fallback: {notices.join(" ")}</span>
+            <button type="button" onClick={dismissNotices} className="btn-surface" aria-label="Dismiss notices">
+              <X size={13} /> Dismiss
+            </button>
+          </div>
+        )}
+
         {error && (
           <div className="panel-card" style={{ borderColor: "var(--accent-danger)", color: "#fca5a5" }}>
             {error}
           </div>
         )}
 
+        {!hasTerrain && (
+          <div
+            className="panel-card"
+            data-testid="class-b-banner"
+            style={{ borderColor: "var(--accent-sun)", color: "var(--accent-sun)", fontSize: "0.84rem" }}
+          >
+            Class B Site Notice: Terrain model unavailable — spherical limb only. Feasibility and terrain slope scores are withheld.
+          </div>
+        )}
+
         {activeTab === "cockpit" ? (
           <>
             <OperationalKpiStrip />
-            <ExplorerCalloutBanner />
 
             <div className="cockpit-layout">
               <SiteExplorerDrawer />
 
               <div className="cockpit-visual-grid">
-                <SouthPoleMap />
-                <section className="panel-card" style={{ minHeight: "230px" }}>
-                  <h2 className="panel-title"><span><Layers size={13} /> 3D local_enu Terrain Slot (F4.1–F4.2)</span></h2>
-                  <p style={{ margin: 0, color: "var(--text-muted)", fontSize: "0.86rem" }}>
-                    Patch: {terrainPatch ? `${terrainPatch.grid_size}×${terrainPatch.grid_size} (${terrainPatch.frame})` : "Loading..."}
-                  </p>
-                </section>
-                <section className="panel-card" style={{ minHeight: "200px" }}>
-                  <h2 className="panel-title"><span>360° Horizon &amp; Sky-Dome Slot (F4.3–F4.4)</span></h2>
-                  <p style={{ margin: 0, color: "var(--text-muted)", fontSize: "0.86rem" }}>Horizon samples: {evaluationData?.horizon_profile.length ?? 0}</p>
-                </section>
-                <section className="panel-card" style={{ minHeight: "200px" }}>
-                  <h2 className="panel-title"><span>Power &amp; DTE Timeline Slot (F4.5–F4.6)</span></h2>
-                  <p style={{ margin: 0, color: "var(--text-muted)", fontSize: "0.86rem" }}>
-                    Sunlit: {evaluationData?.summary.sunlit_hours ?? "—"}h | DTE: {evaluationData?.summary.dte_comms_hours ?? "—"}h
-                  </p>
-                </section>
+                <HorizonProfileChart />
+                <MissionTimelineChart />
               </div>
             </div>
 
             <DateAndDurationBar />
             <PlaybackScrubber />
+            <DataProvenanceFooter />
+          </>
+        ) : activeTab === "map" ? (
+          <>
+            <div className="cockpit-layout">
+              <SiteExplorerDrawer />
+              <SouthPoleMap />
+            </div>
+            <DataProvenanceFooter />
           </>
         ) : activeTab === "explorer" ? (
-          <GuidedChallengesView />
+          <>
+            <ExplorerCalloutBanner />
+            <GuidedChallengesView />
+          </>
         ) : (
           <section className="panel-card">
             <h2 className="panel-title"><span>{activeTab.toUpperCase()} Workspace</span></h2>

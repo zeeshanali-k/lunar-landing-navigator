@@ -186,13 +186,7 @@ export function SouthPoleMap() {
       </div>
 
       <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "0.5rem", fontSize: "0.75rem", color: "var(--text-muted)" }}>
-        <span>
-          {hoverCoords
-            ? `Cursor: ${hoverCoords.lat_deg.toFixed(2)}°, ${hoverCoords.lon_deg.toFixed(2)}°`
-            : activeLat !== null && activeLon !== null
-              ? `Active: ${activeLat.toFixed(2)}°, ${activeLon.toFixed(2)}°`
-              : "No site selected"}
-        </span>
+        <span>{hoverCoords ? `Cursor: ${hoverCoords.lat_deg.toFixed(2)}°, ${hoverCoords.lon_deg.toFixed(2)}°` : activeLat !== null && activeLon !== null ? `Active: ${activeLat.toFixed(2)}°, ${activeLon.toFixed(2)}°` : "No site selected"}</span>
         <span style={{ display: "flex", gap: "0.75rem" }}>
           <span style={{ color: "var(--accent-sun)" }}>● Sun Az {currentSample ? `${currentSample.sun_az_deg.toFixed(0)}°` : "—"}</span>
           <span style={{ color: currentSample?.is_dte_visible ? "var(--accent-dte)" : "var(--accent-danger)" }}>● Earth Az {currentSample ? `${currentSample.earth_az_deg.toFixed(0)}°` : "—"}</span>
