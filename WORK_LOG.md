@@ -16,9 +16,9 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | Human review gate | `DONE` — `DOC-GATE` closed 2026-11-15 with recorded approval | bauerceptor |
 | `M3` frontend corrected onto the plan | `DONE` (committed on `bauerceptor`, not yet merged to `main`) | bauerceptor |
 | `M3` frontend, P0 completeness | `PARTIAL` — issues 5–8 fixed on `feat/module-3-frontend-core` (`801aa0a`) and verified in a test merge; pending merge; #9 open | usairam |
-| `M1` data pipeline | `READY` — `DATA-001` done; `agent-alpha` takes `DATA-002`/`DATA-003`, `agent-beta` takes `DATA-004`–`DATA-006` | bauerceptor |
+| `M1` data pipeline | `PARTIAL` — `DATA-001` and `DATA-002` done; `DATA-003` next; `agent-beta` takes `DATA-004`–`DATA-006` | bauerceptor |
 | `M2` backend | `READY` — `agent-charlie` takes `ARCH-002` then `BE-001`–`BE-003` | bauerceptor |
-| Parallel session (revision 5) | `READY` — worktrees/branches defined; zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
+| Parallel session (revision 5) | `IN PROGRESS` — Wave 1: `DATA-002` merged and pushed at `876e758`; `ARCH-002` pending; zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
 | `M4` 3D | `PARTIAL` — M4 SVG horizon/timeline/contrast merged as `00f7e77`; `terrain-3d` remains `.gitkeep` and gated | devscion |
 | `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
 | **P0 release** | **`NOT SHIPPABLE` — 5 blockers remain (1, 5, 6, 7, 8)** | — |
@@ -313,7 +313,7 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 
 | Module | Agent | Next tasks | Blocked by |
 |---|---|---|---|
-| `M1` | `agent-alpha` | `DATA-002` → `DATA-003` | ready |
+| `M1` | `agent-alpha` | `DATA-003` | ready |
 | `M1` | `agent-beta` | `DATA-004` → `DATA-005` → `DATA-006` | `DATA-004` needs `DATA-003` + `ARCH-002`; `DATA-005` needs `DATA-002` + `ARCH-002`; `DATA-006` needs both packs |
 | `M2` | `agent-charlie` | `ARCH-002` → `BE-001` → `BE-002` → `BE-003` | `BE-001` needs `DATA-004` + `ARCH-002`; `BE-002` needs `BE-001` + `DATA-005`; `BE-003` needs `BE-002` + `DATA-006` |
 | `M3` | usairam | Merge `feat/module-3-frontend-core` (`801aa0a`) with `bauerceptor` after `ARCH-002`; apply the integration fixes; close `FE-001`/`FE-002`; `FE-003` after `BE-003`/`DATA-006` | `ARCH-002`, `BE-003`, `DATA-006`; issue 9 human decision |
@@ -578,3 +578,14 @@ M3 impact: none
 Known risks: the 115 MB raw image stays ignored at data/downloads/lola (shared cache); a rerun verifies it instead of re-downloading
 Do not merge if: the manifest or image hash differs, or any validator fails
 ```
+
+### Wave 1 — DATA-002 integrated — agent-zeta
+
+- Merged `bauerceptor-alpha` @ `5806a99` into `bauerceptor` as `876e758` with `--no-ff`; pushed `abe3b0c..876e758` to `origin/bauerceptor`.
+- Scope verified: only `backend/src/cli/download_lola.py`, `backend/src/infrastructure/pds_dem.py`, `backend/tests/unit/test_pds_dem.py`, `data/manifests/lola/manifest.json`, plus `plan/task-ledger.json`, `plan/protected.sha256`, `WORK_LOG.md`. No out-of-scope path; branch contained the `bauerceptor` tip.
+- Re-ran `pytest tests/unit/test_pds_dem.py -v` — exit 0 (10 passed). Independently verified artefact hashes: manifest `2d2b4554…`, image 115,520,000 bytes `e6591eee…`, label `107c7558…`.
+- Validators after digest refresh: `validate_task_ledger.py` exit 0 (28 tasks, 6 done); `check_planning_docs.py` exit 0; `check_file_lengths.py` exit 0 (0 violations).
+- Cleared a merge blocker: the main worktree carried an untracked out-of-order `data/manifests/lola/manifest.json` (reversed latitude bounds, no label hash). Preserved outside the tree in the session scratchpad, not reused.
+- Synced `bauerceptor` into the alpha worktree (fast-forward to `876e758`). Next: `agent-alpha` runs `DATA-003`; `ARCH-002` remains pending. No M3 signal (alpha does not unblock M3).
+- Proposed doc delta for human decision: `DEVELOPMENT_PLAN.md` REQ-04 omits `SCALING_FACTOR = 0.5` (elevation = DN × 0.5), which `DATA-005` needs. Not changed here.
+- Noted: `origin/feat/m5-comparison-qa-delivery` appeared on fetch; out of scope for this session and untouched.
