@@ -1035,7 +1035,7 @@
       "priority": "P0",
       "owner": "M2",
       "reviewer": "M1",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DATA-004",
         "ARCH-002"
@@ -1082,12 +1082,19 @@
           "ref": "pytest tests/unit/test_mission_time.py tests/unit/test_interpolation.py"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_mission_time.py tests/unit/test_interpolation.py",
+          "exit": 0,
+          "note": "73 passed"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T16:45:36Z",
+      "completed_commit": "cea8affce96769226da1bee5b54ee71cbc7515e0"
     },
     {
       "id": "BE-002",
