@@ -16,9 +16,9 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | Human review gate | `DONE` — `DOC-GATE` closed 2026-11-15 with recorded approval | bauerceptor |
 | `M3` frontend corrected onto the plan | `DONE` (committed on `bauerceptor`, not yet merged to `main`) | bauerceptor |
 | `M3` frontend, P0 completeness | `PARTIAL` — issues 5–8 fixed on `feat/module-3-frontend-core` (`801aa0a`); `ARCH-002` merged and pushed at `a0e75d6`, so `FE-001` is unblocked; #9 open | usairam |
-| `M1` data pipeline | `PARTIAL` — `DATA-001`–`DATA-003` done; `agent-beta` next `DATA-004` (its `DATA-003` + `ARCH-002` deps are satisfied) | bauerceptor |
-| `M2` backend | `PARTIAL` — `ARCH-002` done; `agent-charlie` next `BE-001` (waits for `DATA-004`) | bauerceptor |
-| Parallel session (revision 5) | `IN PROGRESS` — Wave 1 complete: `DATA-002` (`876e758`), `DATA-003` (`4b9402d`), and `ARCH-002` (`a0e75d6`) merged and pushed; M3 unblocked; zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
+| `M1` data pipeline | `PARTIAL` — `DATA-001`–`DATA-005` done; 16 ephemeris + 9 terrain packs present; `agent-beta` next `DATA-006` | bauerceptor |
+| `M2` backend | `PARTIAL` — `ARCH-002` done; `agent-charlie` next `BE-001` (deps `DATA-004` + `ARCH-002` merged) | bauerceptor |
+| Parallel session (revision 5) | `IN PROGRESS` — Waves 1–4 complete: `DATA-002`–`DATA-005` and `ARCH-002` merged and pushed (tip `1601cbd`); M3 unblocked; next `DATA-006` (beta) and `BE-001` (charlie); zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
 | `M4` 3D | `PARTIAL` — M4 SVG horizon/timeline/contrast merged as `00f7e77`; `terrain-3d` remains `.gitkeep` and gated | devscion |
 | `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
 | **P0 release** | **`NOT SHIPPABLE` — 5 blockers remain (1, 5, 6, 7, 8)** | — |
@@ -297,6 +297,9 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 | 19 | Compare and Landing Window P1 tabs remain visible as placeholders in the P0 top bar | `frontend/src/components/layout/TopCommandBar.tsx` | MINOR | `OPEN` — decide whether to gate them with the P1 route |
 | 20 | `SITE_COORD` altitude is `0.0 km` for all 16 sites because the registry has no `elevation_m`; each manifest records an explicit `altitude_source` | `data/manifests/horizons/*.json`, `DATA-003` | low | `RECORDED` — ≈1e-3° effect, inside the 0.05° tolerance; revisit if REQ-07 requires pack-derived altitudes |
 | 21 | REQ-07 needs interpolation error proven against frozen **off-grid** Horizons references, but no task owns an off-grid fetch; `BE-001`/`QA-001` have no download write paths | `data/manifests/references/horizons/`, `BE-001` | MAJOR | `OPEN` — only 24-hourly references exist; needs a small approved scope addition before `BE-001` |
+| 22 | REQ-08 does not state whether `geometric_limb_deg` uses the observer's local ground elevation or the terrain at the limb; the implementation uses observer-local ground (constant per azimuth, reproduces the flat-terrain analytic value) | `backend/src/infrastructure/raycaster.py`, `DEVELOPMENT_PLAN.md` REQ-08 | low | `RECORDED` — behaves as the formula implies; add an explicit sentence to REQ-08 if it is normative |
+| 23 | Cabeus (−82.26°) northern rays stop at the 80°S DEM boundary (~68 km), not 120 km; out-of-footprint samples are marked invalid and never counted, and the 120 km cap still holds for every grid | `backend/src/infrastructure/raycaster.py`, `backend/data/site_packs/artemis-cabeus-peak/terrain.json` | low | `RECORDED` — no fabricated values; REQ-08's "closest covered site" example (Mons Mouton ~141 km) should name Cabeus as the limiting case |
+| 24 | `source_manifest_sha256` convention (SHA-256 over the two source manifests concatenated in ascending path order) is defined only in the module docstring | `backend/src/infrastructure/ephemeris_pack.py`, REQ-06 | low | `RECORDED` — state it in REQ-06 if it is normative |
 
 ### Deliberately not fixed
 
@@ -316,8 +319,8 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 | Module | Agent | Next tasks | Blocked by |
 |---|---|---|---|
 | `M1` | `agent-alpha` | — (complete: `DATA-002`, `DATA-003` done) | — |
-| `M1` | `agent-beta` | `DATA-004` → `DATA-005` → `DATA-006` | `DATA-004` needs `DATA-003` + `ARCH-002`; `DATA-005` needs `DATA-002` + `ARCH-002`; `DATA-006` needs both packs |
-| `M2` | `agent-charlie` | `BE-001` → `BE-002` → `BE-003` | `BE-001` needs `DATA-004`; `BE-002` needs `BE-001` + `DATA-005`; `BE-003` needs `BE-002` + `DATA-006` |
+| `M1` | `agent-beta` | `DATA-006` | deps satisfied (`DATA-004` + `DATA-005` done) |
+| `M2` | `agent-charlie` | `BE-001` → `BE-002` → `BE-003` | `BE-001` ready (`DATA-004` + `ARCH-002` merged); `BE-002` needs `BE-001`; `BE-003` needs `BE-002` + `DATA-006` |
 | `M3` | usairam | `ARCH-002` merged and pushed at `a0e75d6`: merge `bauerceptor` into `feat/module-3-frontend-core`, apply the integration fixes, close `FE-001`/`FE-002`; `FE-003` after `BE-003`/`DATA-006` | `BE-003`, `DATA-006`; issue 9 human decision |
 | `M4` | devscion | not startable | `P0-GATE` |
 | `M5` | — | needs an owner | — |
@@ -730,3 +733,20 @@ M3 impact: none (DATA-005 unblocks charlie's BE-002, not M3)
 Known risks: the northern rays from Cabeus stop at the DEM coverage boundary (about 68 km) instead of 120 km; every sample grid is still capped at 120 km and no value is fabricated
 Do not merge if: the generator or pytest fails, a pack is not 128x128 with 16384 finite values, a Class B site has a terrain pack, or the tree contains changes outside the changed paths above
 ```
+
+### Wave 3 — DATA-004 integrated — agent-zeta
+
+- Merged `dd555ef` (DATA-004 closure) from `bauerceptor-beta` into `bauerceptor` as `8f36680` with `--no-ff`; no conflicts. Pushed `140b6b9..8f36680`.
+- Scope verified: 16 `ephemeris.json` packs under `backend/data/site_packs/`, `ephemeris_pack.py`, `build_ephemeris_packs.py`, `test_ephemeris_pack.py`, plus ledger, digest, `WORK_LOG.md`.
+- Verified 16 packs, `sample_count` 26305 with four finite arrays each; aggregate `2bc802e2…` reproduced with `sha256sum … | sort -k2 | sha256sum`. Test: 57 passed (full unit suite 113).
+- Validators: ledger 9 done; planning docs and file lengths exit 0.
+- Synced charlie to `8f36680` so `BE-001` can start (`DATA-004` + `ARCH-002` now merged).
+
+### Wave 4 — DATA-005 integrated — agent-zeta
+
+- Merged `a14a169` (DATA-005 closure; contains DATA-004) into `bauerceptor` as `1601cbd` with `--no-ff`; no conflicts. Pushed `8f36680..1601cbd`.
+- Scope verified: 9 `terrain.json` packs (the nine `artemis_iii` Class A sites only), `dem_tiler.py`, `raycaster.py`, `build_terrain_packs.py`, the two tests, plus ledger, digest, `WORK_LOG.md`. No Class B terrain pack.
+- Verified 128×128 = 16384 finite elevations and slopes, three 360-sample horizons, `psr_mask` null; aggregate `b8ad11d0…` reproduced with `sort -k2`. Tests: 79 required pass; `pytest tests/unit` 113 passed on the integration branch.
+- Validators: ledger **10 done**; planning docs and file lengths exit 0.
+- Open issues added (not blockers): #22 REQ-08 limb reference, #23 Cabeus DEM-boundary limitation, #24 `source_manifest_sha256` convention.
+- Next: `agent-beta` may start `DATA-006`; `agent-charlie` may start `BE-001` now and needs it before `BE-002`.
