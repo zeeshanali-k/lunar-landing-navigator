@@ -1,5 +1,7 @@
 # Module 1: Data Pipeline, LOLA Topography & Ephemeris Engine
 
+<!-- STATUS: HISTORICAL | REASON: HACKATHON_BUILD_PLAN.md and plan/task-ledger.json are now the only operative authorities; this document is design context only | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-01 | TASKS: DOC-001 -->
+
 **Parent Plan:** [DEVELOPMENT_PLAN.md](../DEVELOPMENT_PLAN.md)
 **Architecture Spec:** [00-architecture-and-standards.md](00-architecture-and-standards.md)
 **Assigned Role:** Data & Astrodynamics Engineer
@@ -28,6 +30,7 @@ Produce scientifically accurate lunar topography patches, `< 12 ms` vectorized t
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: the verified product is ldem_80s_80m IMG/LBL at 115520000 bytes, not GeoTIFF 120m or global grids | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-04 | TASKS: DATA-002 -->
 ### `F1.2` — NASA LOLA DEM Downloader & Local-ENU Tiler
 * **Target Files:**
   * `backend/src/infrastructure/lola_downloader.py` (~130 lines)
@@ -42,6 +45,7 @@ Produce scientifically accurate lunar topography patches, `< 12 ms` vectorized t
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: operative raycast range is 120 km, not 150 km; profiles are precomputed at build time for three observer heights | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-08 | TASKS: DATA-005 -->
 ### `F1.3` — Vectorized No-Atmosphere Terrain Horizon-Mask Raycaster
 * **Target File:** `backend/src/infrastructure/vectorized_raycaster.py` (~175 lines)
 * **What to Build:**
@@ -53,10 +57,13 @@ Produce scientifically accurate lunar topography patches, `< 12 ms` vectorized t
     * Also compute the smooth spherical geometric limb angle: $\theta_{\text{limb}} = -\arccos\!\left(\frac{R + h_{\text{ground}}}{R + h_0}\right)$.
   * **Vectorized Speed (`< 12 ms` for custom coordinates):**
     * Pre-build a `[360, 240]` polar sampling grid of `(az, dist_km)` (logarithmically spaced from `0.15 km` to `150 km`) and evaluate all `86,400` points in a **single vectorized NumPy `map_coordinates` call** against the in-memory `float32` LOLA array!
+> **Correction:** the operative radial ceiling is 120 km. The DEM ends at 80°S and the lowest-latitude covered site has only ~141 km of margin, so 150 km rays would sample off-array. See REQ-08.
+
 * **Acceptance Criteria:** Executes a full 360° raycast for any custom coordinate in `< 15 ms`; flat mare sites yield `~0°` horizon; South Pole craters yield accurate `3°–15°` ridge silhouettes.
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: runtime SPICE is replaced by precomputed JPL Horizons packs; SITE_COORD altitude is kilometres | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-07 | TASKS: DATA-003, DATA-004 -->
 ### `F1.4` — JPL Horizons & SPICE Ephemeris Engine (with Lunar Libration)
 * **Target Files:**
   * `backend/src/infrastructure/spice_ephemeris.py` (~175 lines)
@@ -70,6 +77,7 @@ Produce scientifically accurate lunar topography patches, `< 12 ms` vectorized t
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: PSR is deferred; a single peak-elevation check cannot establish permanent shadow | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-08 | TASKS: DATA-005 -->
 ### `F1.5` — Local Slope, Roughness & PSR Extractor
 * **Target File:** `backend/src/infrastructure/terrain_metrics.py` (~125 lines)
 * **What to Build:**
@@ -88,6 +96,7 @@ Produce scientifically accurate lunar topography patches, `< 12 ms` vectorized t
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: replaced by frozen Horizons references plus interpolation and analytic-raycast tests | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-12 | TASKS: QA-001 -->
 ### `F1.7` — Ephemeris & Horizon Accuracy Validator
 * **Target Files:**
   * `backend/src/cli/validate_horizons.py` (~110 lines)

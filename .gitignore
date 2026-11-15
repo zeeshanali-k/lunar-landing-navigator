@@ -50,3 +50,7 @@ npm-debug.log*
 .env
 .env.*
 !.env.example
+.commandcode/
+.claude/
+.opencode/
+

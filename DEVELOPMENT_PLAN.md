@@ -1,5 +1,7 @@
 # Lunar Landing Site Navigator — Master Development Plan
 
+<!-- STATUS: HISTORICAL | REASON: HACKATHON_BUILD_PLAN.md and plan/task-ledger.json are now the only operative authorities; this document is design context only | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-01 | TASKS: DOC-001 -->
+
 **Challenge:** [NASA Space Apps 2026 — Lunar Landing Site Navigator](https://www.spaceappschallenge.org/2026/challenges/lunar-landing-site-navigator/)
 **Architecture Style:** Clean Architecture (Hexagonal Ports & Adapters Unified Python Backend + Feature-Sliced Modular React/Three.js Frontend)
 **Code Philosophy:** Small, single-responsibility files (`60–180` lines target; hard CI cap `280` lines via `scripts/check_file_lengths.py`), strict TypeScript & Python typing, zero duplicate math between CLI & API, pure unit-tested physics.
@@ -19,6 +21,7 @@
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: runtime SPICE kernels and mandatory 3D are outside the selected offline/2D scope | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-02 | TASKS: ARCH-001, DATA-003 -->
 ## 2. High-Level System Architecture
 
 ```text
@@ -45,6 +48,7 @@
 +-----------------------------------------------------------------------------------+
 ```
 
+<!-- STATUS: SUPERSEDED | REASON: this matrix is design traceability, not implementation status | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-12 | TASKS: QA-001 -->
 ### Challenge Objective & NASA Resource Traceability
 | Challenge Requirement / Resource | Implemented By Feature(s) |
 | :--- | :--- |
@@ -60,6 +64,7 @@
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: feature-hour estimates are informational; executable ordering now lives in the task ledger | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-02 | TASKS: DOC-GATE -->
 ## 3. Master Feature Registry & Assignment Matrix
 
 Use the **Feature IDs** below for Git branches (`feat/F2.2-solar-power`), issue tracking, and team standups.
@@ -128,6 +133,7 @@ Use the **Feature IDs** below for Git branches (`feat/F2.2-solar-power`), issue 
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: the two-person split left delivery and QA unowned; every ledger task now names an owner and reviewer | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-02 | TASKS: DELIVERY-001, DELIVERY-002 -->
 ## 4. Team Assignment Playbooks (2 to 5 Members)
 
 ### 5-Person Team (Ideal Clean Split)
@@ -154,6 +160,7 @@ Use the **Feature IDs** below for Git branches (`feat/F2.2-solar-power`), issue 
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: hour-window checkpoints are replaced by gate tasks with command-based exit criteria | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-12 | TASKS: P0-GATE, P1-GATE -->
 ## 5. 48-Hour Hackathon Execution Roadmap
 
 | Phase | Time Window | Critical Milestones (Definition of Done) |
@@ -165,6 +172,7 @@ Use the **Feature IDs** below for Git branches (`feat/F2.2-solar-power`), issue 
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: kick-off actions are replaced by the ledger DAG starting at DOC-001 | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-01 | TASKS: DOC-001, DOC-002 -->
 ## 6. First 3 Actions to Kick Off Right Now
 1. Review [00-architecture-and-standards.md](plan/00-architecture-and-standards.md) with the whole team and assign Feature IDs from Section 3.
 2. Create the directory skeleton (`ARCH-01`) and commit all 5 JSON fixtures (`ARCH-02`) before anyone writes feature logic.

@@ -32,12 +32,4 @@ export type {
   WindowsRequest,
   WindowsResponse,
 } from "./windows";
-export {
-  MOON_RADIUS_KM,
-  POLE_LAT_CLAMP_DEG,
-  azElevToThreeXYZ,
-  clampLunarLatitude,
-  degToRad,
-  normalizeAzimuthDeg,
-  radToDeg,
-} from "./coordinates";
+export { degToRad, normalizeAzimuthDeg, radToDeg } from "./coordinates";

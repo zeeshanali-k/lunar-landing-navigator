@@ -1,15 +1,5 @@
-import { Compass, Moon, Radio, Sun } from "lucide-react";
-import {
-  azElevToThreeXYZ,
-  clampLunarLatitude,
-  type EvaluateResponse,
-  type SiteSummary,
-} from "./types";
-
-const SAMPLE_COORDS = {
-  latDeg: clampLunarLatitude(-90.0),
-  northVec: azElevToThreeXYZ(0, 0),
-};
+import { Moon, Sun } from "lucide-react";
+import { type EvaluateResponse, type SiteSummary } from "./types";
 
 const CONTRACT_STATUS: { label: string; detail: string }[] = [
   { label: "Contract A", detail: "SiteSummary (GET /api/v1/sites)" },
@@ -66,14 +56,6 @@ export function App() {
         <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
             <Sun size={16} color="var(--accent-sun)" /> Frame: <code>local_enu</code>
-          </span>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
-            <Compass size={16} color="var(--accent-ok)" /> Pole Clamp:{" "}
-            <code>{SAMPLE_COORDS.latDeg.toFixed(4)}°</code>
-          </span>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
-            <Radio size={16} color="var(--accent-dte)" /> North Axis:{" "}
-            <code>[{SAMPLE_COORDS.northVec.map((v) => v.toFixed(1)).join(", ")}]</code>
           </span>
         </div>
 

@@ -1,5 +1,7 @@
 # Module 0: Clean Architecture, Directory Layout & Engineering Standards
 
+<!-- STATUS: HISTORICAL | REASON: HACKATHON_BUILD_PLAN.md and plan/task-ledger.json are now the only operative authorities; this document is design context only | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-01 | TASKS: DOC-001 -->
+
 **Parent Plan:** [DEVELOPMENT_PLAN.md](../DEVELOPMENT_PLAN.md)
 **Covers:** `ARCH-01`, `ARCH-02`, `ARCH-03`
 **Target Audience:** All team members (read before writing the first line of code)
@@ -10,6 +12,7 @@
 
 To avoid spaghetti code, duplicate physics logic, and 1,000-line monolith files during a fast-paced hackathon, this project enforces **Clean Architecture (Hexagonal / Ports & Adapters)** on the backend, **Zero Code Duplication** between offline data pipelines and the runtime API, and **Feature-Sliced Modular Architecture** on the frontend.
 
+<!-- STATUS: SUPERSEDED | REASON: Python is now exactly 3.12 via uv, and the file-length gate is 280 lines inclusive | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-03 | TASKS: ARCH-001 -->
 ### Non-Negotiable Code Rules
 1. **Strict File Size Ceiling:**
    * **Ideal file length:** 60–180 lines.
@@ -32,6 +35,7 @@ To avoid spaghetti code, duplicate physics logic, and 1,000-line monolith files 
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: data layout is now root data/downloads plus tracked data/manifests and backend/data/site_packs | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-04 | TASKS: ARCH-001, DATA-002 -->
 ## 2. Complete Project Directory Structure
 
 ```text
@@ -59,6 +63,11 @@ lunar-landing-navigator/
 │   │   ├── kernels/                     # de440s.bsp, moon_pa_de421, moon_080317.tf, naif0012.tls
 │   │   ├── lola_grids/                  # In-memory float32 South Pole DEM (~25 MB) + global grid
 │   │   └── site_packs/                  # Precomputed JSON/NPZ site packs + south_pole_overview.json
+```
+
+> **Correction:** the `~25 MB` figure above is wrong. The verified product is `ldem_80s_80m.img` at **115,520,000 bytes** on disk (~231 MB widened to float32). See REQ-04. Also note the operative layout moved raw downloads to root `data/downloads/`, with generated packs under `backend/data/site_packs/`.
+
+```text
 │   ├── src/
 │   │   ├── domain/                      # Pure physics, geometry & mission rules (0 external deps)
 │   │   │   ├── constants.py             # Moon radius (1737.4 km), solar constant (1361 W/m²), sun angular radius (0.267°)
@@ -144,6 +153,7 @@ lunar-landing-navigator/
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: contracts are now generated from Pydantic models with a drift check; these examples are illustrative only | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-06 | TASKS: ARCH-002 -->
 ## 3. Shared Data Contracts (`ARCH-02` — Lock in Hour 1!)
 
 To allow **Module 1 (Data)**, **Module 2 (Backend)**, and **Modules 3–5 (Frontend)** to develop simultaneously from Hour 1 without waiting for each other, commit these 5 JSON contracts immediately inside `contracts/fixtures/`.
@@ -310,6 +320,7 @@ Used by Module 5 (`F5.3`) to render the 12-month optimal landing window calendar
 
 ---
 
+<!-- STATUS: SUPERSEDED | REASON: coordinate conventions remain valid; the 280-line gate is inclusive | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-08 | TASKS: ARCH-001, DATA-005 -->
 ## 4. Coordinate & Quality Guardrails (`ARCH-03`)
 
 | Rule | Specification |
