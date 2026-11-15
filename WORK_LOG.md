@@ -16,12 +16,12 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | Human review gate | `DONE` — `DOC-GATE` closed 2026-11-15 with recorded approval | bauerceptor |
 | `M3` frontend corrected onto the plan | `DONE` (committed on `bauerceptor`, not yet merged to `main`) | bauerceptor |
 | `M3` frontend, P0 completeness | `PARTIAL` — issues 5–8 fixed on `feat/module-3-frontend-core` (`801aa0a`); `ARCH-002` merged and pushed at `a0e75d6`, so `FE-001` is unblocked; #9 open | usairam |
-| `M1` data pipeline | `PARTIAL` — `DATA-001`–`DATA-005` done; 16 ephemeris + 9 terrain packs present; `agent-beta` next `DATA-006` | bauerceptor |
-| `M2` backend | `PARTIAL` — `ARCH-002` done; `agent-charlie` next `BE-001` (deps `DATA-004` + `ARCH-002` merged) | bauerceptor |
-| Parallel session (revision 5) | `IN PROGRESS` — Waves 1–4 complete: `DATA-002`–`DATA-005` and `ARCH-002` merged and pushed (tip `1601cbd`); M3 unblocked; next `DATA-006` (beta) and `BE-001` (charlie); zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
+| `M1` data pipeline | `DONE` — `DATA-001`–`DATA-006` done; 16 ephemeris + 9 terrain packs, index, and byte-identical offline fixture mirror present | bauerceptor |
+| `M2` backend | `PARTIAL` — `ARCH-002` done; `agent-charlie` working `BE-001` (deps `DATA-004` + `ARCH-002` merged) | bauerceptor |
+| Parallel session (revision 5) | `IN PROGRESS` — `DATA-002`–`DATA-006` and `ARCH-002` merged and pushed (tip `89eb2c5`); M3 unblocked; next `BE-001`/`BE-002`/`BE-003` (charlie); zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
 | `M4` 3D | `PARTIAL` — M4 SVG horizon/timeline/contrast merged as `00f7e77`; `terrain-3d` remains `.gitkeep` and gated | devscion |
 | `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
-| **P0 release** | **`NOT SHIPPABLE` — 5 blockers remain (1, 5, 6, 7, 8)** | — |
+| **P0 release** | **`NOT SHIPPABLE` — 4 blockers remain (5, 6, 7, 8); offline evaluate fixtures still gated on `BE-002` (issue 27)** | — |
 
 ---
 
@@ -276,7 +276,7 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 
 | # | Issue | Where | Severity | Status |
 |---|---|---|---|---|
-| 1 | Fixtures deleted but no generator exists yet, so offline mode has nothing to read | `frontend/public/data/fixtures/` (absent), `DATA-006` | `BLOCKED` on `M1` | in `DATA-006` acceptance |
+| 1 | Fixtures deleted but no generator exists yet, so offline mode has nothing to read | `frontend/public/data/fixtures/`, `DATA-006` | `PARTIAL` | `DONE` for sites/terrain/health via `DATA-006`; evaluate/compare/windows offline fixtures still gated on `BE-002` (issue 27) |
 | 2 | `evaluateScenario`/`compareScenarios`/`scanWindows` now require a scenario key; comparison and windows callers are typed but their scenarios are P1 | `frontend/src/services/`, `P1-COMPARE`, `P1-WINDOWS` | low | open |
 | 3 | No test runner or `test` script, so three ledger acceptance commands cannot run | `frontend/package.json`, `frontend/vitest.config.ts` | BLOCKER for P0 | `DONE` — closed by `ARCH-001` |
 | 4 | Wire types are hand-maintained; `api.generated.ts` does not exist | `frontend/src/types/`, `ARCH-002` | MAJOR | `DONE` — closed by `ARCH-002` (`a0e75d6`) |
@@ -300,6 +300,11 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 | 22 | REQ-08 does not state whether `geometric_limb_deg` uses the observer's local ground elevation or the terrain at the limb; the implementation uses observer-local ground (constant per azimuth, reproduces the flat-terrain analytic value) | `backend/src/infrastructure/raycaster.py`, `DEVELOPMENT_PLAN.md` REQ-08 | low | `RECORDED` — behaves as the formula implies; add an explicit sentence to REQ-08 if it is normative |
 | 23 | Cabeus (−82.26°) northern rays stop at the 80°S DEM boundary (~68 km), not 120 km; out-of-footprint samples are marked invalid and never counted, and the 120 km cap still holds for every grid | `backend/src/infrastructure/raycaster.py`, `backend/data/site_packs/artemis-cabeus-peak/terrain.json` | low | `RECORDED` — no fabricated values; REQ-08's "closest covered site" example (Mons Mouton ~141 km) should name Cabeus as the limiting case |
 | 24 | `source_manifest_sha256` convention (SHA-256 over the two source manifests concatenated in ascending path order) is defined only in the module docstring | `backend/src/infrastructure/ephemeris_pack.py`, REQ-06 | low | `RECORDED` — state it in REQ-06 if it is normative |
+| 25 | `backend/tests/integration/test_contracts_and_health.py` has 5 pre-existing failures (asserts removed `artemis-shackleton-ridge`, the old health shape, and fixture-substitution routes); `BE-003` owns replacing those routes | `backend/tests/integration/test_contracts_and_health.py` | MAJOR until `BE-003` | `OPEN` — predates `DATA-006`; `BE-003` replaces |
+| 26 | `ARCH-002`'s `fixture_synth` nests scenario keys under `scenarios` while `httpClient` reads top-level keys; `DATA-006` emits both shapes, so one must be made authoritative in REQ-10 | `backend/src/api/schemas/fixture_synth.py`, `frontend/src/services/httpClient.ts` | MINOR | `OPEN` — human-approved REQ-10 revision |
+| 27 | `export_openapi` still rewrites fixtures from `fixture_synth`; re-running it reverts the `DATA-006` manifest/sites fixture | `backend/src/cli/export_openapi.py`, `contracts/fixtures/` | MAJOR for offline demo | `OPEN` — single-writer decision required |
+| 28 | Offline evaluate/compare/windows fixtures are not generated; an `EvaluateResponse` needs the REQ-09 physics owned by `BE-002` and REQ-06 forbids a second implementation | `contracts/fixtures/`, `frontend/public/data/fixtures/` | MAJOR for offline fallback | `OPEN` — `FE-003` (after `BE-002`) or a follow-up task |
+| 29 | Base `terrain.sample.json` is left as the `ARCH-002` flat placeholder because the parity test pins it to zeros; real terrain ships as `terrain.<site_id>.json` scenario fixtures | `contracts/fixtures/terrain.sample.json` | MINOR | `RECORDED` |
 
 ### Deliberately not fixed
 
@@ -319,9 +324,9 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 | Module | Agent | Next tasks | Blocked by |
 |---|---|---|---|
 | `M1` | `agent-alpha` | — (complete: `DATA-002`, `DATA-003` done) | — |
-| `M1` | `agent-beta` | `DATA-006` | deps satisfied (`DATA-004` + `DATA-005` done) |
-| `M2` | `agent-charlie` | `BE-001` → `BE-002` → `BE-003` | `BE-001` ready (`DATA-004` + `ARCH-002` merged); `BE-002` needs `BE-001`; `BE-003` needs `BE-002` + `DATA-006` |
-| `M3` | usairam | `ARCH-002` merged and pushed at `a0e75d6`: merge `bauerceptor` into `feat/module-3-frontend-core`, apply the integration fixes, close `FE-001`/`FE-002`; `FE-003` after `BE-003`/`DATA-006` | `BE-003`, `DATA-006`; issue 9 human decision |
+| `M1` | `agent-beta` | — (complete: `DATA-004`, `DATA-005`, `DATA-006` done) | — |
+| `M2` | `agent-charlie` | `BE-001` → `BE-002` → `BE-003` | `BE-001` ready and in progress (`DATA-004` + `ARCH-002` merged); `BE-002` needs `BE-001`; `BE-003` needs `BE-002` + `DATA-006` (now merged) |
+| `M3` | usairam | `ARCH-002` merged and pushed at `a0e75d6`: merge `bauerceptor` into `feat/module-3-frontend-core`, apply the integration fixes, close `FE-001`/`FE-002`; `FE-003` after `BE-003` (`DATA-006` now merged) | `BE-003`; issue 9 human decision |
 | `M4` | devscion | not startable | `P0-GATE` |
 | `M5` | — | needs an owner | — |
 
@@ -784,3 +789,14 @@ M3 impact: FE-003 input only (DATA-006 merged; FE-003 still needs BE-003 and FE-
 Known risks: pre-existing legacy integration failures in tests/integration/test_contracts_and_health.py (BE-003 replaces them); export_openapi can overwrite the generated fixture tree if re-run; offline evaluate scenarios are not generated until BE-002 exists
 Do not merge if: the generator or pytest fails, the mirror is not byte-identical, the index presence flags disagree with pack files, or the ARCH-002 parity suite fails
 ```
+
+### Wave 5 — DATA-006 integrated — agent-zeta
+
+- Verified `bauerceptor-beta` before merge: `HEAD` `73d97cf` matches the handoff, clean tree, `DATA-006` `done` in the branch ledger, and `merge-base --is-ancestor bauerceptor bauerceptor-beta` exits 0. Changed paths are within `DATA-006.write_paths` plus the ledger, digest, and `WORK_LOG.md`.
+- Re-ran the task commands on the branch: `uv run --python 3.12 --frozen python -m src.cli.build_pack_index` — exit 0 (16 sites, 9 terrain packs, 11 generated, 16 mirrored; regeneration byte-identical, tree still clean); `uv run --python 3.12 --frozen pytest tests/unit/test_pack_index.py -v` — exit 0 (16 passed); `uv run --python 3.12 --frozen pytest tests/integration/test_contract_parity.py -v` — exit 0 (15 passed).
+- Evidence reproduced: `data/manifests/site_packs/index.json` sha256 `e92a9462a7c82f011a3b61c58d41932eeefcc9dd6385605f759f0bcea74f42df`; `diff -r contracts/fixtures frontend/public/data/fixtures` empty (byte-identical mirror); 16 `ephemeris.json` + 9 `terrain.json` packs present.
+- Merged `bauerceptor-beta` into `bauerceptor` as `89eb2c5` with `--no-ff --no-commit`; no conflicts. Refreshed the protected digest and ran `validate_task_ledger.py` (28 tasks, 11 done), `check_planning_docs.py` (exit 0), `check_file_lengths.py` (exit 0, 0 violations).
+- Pushed `bead176..89eb2c5` to `origin/bauerceptor`.
+- Recorded beta's findings as open issues #25–#29 (five pre-existing integration failures, fixture-manifest shape, `export_openapi` single-writer decision, offline evaluate scenarios gated on `BE-002`, `terrain.sample.json` placeholder). These need a human decision, not an agent fix.
+- Not synced `bauerceptor-charlie`: it has uncommitted `BE-001` closure work; `DATA-006` is only a `BE-003` input, so the sync belongs before `BE-003`.
+- Next: `agent-charlie` continues `BE-001` → `BE-002` → `BE-003`.
