@@ -951,7 +951,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DATA-004",
         "DATA-005"
@@ -1004,12 +1004,29 @@
           "ref": "data/manifests/site_packs/index.json"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "artifact",
+          "ref": "data/manifests/site_packs/index.json",
+          "sha256": "e92a9462a7c82f011a3b61c58d41932eeefcc9dd6385605f759f0bcea74f42df"
+        },
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_pack_index.py",
+          "exit": 0,
+          "note": "16 passed"
+        },
+        {
+          "kind": "report",
+          "ref": "offline-fixtures-generated",
+          "note": "The index lists all 16 sites in registry order with ephemeris/terrain pack paths and SHA-256 values; has_precomputed_terrain is true for the nine Class A sites and false for the seven Class B sites. The generator writes 9 pack-derived terrain fixtures plus the registry-derived sites fixture and the scenario manifest; the sorted fixture-tree SHA-256 is 78ecafe5e21f508ea87c8ca9eaaf90ed657009d07ac3f0729eb832099e1af1ec and frontend/public/data/fixtures is byte-identical. Regeneration is byte-identical. The ARCH-002 parity suite (15 passed) still passes against the regenerated tree."
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T16:41:53Z",
+      "completed_commit": "81ee5d266336581590cc9deac500b564d14150e2"
     },
     {
       "id": "BE-001",
