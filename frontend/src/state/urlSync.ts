@@ -12,7 +12,7 @@
 import { type DurationDays, type ObserverHeightM, type SolarArrayType, type StepMinutes } from "../types";
 
 export type PersonaMode = "planner" | "explorer";
-export type WorkspaceTab = "cockpit" | "compare" | "windows" | "explorer";
+export type WorkspaceTab = "cockpit" | "terrain" | "sky" | "compare" | "windows" | "explorer";
 
 export interface ScenarioUrlParams {
   siteId: string | null;

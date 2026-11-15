@@ -710,8 +710,9 @@ Parsing validates against the same allowlists and defaults as the backend. Seria
 - **KPI strip:** feasibility with sub-scores, solar elevation and status, hours to sunset/sunrise, Earth clearance and DTE status, hours to earthset/earthrise. Countdowns highlight under 12 h.
 - **Class B sites:** no terrain-dependent chart; show the spherical-limb-only notice and a `null` feasibility score.
 - Static paths are memoised; playhead state lives in `usePlaybackStore` so scrubbing does not re-render the shell.
+- allow dividing the workspace into dedicated screens/sections, reducing numeric density via progressive disclosure, and adding contextual popup/tooltip instructions.
 
-No chart library. No Tailwind. No 3D in P0/P1.
+No chart library. No Tailwind.
 
 <a id="req-12"></a>
 ## REQ-12 Validation, deterministic gates, prohibited work

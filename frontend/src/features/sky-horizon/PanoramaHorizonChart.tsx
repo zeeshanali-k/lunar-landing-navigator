@@ -1,6 +1,7 @@
 /** 360-deg Panoramic Horizon Silhouette Chart with live Sun & Earth markers (F4.3). */
 
 import { useMemo, useState } from "react";
+import { HelpPopover } from "../../components/ui";
 import { usePlaybackStore } from "../../state";
 import type { HorizonProfilePoint, TimeseriesPoint } from "../../types";
 import { azElevToPanoramaSVG, buildPanoramaHorizonPaths, interpolateHorizonElevDeg, splitWrappedTrajectorySegments } from "./horizonMath";
@@ -97,22 +98,30 @@ export function PanoramaHorizonChart({ horizonProfile, timeseries, currentIndex,
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.4rem" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
           <strong style={{ fontSize: "0.86rem" }}>360° Panoramic Horizon Silhouette</strong>
+          <HelpPopover helpKey="horizonSection" align="left" />
           {!hasTerrain && (
             <span className="status-pill" style={{ fontSize: "0.7rem", color: "var(--accent-warn)" }}>
               Terrain model unavailable — spherical limb only
             </span>
           )}
         </div>
-        <span style={{ fontSize: "0.74rem", color: "var(--text-muted)", fontVariantNumeric: "tabular-nums" }}>
+        <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontVariantNumeric: "tabular-nums" }}>
           {readout
-            ? `${readout.body}: Az ${readout.azDeg.toFixed(1)}° · El ${readout.elevDeg.toFixed(2)}° · Horizon ${readout.horizonDeg.toFixed(2)}° · Clearance ${readout.clearanceDeg >= 0 ? "+" : ""}${readout.clearanceDeg.toFixed(2)}°`
+            ? `${readout.body} Clearance: ${readout.clearanceDeg >= 0 ? "+" : ""}${readout.clearanceDeg.toFixed(1)}° (El ${readout.elevDeg.toFixed(1)}° vs Ridge ${readout.horizonDeg.toFixed(1)}°)`
             : "Click Sun/Earth path to scrub"}
         </span>
       </div>
 
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        style={{ width: "100%", height: "auto", display: "block", background: "#070c17", borderRadius: "0.5rem" }}
+        style={{
+          width: "100%",
+          height: "auto",
+          display: "block",
+          background: "var(--chart-bg)",
+          border: "1px solid var(--border-subtle)",
+          borderRadius: "0.5rem",
+        }}
       >
         <g transform={`translate(${PAD.left},${PAD.top})`}>
           {ELEV_TICKS.map((elev) => {
@@ -124,10 +133,10 @@ export function PanoramaHorizonChart({ horizonProfile, timeseries, currentIndex,
                   y1={y}
                   x2={PLOT_W}
                   y2={y}
-                  stroke={elev === 0 ? "#475569" : "#1e293b"}
+                  stroke={elev === 0 ? "var(--border-strong)" : "var(--chart-grid)"}
                   strokeDasharray={elev === 0 ? "3 3" : undefined}
                 />
-                <text x={-6} y={y + 3} textAnchor="end" fontSize="9.5" fill="#94a3b8">
+                <text x={-6} y={y + 3} textAnchor="end" fontSize="9.5" fill="var(--chart-text)">
                   {elev}°
                 </text>
               </g>
@@ -137,17 +146,17 @@ export function PanoramaHorizonChart({ horizonProfile, timeseries, currentIndex,
             const { x } = project(t.az, MIN_ELEV);
             return (
               <g key={t.az}>
-                <line x1={x} y1={0} x2={x} y2={PLOT_H} stroke="#1e293b" />
-                <text x={x} y={PLOT_H + 16} textAnchor="middle" fontSize="10" fill="#94a3b8">
+                <line x1={x} y1={0} x2={x} y2={PLOT_H} stroke="var(--chart-grid)" />
+                <text x={x} y={PLOT_H + 16} textAnchor="middle" fontSize="10" fill="var(--chart-text)">
                   {t.label}
                 </text>
               </g>
             );
           })}
 
-          {hasTerrain && areaPath && <path d={areaPath} fill="rgba(51, 65, 85, 0.72)" />}
-          <path d={limbLinePath} fill="none" stroke="#94a3b8" strokeWidth="1.2" strokeDasharray="5 4" />
-          {hasTerrain && ridgeLinePath && <path d={ridgeLinePath} fill="none" stroke="#cbd5e1" strokeWidth="1.75" />}
+          {hasTerrain && areaPath && <path d={areaPath} fill="var(--chart-horizon-fill)" />}
+          <path d={limbLinePath} fill="none" stroke="var(--chart-text)" strokeWidth="1.2" strokeDasharray="5 4" />
+          {hasTerrain && ridgeLinePath && <path d={ridgeLinePath} fill="none" stroke="var(--chart-horizon-stroke)" strokeWidth="1.75" />}
 
           {sunPolylines.map((pts, i) => (
             <polyline

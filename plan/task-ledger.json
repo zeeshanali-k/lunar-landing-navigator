@@ -418,6 +418,88 @@
       "completed_commit": "2dc501ae1e49e74f020807ab1c3758313d5f9ae0"
     },
     {
+      "id": "UI-001",
+      "title": "Redesign frontend theme, multi-screen navigation, and contextual help",
+      "phase": "frontend",
+      "priority": "P0",
+      "owner": "M3",
+      "reviewer": "M1",
+      "status": "pending",
+      "depends_on": [
+        "ARCH-001"
+      ],
+      "requirement_ids": [
+        "REQ-11"
+      ],
+      "working_directory": "frontend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "frontend/src"
+      ],
+      "write_paths": [
+        "frontend/src/index.css",
+        "frontend/src/App.tsx",
+        "frontend/src/components/layout",
+        "frontend/src/components/ui",
+        "frontend/src/features",
+        "frontend/src/state",
+        "frontend/src/__tests__"
+      ],
+      "inputs": [],
+      "outputs": [
+        "frontend/src"
+      ],
+      "commands": [
+        {
+          "cwd": "frontend",
+          "run": "bun run typecheck",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run lint",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run format:check",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run test",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run build",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "workspace is divided into clear navigation screens and collapsible or progressive-disclosure sections",
+        "section headers and primary action buttons include popup/popover instructions",
+        "frontend uses CSS custom properties in index.css without Tailwind, chart libraries, Axios, or physical constant literals",
+        "bun run typecheck, lint, format:check, test, and build all exit 0"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "bun run test"
+        },
+        {
+          "kind": "command",
+          "ref": "bun run build"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
       "id": "ARCH-002",
       "title": "Close Pydantic contracts and generate OpenAPI, TypeScript types, and fixtures",
       "phase": "foundation",

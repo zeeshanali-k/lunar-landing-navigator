@@ -1,7 +1,7 @@
 /** Launch-delay sensitivity explorer at +14, +29.5, +90, and +180 days (P1-DELAYS). */
 
 import { useMemo, useState } from "react";
-import { AlertTriangle, CalendarClock, GitCompare, Plus } from "lucide-react";
+import { AlertTriangle, GitCompare, Plus } from "lucide-react";
 import { useComparisonStore, useMissionStore } from "../../state";
 import type { CompareScenarioInput } from "../../types";
 import {
@@ -89,44 +89,38 @@ export function ScheduleShiftExplorer() {
   };
 
   return (
-    <section className="panel-card">
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
-        <div>
-          <h2 className="panel-title">
-            <span>
-              <CalendarClock size={14} /> Launch-Delay Sensitivity (+14 / +29.5 / +90 / +180 Days)
-            </span>
-          </h2>
-          <p style={{ margin: "0.25rem 0 0", fontSize: "0.78rem", color: "var(--text-muted)" }}>
-            Site: <strong>{siteName}</strong> · Baseline: {startUtc} ({durationDays}d) · Coverage:{" "}
-            {EPHEMERIS_COVERAGE_START_UTC.slice(0, 10)} to {EPHEMERIS_COVERAGE_STOP_UTC.slice(0, 10)}
-          </p>
-        </div>
-        <button type="button" onClick={handleCompareAll} className="btn-surface" style={{ borderColor: "var(--accent-dte)" }}>
-          <GitCompare size={14} /> Compare Baseline + Delay Shifts
+    <div style={{ display: "grid", gap: "0.85rem" }}>
+      <div className="panel-row">
+        <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--text-muted)" }}>
+          Site: <strong>{siteName}</strong> · Baseline: {startUtc} ({durationDays}d) · Coverage: {EPHEMERIS_COVERAGE_START_UTC.slice(0, 10)}{" "}
+          to {EPHEMERIS_COVERAGE_STOP_UTC.slice(0, 10)}
+        </p>
+        <button type="button" onClick={handleCompareAll} className="btn-primary">
+          <GitCompare size={14} aria-hidden="true" /> Compare Baseline + Delay Shifts
         </button>
       </div>
 
       {shiftWarning && (
         <div
-          className="panel-card"
+          className="panel-inset"
           style={{
-            padding: "0.6rem 0.85rem",
             borderColor: "var(--accent-warn)",
-            color: "#fde68a",
+            background: "var(--surface-warn-soft)",
+            color: "var(--accent-warn)",
             fontSize: "0.78rem",
-            flexDirection: "row",
+            display: "flex",
+            gap: "0.45rem",
             alignItems: "center",
           }}
         >
-          <AlertTriangle size={15} />
+          <AlertTriangle size={15} aria-hidden="true" />
           <span>{shiftWarning}</span>
         </div>
       )}
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(225px, 1fr))", gap: "0.75rem" }}>
         {candidates.map((cand) => (
-          <div key={cand.offsetDays} className="site-card" style={{ cursor: "default", background: "#0b1120" }}>
+          <div key={cand.offsetDays} className="panel-inset" style={{ display: "grid", gap: "0.35rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.35rem" }}>
               <strong style={{ fontSize: "0.82rem" }}>{OFFSET_LABELS[cand.offsetDays]}</strong>
               <span
@@ -137,7 +131,7 @@ export function ScheduleShiftExplorer() {
                   color: cand.coverage.valid ? "var(--accent-ok)" : "var(--accent-danger)",
                 }}
               >
-                {cand.coverage.valid ? "COVERED" : "EPHEMERIS_RANGE_EXCEEDED"}
+                {cand.coverage.valid ? "COVERED" : "RANGE EXCEEDED"}
               </span>
             </div>
             <div style={{ fontSize: "0.74rem", color: "var(--text-primary)", fontVariantNumeric: "tabular-nums" }}>
@@ -147,17 +141,17 @@ export function ScheduleShiftExplorer() {
               Lookahead End: {cand.coverage.lookaheadEndUtc}
             </div>
             {!cand.coverage.valid && cand.coverage.message && (
-              <div style={{ fontSize: "0.7rem", color: "#fca5a5" }}>{cand.coverage.message}</div>
+              <div style={{ fontSize: "0.7rem", color: "var(--accent-danger)" }}>{cand.coverage.message}</div>
             )}
-            <div style={{ display: "flex", gap: "0.4rem", marginTop: "0.25rem", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: "0.4rem", marginTop: "0.2rem", flexWrap: "wrap" }}>
               <button
                 type="button"
                 disabled={!cand.coverage.valid}
                 onClick={() => void pinScenario(cand.scenarioInput)}
                 className="btn-surface"
-                style={{ fontSize: "0.72rem", padding: "0.25rem 0.5rem", opacity: cand.coverage.valid ? 1 : 0.45 }}
+                style={{ fontSize: "0.72rem", padding: "0.25rem 0.5rem" }}
               >
-                <Plus size={12} /> Pin Shift
+                <Plus size={12} aria-hidden="true" /> Pin Shift
               </button>
               <button
                 type="button"
@@ -167,14 +161,14 @@ export function ScheduleShiftExplorer() {
                   setActiveTab("cockpit");
                 }}
                 className="btn-surface"
-                style={{ fontSize: "0.72rem", padding: "0.25rem 0.5rem", opacity: cand.coverage.valid ? 1 : 0.45 }}
+                style={{ fontSize: "0.72rem", padding: "0.25rem 0.5rem" }}
               >
-                Load Date in Cockpit
+                Load Date in Overview
               </button>
             </div>
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 }

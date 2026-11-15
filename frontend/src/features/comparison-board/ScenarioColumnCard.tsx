@@ -1,6 +1,7 @@
 /** Individual scenario comparison column card with baseline delta badges (F5.1). */
 
-import { Award, Compass, Flag, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { Award, ChevronDown, ChevronUp, Compass, Flag, Trash2 } from "lucide-react";
 import type { ComparedScenario } from "../../types";
 
 export interface ScenarioColumnCardProps {
@@ -60,14 +61,16 @@ export function ScenarioColumnCard({
   const { evaluation, deltas_vs_baseline: deltas } = scenario;
   const { site, summary } = evaluation;
   const isClassB = site.has_precomputed_terrain === false || summary.feasibility_score === null;
+  const [showBreakdown, setShowBreakdown] = useState(false);
 
   return (
     <article
       className="panel-card"
       style={{
-        padding: "0.85rem",
+        display: "flex",
+        flexDirection: "column",
+        gap: "0.65rem",
         borderColor: isRecommended ? "var(--accent-ok)" : isBaseline ? "var(--accent-dte)" : "var(--border-subtle)",
-        background: isRecommended ? "rgba(16, 185, 129, 0.05)" : "var(--bg-panel)",
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.4rem", flexWrap: "wrap" }}>
@@ -95,13 +98,11 @@ export function ScenarioColumnCard({
       </div>
 
       <div
+        className="panel-inset"
         style={{
           display: "flex",
           alignItems: "baseline",
           justifyContent: "space-between",
-          padding: "0.45rem 0.6rem",
-          background: "#0b1120",
-          borderRadius: "0.5rem",
         }}
       >
         <div>
@@ -117,51 +118,68 @@ export function ScenarioColumnCard({
         )}
       </div>
 
-      <div style={{ display: "grid", gap: "0.4rem" }}>
-        <ScoreBar label="Power (P)" score={summary.sub_scores.power_score} />
-        <ScoreBar label="Thermal (T)" score={summary.sub_scores.thermal_score} />
-        <ScoreBar label="Comms (C)" score={summary.sub_scores.comms_score} />
-        <ScoreBar label="Terrain (R)" score={summary.sub_scores.terrain_score} />
-      </div>
-
-      <div
-        style={{ display: "grid", gap: "0.35rem", fontSize: "0.76rem", borderTop: "1px solid var(--border-subtle)", paddingTop: "0.55rem" }}
-      >
+      <div style={{ display: "grid", gap: "0.3rem", fontSize: "0.78rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <span style={{ color: "var(--text-muted)" }}>Sunlit</span>
           <span>
-            <strong>{summary.sunlit_hours.toFixed(1)}h</strong> ({(summary.sunlit_fraction * 100).toFixed(1)}%){" "}
+            <strong>{(summary.sunlit_fraction * 100).toFixed(0)}%</strong> ({summary.sunlit_hours.toFixed(1)}h){" "}
             {!isBaseline && <DeltaBadge value={deltas.sunlit_hours_delta} unit="h" />}
-          </span>
-        </div>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <span style={{ color: "var(--text-muted)" }}>Max Dark Streak</span>
-          <span>
-            <strong>{summary.longest_dark_streak_hours.toFixed(1)}h</strong>{" "}
-            {!isBaseline && <DeltaBadge value={deltas.longest_dark_streak_hours_delta} unit="h" invertGood />}
           </span>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <span style={{ color: "var(--text-muted)" }}>DTE Comms</span>
           <span>
-            <strong>{summary.dte_comms_hours.toFixed(1)}h</strong> ({(summary.dte_fraction * 100).toFixed(1)}%){" "}
+            <strong>{(summary.dte_fraction * 100).toFixed(0)}%</strong> ({summary.dte_comms_hours.toFixed(1)}h){" "}
             {!isBaseline && <DeltaBadge value={deltas.dte_comms_hours_delta} unit="h" />}
-          </span>
-        </div>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <span style={{ color: "var(--text-muted)" }}>Overlap / Irrad.</span>
-          <span>
-            {summary.overlap_sun_and_dte_hours.toFixed(1)}h · {summary.mean_irradiance_w_m2.toFixed(0)} W/m²
           </span>
         </div>
       </div>
 
-      {summary.risk_warnings.length > 0 && (
-        <ul style={{ margin: 0, paddingLeft: "1rem", fontSize: "0.72rem", color: "#fde68a", display: "grid", gap: "0.2rem" }}>
-          {summary.risk_warnings.map((w) => (
-            <li key={w}>{w}</li>
-          ))}
-        </ul>
+      <button
+        type="button"
+        onClick={() => setShowBreakdown((v) => !v)}
+        className="btn-surface"
+        style={{ justifyContent: "space-between", fontSize: "0.74rem", padding: "0.28rem 0.55rem" }}
+      >
+        <span>{showBreakdown ? "Hide sub-scores & risks" : "Show sub-scores & risks"}</span>
+        {showBreakdown ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+      </button>
+
+      {showBreakdown && (
+        <div style={{ display: "grid", gap: "0.55rem", borderTop: "1px solid var(--border-subtle)", paddingTop: "0.55rem" }}>
+          <div style={{ display: "grid", gap: "0.35rem" }}>
+            <ScoreBar label="Power (P)" score={summary.sub_scores.power_score} />
+            <ScoreBar label="Thermal (T)" score={summary.sub_scores.thermal_score} />
+            <ScoreBar label="Comms (C)" score={summary.sub_scores.comms_score} />
+            <ScoreBar label="Terrain (R)" score={summary.sub_scores.terrain_score} />
+          </div>
+
+          <div style={{ display: "grid", gap: "0.3rem", fontSize: "0.75rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ color: "var(--text-muted)" }}>Max Dark Streak</span>
+              <span>
+                <strong>{summary.longest_dark_streak_hours.toFixed(1)}h</strong>{" "}
+                {!isBaseline && <DeltaBadge value={deltas.longest_dark_streak_hours_delta} unit="h" invertGood />}
+              </span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ color: "var(--text-muted)" }}>Overlap / Irrad.</span>
+              <span>
+                {summary.overlap_sun_and_dte_hours.toFixed(1)}h · {summary.mean_irradiance_w_m2.toFixed(0)} W/m²
+              </span>
+            </div>
+          </div>
+
+          {summary.risk_warnings.length > 0 && (
+            <ul
+              style={{ margin: 0, paddingLeft: "1rem", fontSize: "0.72rem", color: "var(--accent-warn)", display: "grid", gap: "0.2rem" }}
+            >
+              {summary.risk_warnings.map((w) => (
+                <li key={w}>{w}</li>
+              ))}
+            </ul>
+          )}
+        </div>
       )}
 
       <div style={{ display: "flex", gap: "0.4rem", marginTop: "auto", flexWrap: "wrap" }}>
