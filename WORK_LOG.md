@@ -870,3 +870,31 @@ Do not merge if: the pytest suite fails, ruff check fails, or the tree contains 
 - Merged `bauerceptor-charlie` into `bauerceptor` as `20d3fb4` with `--no-ff --no-commit`; no conflicts. Refreshed the protected digest and ran `validate_task_ledger.py` (28 tasks, 13 done), `check_planning_docs.py` (exit 0), `check_file_lengths.py` (exit 0, 0 violations).
 - Pushed `66e324e..20d3fb4` to `origin/bauerceptor`.
 - Next: `agent-charlie` starts `BE-003` (deps `BE-002` + `DATA-006` both merged).
+
+### BE-003 — done — agent-charlie
+
+- Branch/commit: `bauerceptor-charlie` @ `b36bedfa` (task work); the ledger closure is the branch tip.
+- Changed: removed the fixture-substitution routes (`backend/src/api/routes/compare.py`, `windows.py`) and `backend/src/api/dependencies.py`; added `backend/src/api/errors.py`, `backend/src/api/schemas/error_schemas.py`, and `backend/src/application/{errors,evaluation_service,pack_repository,scenario_summary,site_service}.py`; rewired `main.py` to register only health/sites/terrain/evaluate with REQ-10 exception handlers; regenerated `contracts/openapi.json`; rewrote `backend/tests/integration/test_contracts_and_health.py` (real P0 routes, sockets-disabled, no-download-client) and updated `test_contract_parity.py`. The summary aggregation was extracted into `scenario_summary.py` to keep `evaluation_service.py` under the 280-line hard limit.
+- Commands: `uv run --python 3.12 --frozen pytest tests/integration -v` — exit 0 (29 passed); `uv run --python 3.12 --frozen ruff check .` — exit 0; `uv run --python 3.12 --frozen mypy src tests` — exit 0 (Success: no issues found in 65 source files).
+- Evidence: pytest tests/integration 29 passed; mypy src tests clean; ruff check . clean.
+- Extras run (not ledger evidence): `uv run --python 3.12 --frozen pytest tests/unit` — 241 passed.
+- Out-of-scope fixes (human-approved 2026-11-15): `mypy src tests` surfaced four pre-existing errors in DATA-task files outside `BE-003.write_paths` — `import yaml` missing stubs in `backend/src/infrastructure/site_registry_loader.py`, `backend/src/cli/download_lola.py`, and `backend/src/cli/download_horizons.py` (fixed with `# type: ignore[import-untyped]`), plus a dict-unpack narrowing (`prior is not None`) in `backend/src/cli/download_lola.py`. These predate BE-003 (introduced by DATA-001/DATA-002/DATA-003). The human directed the fix so the required `mypy` command could pass; recommend `BE-003.write_paths` be extended to cover the three files in a future revision.
+- Open issues: none blocking.
+- Proposed doc deltas: extend `BE-003.write_paths` to include the three DATA-task files fixed under human approval; consider adding `types-PyYAML` to the dev dependency group so the `yaml` imports no longer need `type: ignore[import-untyped]`.
+
+```text
+ZETA HANDOFF — BE-003 ready to merge
+Branch: bauerceptor-charlie
+Worktree: /home/red/Projects/lunar-landing-charlie
+Commit: bauerceptor-charlie tip after this closure commit; task work commit b36bedfa
+Task status: done
+Base: 23ad60f (bauerceptor tip before task work)
+Commands: uv run --python 3.12 --frozen pytest tests/integration -v exit 0 (29 passed); uv run --python 3.12 --frozen ruff check . exit 0; uv run --python 3.12 --frozen mypy src tests exit 0
+Evidence: pytest 29 passed; ruff clean; mypy success (65 source files)
+Changed paths: backend/src/api/*, backend/src/application/*, backend/tests/integration/*, contracts/openapi.json, plus human-approved mypy fixes in backend/src/infrastructure/site_registry_loader.py, backend/src/cli/download_lola.py, backend/src/cli/download_horizons.py
+Artefacts: none (no required artifact evidence for BE-003)
+Pre-merge checks: pytest tests/integration 29 passed; ruff check . clean; mypy src tests clean; validate_task_ledger.py exit 0 (14 done); check_planning_docs.py exit 0; check_file_lengths.py exit 0
+M3 impact: BE-003 is an FE-003 input; after zeta merges BE-003 (with DATA-006 already merged), FE-003 still needs FE-002
+Known risks: none
+Do not merge if: pytest, ruff, or mypy fails, or the tree contains changes outside the paths above
+```
