@@ -15,10 +15,10 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | Governance (single plan, ownership, anti-tamper guards) | `DONE` — ledger `DOC-001`, `DOC-002`, `DOC-GATE`, `ARCH-001` closed with evidence | bauerceptor |
 | Human review gate | `DONE` — `DOC-GATE` closed 2026-11-15 with recorded approval | bauerceptor |
 | `M3` frontend corrected onto the plan | `DONE` (committed on `bauerceptor`, not yet merged to `main`) | bauerceptor |
-| `M3` frontend, P0 completeness | `PARTIAL` — issues 5–8 fixed on `feat/module-3-frontend-core` (`801aa0a`) and verified in a test merge; pending merge; #9 open | usairam |
-| `M1` data pipeline | `PARTIAL` — `DATA-001`, `DATA-002`, `DATA-003` done; acquisition complete; `agent-beta` takes `DATA-004`–`DATA-006` (also needs `ARCH-002`) | bauerceptor |
-| `M2` backend | `READY` — `agent-charlie` takes `ARCH-002` then `BE-001`–`BE-003` | bauerceptor |
-| Parallel session (revision 5) | `IN PROGRESS` — Wave 2: `DATA-002` (`876e758`) and `DATA-003` (`4b9402d`) merged and pushed; `ARCH-002` pending; zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
+| `M3` frontend, P0 completeness | `PARTIAL` — issues 5–8 fixed on `feat/module-3-frontend-core` (`801aa0a`); `ARCH-002` merged and pushed at `a0e75d6`, so `FE-001` is unblocked; #9 open | usairam |
+| `M1` data pipeline | `PARTIAL` — `DATA-001`–`DATA-003` done; `agent-beta` next `DATA-004` (its `DATA-003` + `ARCH-002` deps are satisfied) | bauerceptor |
+| `M2` backend | `PARTIAL` — `ARCH-002` done; `agent-charlie` next `BE-001` (waits for `DATA-004`) | bauerceptor |
+| Parallel session (revision 5) | `IN PROGRESS` — Wave 1 complete: `DATA-002` (`876e758`), `DATA-003` (`4b9402d`), and `ARCH-002` (`a0e75d6`) merged and pushed; M3 unblocked; zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
 | `M4` 3D | `PARTIAL` — M4 SVG horizon/timeline/contrast merged as `00f7e77`; `terrain-3d` remains `.gitkeep` and gated | devscion |
 | `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
 | **P0 release** | **`NOT SHIPPABLE` — 5 blockers remain (1, 5, 6, 7, 8)** | — |
@@ -279,16 +279,16 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 | 1 | Fixtures deleted but no generator exists yet, so offline mode has nothing to read | `frontend/public/data/fixtures/` (absent), `DATA-006` | `BLOCKED` on `M1` | in `DATA-006` acceptance |
 | 2 | `evaluateScenario`/`compareScenarios`/`scanWindows` now require a scenario key; comparison and windows callers are typed but their scenarios are P1 | `frontend/src/services/`, `P1-COMPARE`, `P1-WINDOWS` | low | open |
 | 3 | No test runner or `test` script, so three ledger acceptance commands cannot run | `frontend/package.json`, `frontend/vitest.config.ts` | BLOCKER for P0 | `DONE` — closed by `ARCH-001` |
-| 4 | Wire types are hand-maintained; `api.generated.ts` does not exist | `frontend/src/types/`, `ARCH-002` | MAJOR | in `ARCH-002` acceptance |
+| 4 | Wire types are hand-maintained; `api.generated.ts` does not exist | `frontend/src/types/`, `ARCH-002` | MAJOR | `DONE` — closed by `ARCH-002` (`a0e75d6`) |
 | 5 | 2D map and persona mode are built but are P1, mounted unconditionally in the cockpit | `frontend/src/features/lunar-map-2d/`, `frontend/src/features/persona-mode/` | MAJOR | `VERIFIED` on `feat/module-3-frontend-core` at `801aa0a`; pending merge |
 | 6 | Horizon silhouette and timeline were placeholders, the two P0 visualisations REQ-11 requires | `frontend/src/components/layout/AppShell.tsx` | BLOCKER for P0 | `VERIFIED` on `feat/module-3-frontend-core` at `801aa0a`; pending merge |
 | 7 | No Class B badge, spherical-limb notice, or provenance footer in the UI | `frontend/src/components/`, `frontend/src/features/` | BLOCKER for P0 | `VERIFIED` on `feat/module-3-frontend-core` at `801aa0a`; pending merge |
 | 8 | No `step`, `array_az`, or `min_comms` controls; values exist in state and URL but no UI writes them | `frontend/src/features/time-controls/` | BLOCKER for P0 | `VERIFIED` on `feat/module-3-frontend-core` at `801aa0a`; pending merge |
 | 9 | Educational glossary asserts unsourced science (1.54° tilt, 40 K, ±6.5° libration, "uninterrupted" DTE) and generates narrative from booleans | `frontend/src/features/persona-mode/educationalGlossary.ts` | MAJOR | open — deliberately deferred, see below |
 | 10 | Registry holds 6 sites, not the 16 REQ-05 requires | `backend/config/curated_sites.yaml` | BLOCKER for P0 | `DONE` — closed by `DATA-001` |
-| 11 | `contracts/openapi-draft.yaml` still hand-maintained alongside Pydantic | `contracts/` | MAJOR | in `ARCH-002` acceptance |
+| 11 | `contracts/openapi-draft.yaml` still hand-maintained alongside Pydantic | `contracts/` | MAJOR | `DONE` — `openapi-draft.yaml` deleted by `ARCH-002` (`a0e75d6`) |
 | 12 | `backend/uv.lock` absent, pytest not installed, so no Python check can run | `backend/` | BLOCKER for P0 | `DONE` — closed by `ARCH-001` |
-| 13 | Fixture `terrain.sample.json` is 16×16; production contract is 128×128 | `contracts/fixtures/` | MINOR | open |
+| 13 | Fixture `terrain.sample.json` is 16×16; production contract is 128×128 | `contracts/fixtures/` | MINOR | `DONE` — `ARCH-002` regenerated it at 128×128; the parity test asserts production shape |
 | 14 | `ARCH-002` deletes hand-written wire types but `frontend/src/types/index.ts` is outside its `write_paths`; the merged M4 panels import from that barrel | `frontend/src/types/index.ts`, `ARCH-002` | BLOCKER for `ARCH-002` | `RESOLVED` — human-approved ledger revision (2026-11-15) adds the barrel, three consumers, and the acceptance-required deletions to `ARCH-002.write_paths` |
 | 15 | M4 test files exported runner functions but registered no Vitest tests, so they collected zero tests | `frontend/src/__tests__/` | MAJOR | `DONE` — wired into Vitest; 2 tests pass |
 | 16 | M4 code was merged to `main` without a ledger task or plan/registry update; `main` still carried revision 3, the 14-site ledger, and the 6-site registry | `frontend/src/features/sky-horizon/`, `frontend/src/features/mission-timeline/`, `frontend/src/features/earth-moon-contrast/`, `DEVELOPMENT_PLAN.md` | governance | `RECORDED` — Appendix F; M4 remains gated, no ledger task |
@@ -317,8 +317,8 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 |---|---|---|---|
 | `M1` | `agent-alpha` | — (complete: `DATA-002`, `DATA-003` done) | — |
 | `M1` | `agent-beta` | `DATA-004` → `DATA-005` → `DATA-006` | `DATA-004` needs `DATA-003` + `ARCH-002`; `DATA-005` needs `DATA-002` + `ARCH-002`; `DATA-006` needs both packs |
-| `M2` | `agent-charlie` | `ARCH-002` → `BE-001` → `BE-002` → `BE-003` | `BE-001` needs `DATA-004` + `ARCH-002`; `BE-002` needs `BE-001` + `DATA-005`; `BE-003` needs `BE-002` + `DATA-006` |
-| `M3` | usairam | Merge `feat/module-3-frontend-core` (`801aa0a`) with `bauerceptor` after `ARCH-002`; apply the integration fixes; close `FE-001`/`FE-002`; `FE-003` after `BE-003`/`DATA-006` | `ARCH-002`, `BE-003`, `DATA-006`; issue 9 human decision |
+| `M2` | `agent-charlie` | `BE-001` → `BE-002` → `BE-003` | `BE-001` needs `DATA-004`; `BE-002` needs `BE-001` + `DATA-005`; `BE-003` needs `BE-002` + `DATA-006` |
+| `M3` | usairam | `ARCH-002` merged and pushed at `a0e75d6`: merge `bauerceptor` into `feat/module-3-frontend-core`, apply the integration fixes, close `FE-001`/`FE-002`; `FE-003` after `BE-003`/`DATA-006` | `BE-003`, `DATA-006`; issue 9 human decision |
 | `M4` | devscion | not startable | `P0-GATE` |
 | `M5` | — | needs an owner | — |
 
@@ -662,3 +662,15 @@ M3 impact: FE-001 ready after merge
 Known risks: none
 Do not merge if: either artifact hash differs, the parity test fails, or bun run typecheck fails
 ```
+
+### Wave 1 — ARCH-002 integrated — agent-zeta
+
+- Synced `bauerceptor` `05d9fcc` into `bauerceptor-charlie` (merge `e96e31e`): resolved `plan/task-ledger.json` to the human-approved **16-path** `write_paths` plus charlie's execution fields, kept both `WORK_LOG.md` sections, regenerated the digest. Confirmed charlie's only ledger deltas vs the merge base were `ARCH-002` execution fields and `write_paths`.
+- Re-ran on the synced branch: `export_openapi` exit 0 (deterministic, no diff); parity `14 passed, 1 skipped`; `bun run typecheck` / `lint` / `test` / `format:check` exit 0 (2 tests).
+- Merged `bauerceptor-charlie` into `bauerceptor` as `a0e75d6` with `--no-ff`; no conflicts. Re-ran the parity test and `bun run typecheck` on the integration branch — both pass.
+- Validators after digest refresh: `validate_task_ledger.py` exit 0 (28 tasks, **8 done**); `check_planning_docs.py` exit 0; `check_file_lengths.py` exit 0. Pushed `05d9fcc..a0e75d6`.
+- Artefacts match the handoff: `contracts/openapi.json` `5c00c4ae…`; `frontend/src/types/api.generated.ts` `f312f1a2…`.
+- Closed issues #4 (hand-written wire types), #11 (`openapi-draft.yaml`), and #13 (16×16 terrain fixture); #14 was resolved by the `05d9fcc` revision.
+- `FE-001` is unblocked and usairam has been given the instruction: merge `bauerceptor` (`a0e75d6`) into `feat/module-3-frontend-core`, apply the integration fixes, close `FE-001`/`FE-002`; do not re-implement issues 5–8.
+- Next: `agent-beta` may start `DATA-004`/`DATA-005`; `agent-charlie` waits for `DATA-004`/`DATA-005` before `BE-001`/`BE-002`.
+- Noted: `origin/main` advanced to `7c4877a` and `origin/feat/m4-3d-terrain` moved; out of scope for this session and untouched.
