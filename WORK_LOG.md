@@ -750,3 +750,30 @@ Do not merge if: the generator or pytest fails, a pack is not 128x128 with 16384
 - Validators: ledger **10 done**; planning docs and file lengths exit 0.
 - Open issues added (not blockers): #22 REQ-08 limb reference, #23 Cabeus DEM-boundary limitation, #24 `source_manifest_sha256` convention.
 - Next: `agent-beta` may start `DATA-006`; `agent-charlie` may start `BE-001` now and needs it before `BE-002`.
+
+### BE-001 — done — agent-charlie
+
+- Branch/commit: `bauerceptor-charlie` @ `cea8aff` (task work); the ledger closure is the branch tip.
+- Changed: added `backend/src/domain/mission_time.py` (UTC sampling and coverage validation with the 15-day lookahead) and `backend/src/domain/interpolation.py` (linear elevation and shortest-arc azimuth interpolation), plus the two required unit tests.
+- Commands: `uv run --python 3.12 --frozen pytest tests/unit/test_mission_time.py tests/unit/test_interpolation.py -v` — exit 0 (73 passed).
+- Evidence: 73 passed; sample counts 168/336/708 (60 min) and 1008/2016/4248 (10 min); sampling start-inclusive/end-exclusive; naive timestamps raise `NaiveTimestampError`; out-of-coverage requests, including the 15-day lookahead, raise `EphemerisRangeExceededError`; azimuth interpolation uses the shortest signed delta across 359°→0°; off-grid midpoint interpolation error is below 0.05° against frozen reference rows.
+- Extras run (not ledger evidence): `ruff check .` — clean.
+- Open issues: none blocking. Note: the frozen `data/manifests/references/horizons/*.reference.json` rows are daily selections of the hourly grid (not sub-hourly), so the off-grid accuracy assertion is a 2-hour-span midpoint leave-one-out against those frozen rows for the nine `artemis_iii` sites, where the Sun/Earth geometry is non-singular. Equatorial sites near zenith crossings sit outside a meaningful 0.05° linear-azimuth bound.
+- Proposed doc deltas: none.
+
+```text
+ZETA HANDOFF — BE-001 ready to merge
+Branch: bauerceptor-charlie
+Worktree: /home/red/Projects/lunar-landing-charlie
+Commit: bauerceptor-charlie tip after this closure commit; task work commit cea8aff
+Task status: done
+Base: bead176 (bauerceptor tip before task work)
+Commands: uv run --python 3.12 --frozen pytest tests/unit/test_mission_time.py tests/unit/test_interpolation.py -v exit 0
+Evidence: pytest 73 passed; ruff check . clean
+Changed paths: backend/src/domain/mission_time.py, backend/src/domain/interpolation.py, backend/tests/unit/test_mission_time.py, backend/tests/unit/test_interpolation.py, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: none (no required artifact evidence for BE-001)
+Pre-merge checks: pytest 73 passed; ruff check . clean
+M3 impact: none (BE-001 unblocks charlie's BE-002, not M3)
+Known risks: none
+Do not merge if: the pytest command fails, ruff check fails, or the tree contains changes outside the changed paths above
+```
