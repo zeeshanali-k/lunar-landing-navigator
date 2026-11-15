@@ -674,3 +674,31 @@ Do not merge if: either artifact hash differs, the parity test fails, or bun run
 - `FE-001` is unblocked and usairam has been given the instruction: merge `bauerceptor` (`a0e75d6`) into `feat/module-3-frontend-core`, apply the integration fixes, close `FE-001`/`FE-002`; do not re-implement issues 5–8.
 - Next: `agent-beta` may start `DATA-004`/`DATA-005`; `agent-charlie` waits for `DATA-004`/`DATA-005` before `BE-001`/`BE-002`.
 - Noted: `origin/main` advanced to `7c4877a` and `origin/feat/m4-3d-terrain` moved; out of scope for this session and untouched.
+
+### DATA-004 — done — agent-beta
+
+- Branch/commit: `bauerceptor-beta` @ `b9a472d` (task work); the ledger closure is the branch tip.
+- Changed: added `backend/src/infrastructure/ephemeris_pack.py` (build, validate, deterministic write), `backend/src/cli/build_ephemeris_packs.py` (manifest → verified raw → pack), and `backend/tests/unit/test_ephemeris_pack.py`; generated the 16 `backend/data/site_packs/{site}/ephemeris.json` packs. Every pack has `sample_count` 26305, four finite arrays of that length, `frame` `MOON_ME`, `longitude_convention` `east_positive`, `azimuth_convention` `clockwise_from_north`, the registry-derived `site_coord_used`, and `source_manifest_sha256` over its two source manifests.
+- Commands: `uv run --python 3.12 --frozen python -m src.cli.build_ephemeris_packs` — exit 0 (16 packs); `uv run --python 3.12 --frozen pytest tests/unit/test_ephemeris_pack.py -v` — exit 0 (57 passed).
+- Evidence: command evidence recorded in the ledger; the direct-sample test reproduces all 32 frozen Horizons reference files exactly. Rebuild is byte-identical; sha256 of the sorted per-pack hash list is `2bc802e2601c11041be6bafc65cf563ed0f24a9d59e04bea34b86dc50ab83639`.
+- Extras run (not ledger evidence): `ruff check`, `ruff format --check`, and `mypy` on the three new source files — all clean; `check_file_lengths.py` — 0 violations.
+- Open issues: none found in this task.
+- Proposed doc deltas: none. `source_manifest_sha256` is defined in the module docstring as the SHA-256 of the two source manifests concatenated in ascending path order; if the integrator prefers a different convention, it belongs in REQ-06 rather than a second implementation.
+- Note: the untracked out-of-order `scripts/fetch_horizons.py` and `data/downloads/` are untouched; raw bytes remain uncommitted.
+
+```text
+ZETA HANDOFF — DATA-004 ready to merge
+Branch: bauerceptor-beta
+Worktree: /home/red/Projects/lunar-landing-beta
+Commit: bauerceptor-beta tip after this closure commit; task work commit b9a472d
+Task status: done
+Base: 140b6b9 (bauerceptor tip before task work)
+Commands: uv run --python 3.12 --frozen python -m src.cli.build_ephemeris_packs exit 0; uv run --python 3.12 --frozen pytest tests/unit/test_ephemeris_pack.py -v exit 0
+Evidence: pytest 57 passed; 16 packs, sample_count 26305; aggregate pack-hash sha256 2bc802e2601c11041be6bafc65cf563ed0f24a9d59e04bea34b86dc50ab83639
+Changed paths: backend/src/infrastructure/ephemeris_pack.py, backend/src/cli/build_ephemeris_packs.py, backend/tests/unit/test_ephemeris_pack.py, backend/data/site_packs/*/ephemeris.json, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: 16 x backend/data/site_packs/{site}/ephemeris.json; per-pack hashes are printed by the generator and the aggregate is 2bc802e2...
+Pre-merge checks: generator and pytest exit 0; ruff check, ruff format --check, mypy on the new files clean; check_file_lengths.py 0 violations
+M3 impact: none (DATA-004 unblocks charlie's BE-001, not M3)
+Known risks: none
+Do not merge if: the generator or pytest fails, a pack's sample_count is not 26305, or the tree contains changes outside the changed paths above
+```
