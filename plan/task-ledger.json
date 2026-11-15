@@ -581,7 +581,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "in_progress",
+      "status": "done",
       "depends_on": [
         "DATA-001"
       ],
@@ -636,12 +636,30 @@
           "ref": "pytest tests/unit/test_pds_dem.py"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "artifact",
+          "ref": "data/manifests/lola/manifest.json",
+          "sha256": "2d2b4554755ef1799930cc1968e1aa330c95145fd113d7356336605298957817"
+        },
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_pds_dem.py",
+          "exit": 0,
+          "note": "10 passed"
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --project backend --frozen python -m src.cli.download_lola",
+          "exit": 0,
+          "note": "image 115520000 bytes sha256 e6591eeea35402ca5e124ca00f5bf0774381a2d4fa919144b455d82b8ff65fdc"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T13:59:03Z",
+      "completed_commit": "009d0bfd98b290753755fa9c3a2e8bf36ebb7425"
     },
     {
       "id": "DATA-003",
