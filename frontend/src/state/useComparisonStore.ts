@@ -13,6 +13,7 @@ export interface ComparisonState {
   loading: boolean;
   error: string | null;
   pinScenario: (scenario: CompareScenarioInput) => Promise<void>;
+  setScenarios: (scenarios: CompareScenarioInput[], baselineIndex?: number) => Promise<void>;
   unpinScenario: (scenarioId: string) => Promise<void>;
   setBaselineIndex: (index: number) => Promise<void>;
   runComparison: () => Promise<void>;
@@ -27,6 +28,10 @@ export const useComparisonStore = create<ComparisonState>((set, get) => ({
   error: null,
 
   pinScenario: async (scenario) => {
+    if (!scenario.scenario_id.trim()) {
+      set({ error: "Scenario ID must be non-empty." });
+      return;
+    }
     const { pinnedScenarios } = get();
     const existingIdx = pinnedScenarios.findIndex(
       (item) => item.scenario_id === scenario.scenario_id,
@@ -45,16 +50,32 @@ export const useComparisonStore = create<ComparisonState>((set, get) => ({
     await get().runComparison();
   },
 
+  setScenarios: async (scenarios, baselineIndex = 0) => {
+    const seen = new Set<string>();
+    const unique: CompareScenarioInput[] = [];
+    for (const item of scenarios) {
+      const id = item.scenario_id.trim();
+      if (!id || seen.has(id)) continue;
+      seen.add(id);
+      unique.push({ ...item, scenario_id: id });
+      if (unique.length >= MAX_PINNED_SCENARIOS) break;
+    }
+    const safeBaseline =
+      unique.length === 0 ? 0 : Math.max(0, Math.min(baselineIndex, unique.length - 1));
+    set({ pinnedScenarios: unique, baselineIndex: safeBaseline, error: null });
+    await get().runComparison();
+  },
+
   unpinScenario: async (scenarioId) => {
     const { pinnedScenarios, baselineIndex } = get();
     const updated = pinnedScenarios.filter((item) => item.scenario_id !== scenarioId);
     const nextBaseline =
       updated.length === 0 ? 0 : Math.min(baselineIndex, updated.length - 1);
     set({ pinnedScenarios: updated, baselineIndex: nextBaseline });
-    if (updated.length > 0) {
+    if (updated.length >= 2) {
       await get().runComparison();
     } else {
-      set({ comparisonData: null, error: null });
+      set({ comparisonData: null, loading: false, error: null });
     }
   },
 
@@ -69,7 +90,7 @@ export const useComparisonStore = create<ComparisonState>((set, get) => ({
 
   runComparison: async () => {
     const { pinnedScenarios, baselineIndex } = get();
-    if (pinnedScenarios.length === 0) {
+    if (pinnedScenarios.length < 2) {
       set({ comparisonData: null, loading: false, error: null });
       return;
     }
