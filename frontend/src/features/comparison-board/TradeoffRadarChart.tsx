@@ -27,20 +27,14 @@ function axisPoint(idx: number, value: number): { x: number; y: number } {
 }
 
 export function TradeoffRadarChart({ scenarios }: TradeoffRadarChartProps) {
-  const hasClassB = scenarios.some(
-    (s) => s.evaluation.summary.sub_scores.terrain_score === null,
-  );
+  const hasClassB = scenarios.some((s) => s.evaluation.summary.sub_scores.terrain_score === null);
 
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "1rem" }}>
       <section className="panel-card" style={{ padding: "0.85rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem" }}>
           <strong style={{ fontSize: "0.84rem" }}>Sub-Score Trade-Off Radar (0–100)</strong>
-          {hasClassB && (
-            <span style={{ fontSize: "0.7rem", color: "var(--accent-warn)" }}>
-              Terrain axis N/A for spherical-limb sites
-            </span>
-          )}
+          {hasClassB && <span style={{ fontSize: "0.7rem", color: "var(--accent-warn)" }}>Terrain axis N/A for spherical-limb sites</span>}
         </div>
 
         <svg viewBox="0 0 300 264" style={{ width: "100%", maxHeight: "260px", background: "#070c17", borderRadius: "0.5rem" }}>
@@ -65,12 +59,7 @@ export function TradeoffRadarChart({ scenarios }: TradeoffRadarChartProps) {
           {scenarios.map((scen, sIdx) => {
             const color = SCENARIO_PALETTE[sIdx % SCENARIO_PALETTE.length];
             const sub = scen.evaluation.summary.sub_scores;
-            const values: (number | null)[] = [
-              sub.power_score,
-              sub.thermal_score,
-              sub.comms_score,
-              sub.terrain_score,
-            ];
+            const values: (number | null)[] = [sub.power_score, sub.thermal_score, sub.comms_score, sub.terrain_score];
             const validPts = values
               .map((v, idx) => (v === null ? null : axisPoint(idx, v)))
               .filter((p): p is { x: number; y: number } => p !== null);
@@ -117,26 +106,31 @@ export function TradeoffRadarChart({ scenarios }: TradeoffRadarChartProps) {
               const y = 148 - ((elev + 2) / 14) * 148;
               return (
                 <g key={elev}>
-                  <line x1={0} y1={y} x2={516} y2={y} stroke={elev === 0 ? "#475569" : "#1e293b"} strokeDasharray={elev === 0 ? "3 3" : undefined} />
-                  <text x={-5} y={y + 3} textAnchor="end" fontSize="9" fill="#94a3b8">{elev}°</text>
+                  <line
+                    x1={0}
+                    y1={y}
+                    x2={516}
+                    y2={y}
+                    stroke={elev === 0 ? "#475569" : "#1e293b"}
+                    strokeDasharray={elev === 0 ? "3 3" : undefined}
+                  />
+                  <text x={-5} y={y + 3} textAnchor="end" fontSize="9" fill="#94a3b8">
+                    {elev}°
+                  </text>
                 </g>
               );
             })}
             {[0, 90, 180, 270, 360].map((az) => {
               const x = (az / 360) * 516;
               return (
-                <text key={az} x={x} y={166} textAnchor="middle" fontSize="9.5" fill="#94a3b8">{az}°</text>
+                <text key={az} x={x} y={166} textAnchor="middle" fontSize="9.5" fill="#94a3b8">
+                  {az}°
+                </text>
               );
             })}
             {scenarios.map((scen, idx) => {
               const color = SCENARIO_PALETTE[idx % SCENARIO_PALETTE.length];
-              const { ridgeLinePath, limbLinePath } = buildPanoramaHorizonPaths(
-                scen.evaluation.horizon_profile,
-                516,
-                148,
-                -2,
-                12,
-              );
+              const { ridgeLinePath, limbLinePath } = buildPanoramaHorizonPaths(scen.evaluation.horizon_profile, 516, 148, -2, 12);
               return (
                 <g key={scen.scenario_id}>
                   {ridgeLinePath ? (

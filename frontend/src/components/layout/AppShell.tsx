@@ -25,8 +25,7 @@ export function AppShell() {
   const error = useMissionStore((s) => s.error);
   const setHardwareConfig = useMissionStore((s) => s.setHardwareConfig);
 
-  const isSphericalLimbOnly =
-    terrainUnavailable || evaluationData?.site.has_precomputed_terrain === false;
+  const isSphericalLimbOnly = terrainUnavailable || evaluationData?.site.has_precomputed_terrain === false;
   const horizonProfile = evaluationData?.horizon_profile ?? [];
   const timeseries = evaluationData?.timeseries ?? [];
 
@@ -118,9 +117,7 @@ export function AppShell() {
           background: "rgba(16, 23, 38, 0.85)",
         }}
       >
-        <span>
-          Data Sources: NASA LRO LOLA (`ldem_80s_80m`) · JPL Horizons (`MOON_ME`) · LRO QuickMap · NASA Moon Trek · CSA
-        </span>
+        <span>Data Sources: NASA LRO LOLA (`ldem_80s_80m`) · JPL Horizons (`MOON_ME`) · LRO QuickMap · NASA Moon Trek · CSA</span>
         <span>
           Active Site Model:{" "}
           <strong style={{ color: isSphericalLimbOnly ? "var(--accent-warn)" : "var(--accent-ok)" }}>

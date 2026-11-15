@@ -1,11 +1,8 @@
 /** Unit tests for landing-window ranking, tie-breaking, and monthly grouping (P1-WINDOWS). */
 
-import {
-  getWindowCellColor,
-  groupWindowsByMonth,
-  rankTopWindows,
-  WINDOW_GRID_STEP_MINUTES,
-} from "../features/window-finder/windowMath";
+import { it } from "vitest";
+
+import { getWindowCellColor, groupWindowsByMonth, rankTopWindows, WINDOW_GRID_STEP_MINUTES } from "../features/window-finder/windowMath";
 import type { WindowCandidate } from "../types";
 
 function assert(condition: boolean, message: string): void {
@@ -22,8 +19,20 @@ export function runWindowMathTests(): void {
   const candidates: WindowCandidate[] = [
     { start_utc: "2027-11-10T00:00:00Z", feasibility_score: 88.0, sunlit_fraction: 0.8, dte_fraction: 0.7, longest_dark_streak_hours: 30 },
     { start_utc: "2027-02-01T00:00:00Z", feasibility_score: 91.5, sunlit_fraction: 0.9, dte_fraction: 0.7, longest_dark_streak_hours: 18 },
-    { start_utc: "2027-01-15T00:00:00Z", feasibility_score: 91.5, sunlit_fraction: 0.89, dte_fraction: 0.71, longest_dark_streak_hours: 19 },
-    { start_utc: "2027-06-01T00:00:00Z", feasibility_score: 52.0, sunlit_fraction: 0.45, dte_fraction: 0.5, longest_dark_streak_hours: 110 },
+    {
+      start_utc: "2027-01-15T00:00:00Z",
+      feasibility_score: 91.5,
+      sunlit_fraction: 0.89,
+      dte_fraction: 0.71,
+      longest_dark_streak_hours: 19,
+    },
+    {
+      start_utc: "2027-06-01T00:00:00Z",
+      feasibility_score: 52.0,
+      sunlit_fraction: 0.45,
+      dte_fraction: 0.5,
+      longest_dark_streak_hours: 110,
+    },
   ];
 
   const ranked = rankTopWindows(candidates, 3);
@@ -43,4 +52,6 @@ export function runWindowMathTests(): void {
   assert(getWindowCellColor(null, 0.85) === "#10b981", "Class B fallback uses sunlitFraction * 100");
 }
 
-runWindowMathTests();
+it("landing-window ranking, tie-breaking, and monthly grouping", () => {
+  runWindowMathTests();
+});

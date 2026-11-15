@@ -11,13 +11,7 @@ export interface TopWindowsListProps {
   onPinWindow: (startUtc: string, rank: number) => void;
 }
 
-export function TopWindowsList({
-  topWindows,
-  candidateMap,
-  isClassB,
-  onSelectWindow,
-  onPinWindow,
-}: TopWindowsListProps) {
+export function TopWindowsList({ topWindows, candidateMap, isClassB, onSelectWindow, onPinWindow }: TopWindowsListProps) {
   if (topWindows.length === 0) {
     return (
       <div className="panel-card" style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>
@@ -29,7 +23,9 @@ export function TopWindowsList({
   return (
     <section className="panel-card" style={{ padding: "0.85rem" }}>
       <h3 className="panel-title">
-        <span><Award size={14} /> Top {topWindows.length} Recommended Landing Windows</span>
+        <span>
+          <Award size={14} /> Top {topWindows.length} Recommended Landing Windows
+        </span>
         <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>Sorted by score · ties broken by earliest UTC</span>
       </h3>
 
@@ -60,9 +56,7 @@ export function TopWindowsList({
                   >
                     #{win.rank}
                   </span>
-                  <strong style={{ fontSize: "0.84rem", fontVariantNumeric: "tabular-nums" }}>
-                    {win.start_utc}
-                  </strong>
+                  <strong style={{ fontSize: "0.84rem", fontVariantNumeric: "tabular-nums" }}>{win.start_utc}</strong>
                 </div>
                 <div style={{ display: "flex", gap: "0.85rem", fontSize: "0.75rem", color: "var(--text-muted)", flexWrap: "wrap" }}>
                   <span>
@@ -71,10 +65,16 @@ export function TopWindowsList({
                       {isClassB ? "N/A (Limb Only)" : win.feasibility_score.toFixed(1)}
                     </strong>
                   </span>
-                  <span>Sunlit: <strong>{(win.sunlit_fraction * 100).toFixed(1)}%</strong></span>
-                  <span>DTE: <strong>{(win.dte_fraction * 100).toFixed(1)}%</strong></span>
+                  <span>
+                    Sunlit: <strong>{(win.sunlit_fraction * 100).toFixed(1)}%</strong>
+                  </span>
+                  <span>
+                    DTE: <strong>{(win.dte_fraction * 100).toFixed(1)}%</strong>
+                  </span>
                   {detail && (
-                    <span>Max Dark Streak: <strong>{detail.longest_dark_streak_hours.toFixed(1)}h</strong></span>
+                    <span>
+                      Max Dark Streak: <strong>{detail.longest_dark_streak_hours.toFixed(1)}h</strong>
+                    </span>
                   )}
                 </div>
               </div>

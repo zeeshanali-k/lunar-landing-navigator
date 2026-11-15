@@ -36,7 +36,7 @@ export function ScheduleShiftExplorer() {
   const { setScenarios, pinScenario } = useComparisonStore();
   const [shiftWarning, setShiftWarning] = useState<string | null>(null);
 
-  const siteId = selectedSiteId ?? "artemis-shackleton-ridge";
+  const siteId = selectedSiteId ?? "artemis-cabeus-peak";
   const siteName = selectedSite?.name ?? siteId;
 
   const baseRequest = useMemo(
@@ -50,22 +50,10 @@ export function ScheduleShiftExplorer() {
       observer_height_m: observerHeightM,
       min_comms_elev_deg: minCommsElevDeg,
     }),
-    [
-      siteId,
-      startUtc,
-      durationDays,
-      stepMinutes,
-      solarArrayType,
-      fixedArrayAzimuthDeg,
-      observerHeightM,
-      minCommsElevDeg,
-    ],
+    [siteId, startUtc, durationDays, stepMinutes, solarArrayType, fixedArrayAzimuthDeg, observerHeightM, minCommsElevDeg],
   );
 
-  const baselineCoverage = useMemo(
-    () => checkEphemerisCoverage(startUtc, durationDays),
-    [startUtc, durationDays],
-  );
+  const baselineCoverage = useMemo(() => checkEphemerisCoverage(startUtc, durationDays), [startUtc, durationDays]);
 
   const candidates = useMemo(() => {
     try {
@@ -105,10 +93,13 @@ export function ScheduleShiftExplorer() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
         <div>
           <h2 className="panel-title">
-            <span><CalendarClock size={14} /> Launch-Delay Sensitivity (+14 / +29.5 / +90 / +180 Days)</span>
+            <span>
+              <CalendarClock size={14} /> Launch-Delay Sensitivity (+14 / +29.5 / +90 / +180 Days)
+            </span>
           </h2>
           <p style={{ margin: "0.25rem 0 0", fontSize: "0.78rem", color: "var(--text-muted)" }}>
-            Site: <strong>{siteName}</strong> · Baseline: {startUtc} ({durationDays}d) · Coverage: {EPHEMERIS_COVERAGE_START_UTC.slice(0, 10)} to {EPHEMERIS_COVERAGE_STOP_UTC.slice(0, 10)}
+            Site: <strong>{siteName}</strong> · Baseline: {startUtc} ({durationDays}d) · Coverage:{" "}
+            {EPHEMERIS_COVERAGE_START_UTC.slice(0, 10)} to {EPHEMERIS_COVERAGE_STOP_UTC.slice(0, 10)}
           </p>
         </div>
         <button type="button" onClick={handleCompareAll} className="btn-surface" style={{ borderColor: "var(--accent-dte)" }}>
@@ -117,7 +108,17 @@ export function ScheduleShiftExplorer() {
       </div>
 
       {shiftWarning && (
-        <div className="panel-card" style={{ padding: "0.6rem 0.85rem", borderColor: "var(--accent-warn)", color: "#fde68a", fontSize: "0.78rem", flexDirection: "row", alignItems: "center" }}>
+        <div
+          className="panel-card"
+          style={{
+            padding: "0.6rem 0.85rem",
+            borderColor: "var(--accent-warn)",
+            color: "#fde68a",
+            fontSize: "0.78rem",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
           <AlertTriangle size={15} />
           <span>{shiftWarning}</span>
         </div>

@@ -2,12 +2,7 @@
 
 import { Download, FileJson, FileSpreadsheet, Printer, X } from "lucide-react";
 import { buildShareableScenarioUrl, useComparisonStore, useMissionStore } from "../../state";
-import {
-  buildScenarioExportJson,
-  buildTimeseriesCsv,
-  PROVENANCE_CITATIONS,
-  triggerBrowserDownload,
-} from "./exportHelpers";
+import { buildScenarioExportJson, buildTimeseriesCsv, PROVENANCE_CITATIONS, triggerBrowserDownload } from "./exportHelpers";
 
 export interface MissionBriefingModalProps {
   open: boolean;
@@ -22,9 +17,7 @@ export function MissionBriefingModal({ open, onClose }: MissionBriefingModalProp
   if (!open) return null;
 
   const shareUrl = buildShareableScenarioUrl(getScenarioUrlParams());
-  const isClassB =
-    evaluation?.site.has_precomputed_terrain === false ||
-    evaluation?.summary.feasibility_score === null;
+  const isClassB = evaluation?.site.has_precomputed_terrain === false || evaluation?.summary.feasibility_score === null;
 
   const handleDownloadCsv = (): void => {
     if (!evaluation) return;
@@ -48,13 +41,23 @@ export function MissionBriefingModal({ open, onClose }: MissionBriefingModalProp
       aria-modal="true"
       aria-label="Mission Briefing Export"
       style={{
-        position: "fixed", inset: 0, zIndex: 50, background: "rgba(7, 11, 20, 0.82)",
-        display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem",
+        position: "fixed",
+        inset: 0,
+        zIndex: 50,
+        background: "rgba(7, 11, 20, 0.82)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "1rem",
       }}
     >
       <div className="panel-card" style={{ maxWidth: "680px", width: "100%", maxHeight: "90vh", overflowY: "auto" }}>
         <div className="panel-row" style={{ display: "flex" }}>
-          <h2 className="panel-title"><span><Download size={14} /> Mission Briefing Export</span></h2>
+          <h2 className="panel-title">
+            <span>
+              <Download size={14} /> Mission Briefing Export
+            </span>
+          </h2>
           <button type="button" onClick={onClose} className="btn-surface" aria-label="Close briefing modal">
             <X size={14} /> Close
           </button>
@@ -66,7 +69,17 @@ export function MissionBriefingModal({ open, onClose }: MissionBriefingModalProp
           </p>
         ) : (
           <>
-            <div style={{ background: "#0b1120", border: "1px solid var(--border-subtle)", borderRadius: "0.5rem", padding: "0.75rem", display: "grid", gap: "0.35rem", fontSize: "0.8rem" }}>
+            <div
+              style={{
+                background: "#0b1120",
+                border: "1px solid var(--border-subtle)",
+                borderRadius: "0.5rem",
+                padding: "0.75rem",
+                display: "grid",
+                gap: "0.35rem",
+                fontSize: "0.8rem",
+              }}
+            >
               <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "0.4rem" }}>
                 <strong>{evaluation.site.name}</strong>
                 <span className="status-pill" style={{ fontSize: "0.7rem", color: isClassB ? "var(--accent-warn)" : "var(--accent-ok)" }}>
@@ -78,16 +91,23 @@ export function MissionBriefingModal({ open, onClose }: MissionBriefingModalProp
                 {evaluation.site.elevation_m !== null ? `${evaluation.site.elevation_m.toFixed(1)} m` : "N/A"} · Slope:{" "}
                 {evaluation.site.mean_slope_deg !== null ? `${evaluation.site.mean_slope_deg.toFixed(2)}°` : "N/A"}
               </div>
-              {isClassB && (
-                <div style={{ color: "#fde68a", fontSize: "0.76rem" }}>
-                  Terrain model unavailable — spherical limb only
-                </div>
-              )}
+              {isClassB && <div style={{ color: "#fde68a", fontSize: "0.76rem" }}>Terrain model unavailable — spherical limb only</div>}
               <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginTop: "0.2rem" }}>
-                <span>Feasibility: <strong>{evaluation.summary.feasibility_score !== null ? evaluation.summary.feasibility_score.toFixed(1) : "N/A"}</strong></span>
-                <span>Sunlit: <strong>{evaluation.summary.sunlit_hours.toFixed(1)}h</strong> ({(evaluation.summary.sunlit_fraction * 100).toFixed(1)}%)</span>
-                <span>DTE: <strong>{evaluation.summary.dte_comms_hours.toFixed(1)}h</strong> ({(evaluation.summary.dte_fraction * 100).toFixed(1)}%)</span>
-                <span>Max Dark: <strong>{evaluation.summary.longest_dark_streak_hours.toFixed(1)}h</strong></span>
+                <span>
+                  Feasibility:{" "}
+                  <strong>{evaluation.summary.feasibility_score !== null ? evaluation.summary.feasibility_score.toFixed(1) : "N/A"}</strong>
+                </span>
+                <span>
+                  Sunlit: <strong>{evaluation.summary.sunlit_hours.toFixed(1)}h</strong> (
+                  {(evaluation.summary.sunlit_fraction * 100).toFixed(1)}%)
+                </span>
+                <span>
+                  DTE: <strong>{evaluation.summary.dte_comms_hours.toFixed(1)}h</strong> (
+                  {(evaluation.summary.dte_fraction * 100).toFixed(1)}%)
+                </span>
+                <span>
+                  Max Dark: <strong>{evaluation.summary.longest_dark_streak_hours.toFixed(1)}h</strong>
+                </span>
               </div>
             </div>
 

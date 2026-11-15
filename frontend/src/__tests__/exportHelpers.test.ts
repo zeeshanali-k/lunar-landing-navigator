@@ -1,10 +1,8 @@
 /** Unit tests for deterministic CSV/JSON briefing export builders (F5.4). */
 
-import {
-  buildScenarioExportJson,
-  buildTimeseriesCsv,
-  PROVENANCE_CITATIONS,
-} from "../features/briefing-export/exportHelpers";
+import { it } from "vitest";
+
+import { buildScenarioExportJson, buildTimeseriesCsv, PROVENANCE_CITATIONS } from "../features/briefing-export/exportHelpers";
 import type { EvaluateResponse } from "../types";
 
 function assert(condition: boolean, message: string): void {
@@ -16,10 +14,10 @@ function assert(condition: boolean, message: string): void {
 function makeEval(isClassB: boolean): EvaluateResponse {
   return {
     site: {
-      id: isClassB ? "cnsa-change-4-von-karman" : "artemis-shackleton-ridge",
-      name: isClassB ? "Chang'e-4 (Von Karman)" : "Shackleton Connecting Ridge",
-      lat_deg: isClassB ? -45.45 : -89.45,
-      lon_deg: isClassB ? 177.59 : 135.2,
+      id: isClassB ? "cnsa-change-4-von-karman" : "artemis-cabeus-peak",
+      name: isClassB ? "Chang'e-4 (Von Karman)" : "Peak near Cabeus B",
+      lat_deg: isClassB ? -45.45 : -82.26,
+      lon_deg: isClassB ? 177.59 : -54.58,
       elevation_m: isClassB ? null : 1240,
       mean_slope_deg: isClassB ? null : 4.8,
       has_precomputed_terrain: !isClassB,
@@ -93,4 +91,6 @@ export function runExportHelpersTests(): void {
   assert(classBJson.evaluation.summary.feasibility_score === null, "Class B feasibility_score must remain null");
 }
 
-runExportHelpersTests();
+it("deterministic CSV/JSON briefing export builders", () => {
+  runExportHelpersTests();
+});

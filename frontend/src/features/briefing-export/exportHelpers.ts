@@ -68,14 +68,8 @@ export function buildTimeseriesCsv(evaluation: EvaluateResponse): string {
 }
 
 /** Build structured JSON bundle containing scenario evaluation, comparison, and provenance. */
-export function buildScenarioExportJson(
-  evaluation: EvaluateResponse,
-  shareUrl: string,
-  comparison: CompareResponse | null,
-): string {
-  const isClassA =
-    evaluation.site.has_precomputed_terrain !== false &&
-    evaluation.summary.feasibility_score !== null;
+export function buildScenarioExportJson(evaluation: EvaluateResponse, shareUrl: string, comparison: CompareResponse | null): string {
+  const isClassA = evaluation.site.has_precomputed_terrain !== false && evaluation.summary.feasibility_score !== null;
 
   const payload = {
     exported_at_utc: new Date().toISOString().replace(".000Z", "Z"),
@@ -89,11 +83,7 @@ export function buildScenarioExportJson(
 }
 
 /** Trigger a client-side file download for generated CSV or JSON content. */
-export function triggerBrowserDownload(
-  filename: string,
-  content: string,
-  mimeType: string,
-): void {
+export function triggerBrowserDownload(filename: string, content: string, mimeType: string): void {
   if (typeof document === "undefined" || typeof URL === "undefined") {
     return;
   }

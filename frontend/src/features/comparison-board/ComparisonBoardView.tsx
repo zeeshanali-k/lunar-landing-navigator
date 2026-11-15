@@ -11,78 +11,60 @@ import { SCENARIO_PALETTE, TradeoffRadarChart } from "./TradeoffRadarChart";
 
 const POWER_COLORS = { sunlit: "#f59e0b", grazing: "#d97706", dark: "#1e293b" } as const;
 const COMMS_COLORS = { dte_active: "#38bdf8", dte_blocked: "#334155" } as const;
+const TRACK_STYLE = { display: "flex", borderRadius: "4px", overflow: "hidden", background: "#0f172a" } as const;
 
 export function ComparisonBoardView() {
-  const {
-    pinnedScenarios,
-    comparisonData,
-    loading,
-    error,
-    pinScenario,
-    setScenarios,
-    unpinScenario,
-    setBaselineIndex,
-    clearComparison,
-  } = useComparisonStore();
-  const {
-    selectedSiteId,
-    selectedSite,
-    startUtc,
-    durationDays,
-    stepMinutes,
-    solarArrayType,
-    fixedArrayAzimuthDeg,
-    observerHeightM,
-    minCommsElevDeg,
-    selectSite,
-    setActiveTab,
-  } = useMissionStore();
+  const { pinnedScenarios, comparisonData, loading, error, pinScenario, setScenarios, unpinScenario, setBaselineIndex, clearComparison } =
+    useComparisonStore();
+  const mission = useMissionStore();
+
+  const sharedReq = {
+    start_utc: mission.startUtc,
+    duration_days: mission.durationDays,
+    step_minutes: mission.stepMinutes,
+    solar_array_type: mission.solarArrayType,
+    fixed_array_azimuth_deg: mission.fixedArrayAzimuthDeg,
+    observer_height_m: mission.observerHeightM,
+    min_comms_elev_deg: mission.minCommsElevDeg,
+  };
 
   const handlePinCurrent = (): void => {
-    const siteId = selectedSiteId ?? "artemis-shackleton-ridge";
-    const siteName = selectedSite?.name ?? siteId;
-    const scenarioId = `${siteId}-${startUtc.slice(0, 10)}-${solarArrayType}-${observerHeightM}m`;
+    const siteId = mission.selectedSiteId ?? "artemis-cabeus-peak";
+    const siteName = mission.selectedSite?.name ?? siteId;
+    const scenarioId = `${siteId}-${mission.startUtc.slice(0, 10)}-${mission.solarArrayType}-${mission.observerHeightM}m`;
     void pinScenario({
       scenario_id: scenarioId,
-      label: `${siteName} (${observerHeightM}m · ${startUtc.slice(0, 10)})`,
-      request: {
-        site_id: siteId,
-        start_utc: startUtc,
-        duration_days: durationDays,
-        step_minutes: stepMinutes,
-        solar_array_type: solarArrayType,
-        fixed_array_azimuth_deg: fixedArrayAzimuthDeg,
-        observer_height_m: observerHeightM,
-        min_comms_elev_deg: minCommsElevDeg,
-      },
+      label: `${siteName} (${mission.observerHeightM}m · ${mission.startUtc.slice(0, 10)})`,
+      request: { ...sharedReq, site_id: siteId },
     });
   };
 
   const handleLoadPreset = (): void => {
-    const shared = { start_utc: startUtc, duration_days: durationDays, step_minutes: stepMinutes, solar_array_type: solarArrayType, fixed_array_azimuth_deg: fixedArrayAzimuthDeg, observer_height_m: observerHeightM, min_comms_elev_deg: minCommsElevDeg };
     void setScenarios(
       [
-        { scenario_id: "preset-shackleton", label: "Shackleton Connecting Ridge", request: { ...shared, site_id: "artemis-shackleton-ridge" } },
-        { scenario_id: "preset-mons-mouton", label: "Mons Mouton (Leibnitz Beta)", request: { ...shared, site_id: "artemis-mons-mouton" } },
+        { scenario_id: "preset-cabeus-peak", label: "Peak near Cabeus B", request: { ...sharedReq, site_id: "artemis-cabeus-peak" } },
+        { scenario_id: "preset-mons-mouton", label: "Mons Mouton", request: { ...sharedReq, site_id: "artemis-mons-mouton" } },
       ],
       0,
     );
   };
 
   const handleLoadInCockpit = (scen: ComparedScenario): void => {
-    void selectSite(scen.evaluation.site.id);
-    setActiveTab("cockpit");
+    void mission.selectSite(scen.evaluation.site.id);
+    mission.setActiveTab("cockpit");
   };
 
-  const scenarios = comparisonData
-    ? computeClientDeltasVsBaseline(comparisonData.scenarios, comparisonData.baseline_index)
-    : [];
+  const scenarios = comparisonData ? computeClientDeltasVsBaseline(comparisonData.scenarios, comparisonData.baseline_index) : [];
 
   return (
     <div style={{ display: "grid", gap: "1rem" }}>
       <section className="panel-card panel-row">
         <div>
-          <h2 className="panel-title"><span><GitCompare size={14} /> Side-by-Side Scenario Comparison (2–4 Scenarios)</span></h2>
+          <h2 className="panel-title">
+            <span>
+              <GitCompare size={14} /> Side-by-Side Scenario Comparison (2–4 Scenarios)
+            </span>
+          </h2>
           <p style={{ margin: "0.2rem 0 0", fontSize: "0.78rem", color: "var(--text-muted)" }}>
             Pinned: {pinnedScenarios.length}/4 · Deltas evaluate each scenario minus Baseline #{(comparisonData?.baseline_index ?? 0) + 1}
           </p>
@@ -117,7 +99,12 @@ export function ComparisonBoardView() {
           {pinnedScenarios.map((item) => (
             <div key={item.scenario_id} className="btn-surface" style={{ justifyContent: "space-between", cursor: "default" }}>
               <span>{item.label}</span>
-              <button type="button" onClick={() => void unpinScenario(item.scenario_id)} className="btn-surface" style={{ padding: "0.2rem 0.5rem" }}>
+              <button
+                type="button"
+                onClick={() => void unpinScenario(item.scenario_id)}
+                className="btn-surface"
+                style={{ padding: "0.2rem 0.5rem" }}
+              >
                 <Trash2 size={12} /> Remove
               </button>
             </div>
@@ -145,27 +132,42 @@ export function ComparisonBoardView() {
           </div>
 
           <section className="panel-card" style={{ padding: "0.85rem" }}>
-            <h3 className="panel-title"><span><Layers size={13} /> Overlaid Multi-Scenario Power &amp; DTE Timeline Strips</span></h3>
+            <h3 className="panel-title">
+              <span>
+                <Layers size={13} /> Overlaid Multi-Scenario Power &amp; DTE Timeline Strips
+              </span>
+            </h3>
             <div style={{ display: "grid", gap: "0.6rem" }}>
               {scenarios.map((scen, idx) => {
                 const ts = scen.evaluation.timeseries;
                 const total = Math.max(1, ts.length);
-                const powerSegs = buildPowerSegments(ts);
-                const commsSegs = buildCommsSegments(ts);
                 return (
-                  <div key={scen.scenario_id} style={{ display: "grid", gap: "0.25rem", background: "#0b1120", padding: "0.55rem 0.7rem", borderRadius: "0.5rem" }}>
+                  <div
+                    key={scen.scenario_id}
+                    style={{ display: "grid", gap: "0.25rem", background: "#0b1120", padding: "0.55rem 0.7rem", borderRadius: "0.5rem" }}
+                  >
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.74rem" }}>
                       <strong style={{ color: SCENARIO_PALETTE[idx % SCENARIO_PALETTE.length] }}>{scen.label}</strong>
-                      <span style={{ color: "var(--text-muted)" }}>Sun {scen.evaluation.summary.sunlit_hours.toFixed(0)}h · DTE {scen.evaluation.summary.dte_comms_hours.toFixed(0)}h</span>
+                      <span style={{ color: "var(--text-muted)" }}>
+                        Sun {scen.evaluation.summary.sunlit_hours.toFixed(0)}h · DTE {scen.evaluation.summary.dte_comms_hours.toFixed(0)}h
+                      </span>
                     </div>
-                    <div style={{ display: "flex", height: "10px", borderRadius: "4px", overflow: "hidden", background: "#0f172a" }} title="Solar illumination track">
-                      {powerSegs.map((seg, i) => (
-                        <div key={`p-${i}`} style={{ width: `${((seg.endIndex - seg.startIndex + 1) / total) * 100}%`, background: POWER_COLORS[seg.state] }} title={seg.label} />
+                    <div style={{ ...TRACK_STYLE, height: "10px" }} title="Solar illumination track">
+                      {buildPowerSegments(ts).map((seg, i) => (
+                        <div
+                          key={`p-${i}`}
+                          style={{ width: `${((seg.endIndex - seg.startIndex + 1) / total) * 100}%`, background: POWER_COLORS[seg.state] }}
+                          title={seg.label}
+                        />
                       ))}
                     </div>
-                    <div style={{ display: "flex", height: "8px", borderRadius: "4px", overflow: "hidden", background: "#0f172a" }} title="DTE comms availability track">
-                      {commsSegs.map((seg, i) => (
-                        <div key={`c-${i}`} style={{ width: `${((seg.endIndex - seg.startIndex + 1) / total) * 100}%`, background: COMMS_COLORS[seg.state] }} title={seg.label} />
+                    <div style={{ ...TRACK_STYLE, height: "8px" }} title="DTE comms availability track">
+                      {buildCommsSegments(ts).map((seg, i) => (
+                        <div
+                          key={`c-${i}`}
+                          style={{ width: `${((seg.endIndex - seg.startIndex + 1) / total) * 100}%`, background: COMMS_COLORS[seg.state] }}
+                          title={seg.label}
+                        />
                       ))}
                     </div>
                   </div>

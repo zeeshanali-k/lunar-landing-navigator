@@ -4,20 +4,7 @@ import type { TopWindow, WindowCandidate } from "../../types";
 
 export const WINDOW_GRID_STEP_MINUTES = 180;
 
-const MONTH_NAMES = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-] as const;
+const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] as const;
 
 export interface MonthlyWindowGroup {
   monthKey: string;
@@ -29,18 +16,12 @@ function formatMonthLabel(monthKey: string): string {
   const parts = monthKey.split("-");
   const year = parts[0] ?? "";
   const monthNum = Number(parts[1]);
-  const monthName =
-    Number.isInteger(monthNum) && monthNum >= 1 && monthNum <= 12
-      ? MONTH_NAMES[monthNum - 1]
-      : monthKey;
+  const monthName = Number.isInteger(monthNum) && monthNum >= 1 && monthNum <= 12 ? MONTH_NAMES[monthNum - 1] : monthKey;
   return `${monthName} ${year}`;
 }
 
 /** Rank candidate windows by descending feasibility score, breaking ties by earliest start UTC. */
-export function rankTopWindows(
-  windows: readonly WindowCandidate[],
-  maxCount = 5,
-): TopWindow[] {
+export function rankTopWindows(windows: readonly WindowCandidate[], maxCount = 5): TopWindow[] {
   const sorted = [...windows].sort((a, b) => {
     const scoreA = typeof a.feasibility_score === "number" ? a.feasibility_score : -Infinity;
     const scoreB = typeof b.feasibility_score === "number" ? b.feasibility_score : -Infinity;
@@ -60,9 +41,7 @@ export function rankTopWindows(
 }
 
 /** Group candidate windows chronologically by YYYY-MM month key. */
-export function groupWindowsByMonth(
-  windows: readonly WindowCandidate[],
-): MonthlyWindowGroup[] {
+export function groupWindowsByMonth(windows: readonly WindowCandidate[]): MonthlyWindowGroup[] {
   const map = new Map<string, WindowCandidate[]>();
   const ordered = [...windows].sort((a, b) => a.start_utc.localeCompare(b.start_utc));
 
@@ -84,12 +63,8 @@ export function groupWindowsByMonth(
 }
 
 /** Deterministic heatmap cell color from feasibility score or sunlit fraction. */
-export function getWindowCellColor(
-  score: number | null | undefined,
-  sunlitFraction: number,
-): string {
-  const metric =
-    typeof score === "number" && Number.isFinite(score) ? score : sunlitFraction * 100;
+export function getWindowCellColor(score: number | null | undefined, sunlitFraction: number): string {
+  const metric = typeof score === "number" && Number.isFinite(score) ? score : sunlitFraction * 100;
   if (metric >= 82) return "#10b981";
   if (metric >= 70) return "#0ea5e9";
   if (metric >= 55) return "#f59e0b";

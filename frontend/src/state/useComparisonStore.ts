@@ -56,8 +56,7 @@ export const useComparisonStore = create<ComparisonState>((set, get) => ({
       unique.push({ ...item, scenario_id: id });
       if (unique.length >= MAX_PINNED_SCENARIOS) break;
     }
-    const safeBaseline =
-      unique.length === 0 ? 0 : Math.max(0, Math.min(baselineIndex, unique.length - 1));
+    const safeBaseline = unique.length === 0 ? 0 : Math.max(0, Math.min(baselineIndex, unique.length - 1));
     set({ pinnedScenarios: unique, baselineIndex: safeBaseline, error: null });
     await get().runComparison();
   },
