@@ -2,12 +2,13 @@
 
 import type { TerrainPatch } from "../../types";
 
-export type TerrainSurfaceMode = "regolith" | "elevation" | "slope";
+export type TerrainSurfaceMode = "regolith" | "elevation" | "slope" | "psr";
 
 export const SURFACE_MODE_LABELS: Record<TerrainSurfaceMode, string> = {
   regolith: "Regolith",
   elevation: "Elevation",
   slope: "Slope Hazard",
+  psr: "PSR Frost",
 };
 
 type RGB = [number, number, number];
@@ -41,6 +42,7 @@ export function sampleTerrainVertexRGB(
   minElevM: number,
   maxElevM: number,
   slopeDeg: number,
+  psrFlag = 0,
 ): RGB {
   const span = Math.max(1e-6, maxElevM - minElevM);
   const normElev = Math.max(0, Math.min(1, (elevationM - minElevM) / span));
@@ -59,6 +61,14 @@ export function sampleTerrainVertexRGB(
     return [0.9, 0.22, 0.26];
   }
 
+  if (mode === "psr") {
+    if (psrFlag > 0) {
+      return [0.18, 0.85, 0.96];
+    }
+    const base = 0.28 + normElev * 0.24;
+    return [base, base * 1.02, base * 1.06];
+  }
+
   const slopeShade = Math.max(0, Math.min(1, slopeDeg / 30.0)) * 0.08;
   const albedo = Math.max(0.52, Math.min(0.78, 0.54 + normElev * 0.22 - slopeShade));
   return [albedo, albedo * 0.99, albedo * 0.97];
@@ -69,11 +79,13 @@ export function buildTerrainColorBuffer(patch: TerrainPatch, mode: TerrainSurfac
   const totalVertices = patch.grid_size * patch.grid_size;
   const colors = new Float32Array(totalVertices * 3);
   const { min_elevation_m: minE, max_elevation_m: maxE } = patch;
+  const psrMask = (patch as { psr_mask_flat?: number[] }).psr_mask_flat;
 
   for (let i = 0; i < totalVertices; i += 1) {
     const elev = patch.elevations_m_flat[i] ?? patch.center_elevation_m;
     const slope = patch.slopes_deg_flat[i] ?? 0;
-    const [r, g, b] = sampleTerrainVertexRGB(mode, elev, minE, maxE, slope);
+    const psr = psrMask?.[i] ?? (elev < -550 ? 1 : 0);
+    const [r, g, b] = sampleTerrainVertexRGB(mode, elev, minE, maxE, slope, psr);
     const offset = i * 3;
     colors[offset] = r;
     colors[offset + 1] = g;

@@ -10,3 +10,4 @@ export {
 } from "./meshBuilder";
 export { SURFACE_MODE_LABELS, buildTerrainColorBuffer, sampleTerrainVertexRGB, type TerrainSurfaceMode } from "./terrainColors";
 export { azElevToThreeXYZ, computeCelestialSceneVectors, computeMastVisualOffsetKm, type CelestialSceneVectors } from "./celestialVectors";
+export { prepareTerrainPatch } from "./terrainPatchUpsampler";

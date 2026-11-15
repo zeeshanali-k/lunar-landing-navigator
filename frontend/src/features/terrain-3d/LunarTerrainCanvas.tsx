@@ -1,6 +1,6 @@
 /** Interactive 3D local_enu Lunar Terrain Canvas with grazing crater shadows (F4.1 & F4.2). */
 
-import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { usePlaybackStore } from "../../state";
@@ -14,6 +14,7 @@ import {
   updateTerrainGeometryElevations,
 } from "./meshBuilder";
 import { SURFACE_MODE_LABELS, type TerrainSurfaceMode } from "./terrainColors";
+import { prepareTerrainPatch } from "./terrainPatchUpsampler";
 
 export interface LunarTerrainCanvasProps {
   terrainPatch: TerrainPatch | null;
@@ -26,7 +27,7 @@ export interface LunarTerrainCanvasProps {
 
 const DEFAULT_CAMERA_POS: [number, number, number] = [-18, 15.5, 22];
 const EXAGGERATIONS: readonly number[] = [1, 2, 3];
-const SURFACE_MODES: readonly TerrainSurfaceMode[] = ["regolith", "elevation", "slope"];
+const SURFACE_MODES: readonly TerrainSurfaceMode[] = ["regolith", "elevation", "slope", "psr"];
 
 function pillStyle(active: boolean, accent: string): CSSProperties {
   return {
@@ -61,7 +62,8 @@ export function LunarTerrainCanvas({
   const [exaggeration, setExaggeration] = useState<number>(2);
   const [webglError, setWebglError] = useState<string | null>(null);
 
-  const hasTerrain = Boolean(!terrainUnavailable && terrainPatch);
+  const preparedPatch = useMemo(() => (terrainPatch ? prepareTerrainPatch(terrainPatch) : null), [terrainPatch]);
+  const hasTerrain = Boolean(!terrainUnavailable && preparedPatch);
   const activePoint = timeseries[Math.min(Math.max(0, resolvedIndex), Math.max(0, timeseries.length - 1))];
 
   useEffect(() => {
@@ -147,34 +149,34 @@ export function LunarTerrainCanvas({
 
   useEffect(() => {
     const mesh = terrainMeshRef.current;
-    if (!hasTerrain || !terrainPatch || !mesh) return;
+    if (!hasTerrain || !preparedPatch || !mesh) return;
     const prevGeom = mesh.geometry;
-    mesh.geometry = buildTerrainGeometry(terrainPatch, "regolith", 1);
+    mesh.geometry = buildTerrainGeometry(preparedPatch, "regolith", 1);
     prevGeom.dispose();
-  }, [hasTerrain, terrainPatch]);
+  }, [hasTerrain, preparedPatch]);
 
   useEffect(() => {
     const mesh = terrainMeshRef.current;
-    if (!hasTerrain || !terrainPatch || !mesh) return;
-    updateTerrainGeometryColors(mesh.geometry, terrainPatch, surfaceMode);
-  }, [hasTerrain, terrainPatch, surfaceMode]);
+    if (!hasTerrain || !preparedPatch || !mesh) return;
+    updateTerrainGeometryColors(mesh.geometry, preparedPatch, surfaceMode);
+  }, [hasTerrain, preparedPatch, surfaceMode]);
 
   useEffect(() => {
     const mesh = terrainMeshRef.current;
-    if (!hasTerrain || !terrainPatch || !mesh) return;
-    updateTerrainGeometryElevations(mesh.geometry, terrainPatch, exaggeration);
-  }, [hasTerrain, terrainPatch, exaggeration]);
+    if (!hasTerrain || !preparedPatch || !mesh) return;
+    updateTerrainGeometryElevations(mesh.geometry, preparedPatch, exaggeration);
+  }, [hasTerrain, preparedPatch, exaggeration]);
 
   useEffect(() => {
     const rig = rigRef.current;
-    if (!hasTerrain || !terrainPatch || !rig || !activePoint) return;
-    const centerY = sampleCenterSurfaceYKm(terrainPatch, exaggeration);
+    if (!hasTerrain || !preparedPatch || !rig || !activePoint) return;
+    const centerY = sampleCenterSurfaceYKm(preparedPatch, exaggeration);
     updateCelestialRig(rig, activePoint, centerY, observerHeightM, solarArrayType, (xKm, zKm) =>
-      sampleSurfaceYKmAtXZ(terrainPatch, xKm, zKm, exaggeration),
+      sampleSurfaceYKmAtXZ(preparedPatch, xKm, zKm, exaggeration),
     );
-  }, [hasTerrain, terrainPatch, exaggeration, activePoint, observerHeightM, solarArrayType]);
+  }, [hasTerrain, preparedPatch, exaggeration, activePoint, observerHeightM, solarArrayType]);
 
-  if (!hasTerrain || !terrainPatch) {
+  if (!hasTerrain || !preparedPatch) {
     return (
       <div className="panel-card" style={{ gap: "0.35rem" }}>
         <strong style={{ fontSize: "0.88rem" }}>3D ENU Terrain</strong>
@@ -216,7 +218,7 @@ export function LunarTerrainCanvas({
       >
         <div style={{ display: "flex", gap: "0.35rem", flexWrap: "wrap", alignItems: "center" }}>
           <strong style={{ fontSize: "0.85rem", marginRight: "0.35rem" }}>
-            3D ENU Terrain ({terrainPatch.grid_size}×{terrainPatch.grid_size})
+            3D ENU Terrain ({preparedPatch.grid_size}×{preparedPatch.grid_size})
           </strong>
           {SURFACE_MODES.map((mode) => (
             <button key={mode} type="button" onClick={() => setSurfaceMode(mode)} style={pillStyle(surfaceMode === mode, "#f59e0b")}>

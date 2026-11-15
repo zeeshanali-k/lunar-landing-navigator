@@ -8,6 +8,7 @@ import {
   buildTerrainGeometry,
   computeCelestialSceneVectors,
   computeMastVisualOffsetKm,
+  prepareTerrainPatch,
   sampleCenterSurfaceYKm,
   sampleTerrainVertexRGB,
 } from "../features/terrain-3d";
@@ -90,10 +91,12 @@ export function runTerrain3dTests(): void {
     psr_mask_flat: [0, 0, 0, 0],
   };
 
-  for (const mode of ["regolith", "elevation", "slope"] as const) {
+  for (const mode of ["regolith", "elevation", "slope", "psr"] as const) {
     const buf = buildTerrainColorBuffer(patch, mode);
     assert(buf.length === 12, `expected 4*3 color floats for ${mode}, got ${buf.length}`);
   }
+  const psrCyan = sampleTerrainVertexRGB("psr", -800, -1000, 500, 5.0, 1);
+  assert(psrCyan[2] > psrCyan[0] && psrCyan[1] > 0.7, "PSR frost vertex should render cyan");
 
   // 4. 2x2 terrain geometry and center surface sampling
   const geom = buildTerrainGeometry(patch, "elevation", 2);
@@ -103,6 +106,17 @@ export function runTerrain3dTests(): void {
   const centerYKm = sampleCenterSurfaceYKm(patch, 2);
   assertApprox(centerYKm, 0.0, 1e-6, "2x2 symmetric center sample should match center_elevation_m");
   geom.dispose();
+
+  // 5. Coarse (<64x64) terrain upsampling vs 64x64 passthrough
+  const coarsePatch: TerrainPatch = { ...patch, grid_size: 16, patch_radius_km: 20.0, center_elevation_m: 1200.0 };
+  const upsampled = prepareTerrainPatch(coarsePatch);
+  assert(upsampled.grid_size === 64, `expected upsampled grid_size=64, got ${upsampled.grid_size}`);
+  assert(upsampled.elevations_m_flat.length === 4096, "expected 4096 upsampled elevations");
+  assert(upsampled.slopes_deg_flat.length === 4096, "expected 4096 upsampled slopes");
+  assert(upsampled.max_elevation_m > upsampled.min_elevation_m, "upsampled terrain should have crater relief");
+
+  const alreadyHiRes: TerrainPatch = { ...coarsePatch, grid_size: 64 };
+  assert(prepareTerrainPatch(alreadyHiRes) === alreadyHiRes, "64x64 terrain patch must pass through unchanged");
 }
 
 it("3D local_enu terrain geometry, vertex colors, and celestial vectors", () => {
