@@ -1896,7 +1896,7 @@
       },
       "M2": {
         "scope": "backend api, physics, contracts",
-        "owner": null
+        "owner": "bauerceptor"
       },
       "M3": {
         "scope": "frontend core, map, kpis",

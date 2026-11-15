@@ -7,12 +7,14 @@ Three humans, three machines, three different agents. This file is the **only** 
 | Module | Scope | Owner | Branch | Status |
 |---|---|---|---|---|
 | `M1` | Data, LOLA topography, ephemeris, raycast | bauerceptor | `bauerceptor` | active |
-| `M2` | Backend API, physics, scoring, contracts | **unassigned** | — | blocked |
+| `M2` | Backend API, physics, scoring, contracts | bauerceptor | `bauerceptor` | active |
 | `M3` | Frontend core, site selection, 2D map, KPIs | usairam | `feat/module-3-frontend-core` | in review |
 | `M4` | 3D terrain, sky-dome, advanced visualizations | devscion | `feat/m4-3d-terrain` | gated behind `P0-GATE` |
 | `M5` | Comparison, window finder, delivery | **unassigned** | — | blocked |
 
-`M2` is the critical blocker: `M1` produces packs that only `M2` can serve, and `M3` renders only what `M2` returns. Until `M2` has an owner, nothing downstream can integrate. Assigning `M2` takes priority over all other work.
+`M5` is the remaining gap: QA, comparison, windows, and delivery have no owner.
+
+`M1` and `M2` are both held by bauerceptor because they are tightly coupled: `M1` produces the packs and `M2` is the only consumer that can serve them, so one owner avoids a handoff stall on the critical path. Split `M2` out when a third backend person joins.
 
 ## Branch rules
 
