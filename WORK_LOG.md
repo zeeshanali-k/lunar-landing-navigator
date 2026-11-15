@@ -835,3 +835,30 @@ Do not merge if: the generator or pytest fails, the mirror is not byte-identical
 - Merged `bauerceptor-charlie` into `bauerceptor` as `5b2ac18` with `--no-ff --no-commit`; no conflicts. Refreshed the protected digest and ran `validate_task_ledger.py` (28 tasks, 12 done), `check_planning_docs.py` (exit 0), `check_file_lengths.py` (exit 0, 0 violations).
 - Pushed `5634ecb..5b2ac18` to `origin/bauerceptor`; synced `bauerceptor-charlie` to `5b2ac18`.
 - Next: `agent-charlie` starts `BE-002` (deps `BE-001` + `DATA-005` both merged).
+
+### BE-002 — done — agent-charlie
+
+- Branch/commit: `bauerceptor-charlie` @ `107000a` (task work); the ledger closure is the branch tip.
+- Changed: added `backend/src/domain/horizon_geometry.py`, `solar_power.py`, `comms_visibility.py`, `countdown_detector.py`, and `feasibility_scorer.py`, plus the five required unit tests.
+- Commands: `uv run --python 3.12 --frozen pytest tests/unit -v` — exit 0 (241 passed); `uv run --python 3.12 --frozen ruff check .` — exit 0.
+- Evidence: effective horizon `max(terrain, limb)`; `f_sun` zero/partial/full golden values; three array modes golden; DTE clearance-equality and conjunction suppression; Class B `terrain_score`/`feasibility_score` null while P/T/C reported; aggregates `count * step_hours` and streak clipping; countdown crossing times linearly interpolated.
+- Extras run (not ledger evidence): none beyond the two declared commands.
+- Open issues: none blocking. Note: countdown detection operates on continuous margin signals (`sun_occultation_margin_deg`, `dte_margin_deg`) rather than the clamped booleans, so crossing times are well-defined; the caller passes the margin arrays.
+- Proposed doc deltas: none.
+
+```text
+ZETA HANDOFF — BE-002 ready to merge
+Branch: bauerceptor-charlie
+Worktree: /home/red/Projects/lunar-landing-charlie
+Commit: bauerceptor-charlie tip after this closure commit; task work commit 107000a
+Task status: done
+Base: 66e324e (bauerceptor tip before task work)
+Commands: uv run --python 3.12 --frozen pytest tests/unit -v exit 0; uv run --python 3.12 --frozen ruff check . exit 0
+Evidence: pytest 241 passed; ruff check . clean
+Changed paths: backend/src/domain/horizon_geometry.py, backend/src/domain/solar_power.py, backend/src/domain/comms_visibility.py, backend/src/domain/countdown_detector.py, backend/src/domain/feasibility_scorer.py, backend/tests/unit/test_horizon_geometry.py, backend/tests/unit/test_solar_power.py, backend/tests/unit/test_comms_visibility.py, backend/tests/unit/test_countdown_detector.py, backend/tests/unit/test_feasibility_scorer.py, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: none (no required artifact evidence for BE-002)
+Pre-merge checks: pytest tests/unit 241 passed; ruff check . clean; validate_task_ledger.py, check_planning_docs.py, check_file_lengths.py all exit 0
+M3 impact: none (BE-002 unblocks charlie's BE-003, not M3)
+Known risks: none
+Do not merge if: the pytest suite fails, ruff check fails, or the tree contains changes outside the changed paths above
+```
