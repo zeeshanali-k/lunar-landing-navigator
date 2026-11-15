@@ -1,0 +1,153 @@
+{
+  "ephemeris_pack_count": 16,
+  "schema_version": 1,
+  "site_count": 16,
+  "sites": [
+    {
+      "category": "artemis_iii",
+      "ephemeris_pack": "backend/data/site_packs/artemis-cabeus-peak/ephemeris.json",
+      "ephemeris_sha256": "e4d1d804fc1c464e17de8ff2a960d77f860fc5dfeb6f69929f363c491001f3cf",
+      "has_precomputed_terrain": true,
+      "site_id": "artemis-cabeus-peak",
+      "terrain_pack": "backend/data/site_packs/artemis-cabeus-peak/terrain.json",
+      "terrain_sha256": "bf7d47da2f8301cc272a47649e34b9a27197b92b5133234dc1b223df279dcd99"
+    },
+    {
+      "category": "artemis_iii",
+      "ephemeris_pack": "backend/data/site_packs/artemis-haworth/ephemeris.json",
+      "ephemeris_sha256": "f78e051ddce1cb01252a5d008370ee865bfecb755a85c64ef5180e69cfdbc857",
+      "has_precomputed_terrain": true,
+      "site_id": "artemis-haworth",
+      "terrain_pack": "backend/data/site_packs/artemis-haworth/terrain.json",
+      "terrain_sha256": "9dd85b0e17b87a5565519719ac1614e9c0cd4456837f1d189750bcb555babab2"
+    },
+    {
+      "category": "artemis_iii",
+      "ephemeris_pack": "backend/data/site_packs/artemis-malapert-massif/ephemeris.json",
+      "ephemeris_sha256": "f54605a550070f7e0f4e2175581adf8cf89abac12f0bd5074c4567b5859d47f2",
+      "has_precomputed_terrain": true,
+      "site_id": "artemis-malapert-massif",
+      "terrain_pack": "backend/data/site_packs/artemis-malapert-massif/terrain.json",
+      "terrain_sha256": "307a74054382ff1c538b0a95c0e2d57dc5c6ca8272733aa6f3d6f8bda8208246"
+    },
+    {
+      "category": "artemis_iii",
+      "ephemeris_pack": "backend/data/site_packs/artemis-mons-mouton-plateau/ephemeris.json",
+      "ephemeris_sha256": "3c718df6005bcc72216646ba746dc2aca19eb176fe22f82e6534a3fdf56acc91",
+      "has_precomputed_terrain": true,
+      "site_id": "artemis-mons-mouton-plateau",
+      "terrain_pack": "backend/data/site_packs/artemis-mons-mouton-plateau/terrain.json",
+      "terrain_sha256": "b6b1de540849ba509fcb9323cfb69e60bfae8685eed8e9cbfb995de58dd17648"
+    },
+    {
+      "category": "artemis_iii",
+      "ephemeris_pack": "backend/data/site_packs/artemis-mons-mouton/ephemeris.json",
+      "ephemeris_sha256": "66465ed997dc7e93beac1b98be49b0d9d8c0f9e31f82062c38ae087d0653a4ba",
+      "has_precomputed_terrain": true,
+      "site_id": "artemis-mons-mouton",
+      "terrain_pack": "backend/data/site_packs/artemis-mons-mouton/terrain.json",
+      "terrain_sha256": "fcfbb5065900880f63803132936da7856c45b4d86acf9510b8dacc8964b48b65"
+    },
+    {
+      "category": "artemis_iii",
+      "ephemeris_pack": "backend/data/site_packs/artemis-nobile-rim-1/ephemeris.json",
+      "ephemeris_sha256": "6732594659c52b0a8aa7ce406bab67c507e8f0b3a8c8b3657b7632252f5c7ed3",
+      "has_precomputed_terrain": true,
+      "site_id": "artemis-nobile-rim-1",
+      "terrain_pack": "backend/data/site_packs/artemis-nobile-rim-1/terrain.json",
+      "terrain_sha256": "d44c00cfdd0a94d7dc0583054a7c3655e5ab087daa3f98878010b5028a542763"
+    },
+    {
+      "category": "artemis_iii",
+      "ephemeris_pack": "backend/data/site_packs/artemis-nobile-rim-2/ephemeris.json",
+      "ephemeris_sha256": "30cdcb82297b4ff5c0a3489dd31924513e6a35db4202adb75b5ac2d27b802b81",
+      "has_precomputed_terrain": true,
+      "site_id": "artemis-nobile-rim-2",
+      "terrain_pack": "backend/data/site_packs/artemis-nobile-rim-2/terrain.json",
+      "terrain_sha256": "1621f261428b23b6cac81bdfc812c5c18689dbf17b7dfd95d49f6f9a2049b0dd"
+    },
+    {
+      "category": "artemis_iii",
+      "ephemeris_pack": "backend/data/site_packs/artemis-degerlache-rim-2/ephemeris.json",
+      "ephemeris_sha256": "5ec543d00c28d1b652a6e51ab9764f183798497b8d3ffb47842e9701d10d9f0d",
+      "has_precomputed_terrain": true,
+      "site_id": "artemis-degerlache-rim-2",
+      "terrain_pack": "backend/data/site_packs/artemis-degerlache-rim-2/terrain.json",
+      "terrain_sha256": "a3086d165715dd5bf36c8ae070b475376df09b41d7cd4d9d4eb1e2c92c476f3e"
+    },
+    {
+      "category": "artemis_iii",
+      "ephemeris_pack": "backend/data/site_packs/artemis-slater-plain/ephemeris.json",
+      "ephemeris_sha256": "9a2859157cb7bfef71783d6ea6e70fe7873c2ab883ba6bce35228b760cc36fa6",
+      "has_precomputed_terrain": true,
+      "site_id": "artemis-slater-plain",
+      "terrain_pack": "backend/data/site_packs/artemis-slater-plain/terrain.json",
+      "terrain_sha256": "806a7c4b52bc189ee8594aa995654fd4b0ebbbfe96d5d66a4a69d81c096642cd"
+    },
+    {
+      "category": "clps_commercial",
+      "ephemeris_pack": "backend/data/site_packs/clps-mare-crisium/ephemeris.json",
+      "ephemeris_sha256": "26f8c1dd106cfb6a492cc5cabc3fdf9600d68c4545fbf0977d2c71f6c82f7d5c",
+      "has_precomputed_terrain": false,
+      "site_id": "clps-mare-crisium",
+      "terrain_pack": null,
+      "terrain_sha256": null
+    },
+    {
+      "category": "clps_commercial",
+      "ephemeris_pack": "backend/data/site_packs/clps-gruithuisen-domes/ephemeris.json",
+      "ephemeris_sha256": "72de34528b4a134b08044f14f442a617e3cbae5c898c7889b7e098958f805c27",
+      "has_precomputed_terrain": false,
+      "site_id": "clps-gruithuisen-domes",
+      "terrain_pack": null,
+      "terrain_sha256": null
+    },
+    {
+      "category": "clps_commercial",
+      "ephemeris_pack": "backend/data/site_packs/clps-lacus-mortis/ephemeris.json",
+      "ephemeris_sha256": "eb3bec3a7070d079e648dffb5bd928b90f9c84577688d343623777a1bb6e7413",
+      "has_precomputed_terrain": false,
+      "site_id": "clps-lacus-mortis",
+      "terrain_pack": null,
+      "terrain_sha256": null
+    },
+    {
+      "category": "apollo_historic",
+      "ephemeris_pack": "backend/data/site_packs/apollo-11-tranquillitatis/ephemeris.json",
+      "ephemeris_sha256": "b718d2b718f444669e6fa0ae41ea9ea16b693f56a46857c480cbc5ee80ef8935",
+      "has_precomputed_terrain": false,
+      "site_id": "apollo-11-tranquillitatis",
+      "terrain_pack": null,
+      "terrain_sha256": null
+    },
+    {
+      "category": "apollo_historic",
+      "ephemeris_pack": "backend/data/site_packs/apollo-15-hadley-rille/ephemeris.json",
+      "ephemeris_sha256": "0b01ca2a8e2418d9275dce3b8602827430bd2e3574f742c88085c65c77cb9910",
+      "has_precomputed_terrain": false,
+      "site_id": "apollo-15-hadley-rille",
+      "terrain_pack": null,
+      "terrain_sha256": null
+    },
+    {
+      "category": "international",
+      "ephemeris_pack": "backend/data/site_packs/isro-chandrayaan-3-shiv-shakti/ephemeris.json",
+      "ephemeris_sha256": "9ce56a95cad02e41acdff79b136c8bbbb3a1cdd272b1c31f33af7cc75fe2aca5",
+      "has_precomputed_terrain": false,
+      "site_id": "isro-chandrayaan-3-shiv-shakti",
+      "terrain_pack": null,
+      "terrain_sha256": null
+    },
+    {
+      "category": "international",
+      "ephemeris_pack": "backend/data/site_packs/cnsa-change-4-von-karman/ephemeris.json",
+      "ephemeris_sha256": "e4575c43ea62ad834258f8482a25befc991c30364bdc05ebb75c122544c99535",
+      "has_precomputed_terrain": false,
+      "site_id": "cnsa-change-4-von-karman",
+      "terrain_pack": null,
+      "terrain_sha256": null
+    }
+  ],
+  "task": "DATA-006",
+  "terrain_pack_count": 9
+}

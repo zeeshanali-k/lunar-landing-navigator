@@ -1,12 +1,72 @@
 {
-  "note": "synthetic contract sample; not measured terrain and not an evaluation",
+  "health": {
+    "file": "health.sample.json"
+  },
+  "note": "synthetic offline fixtures generated from validated site packs; not measured terrain and not an evaluation",
   "scenarios": {
     "health": {
       "file": "health.sample.json"
     },
     "sites": {
       "file": "sites.sample.json"
+    },
+    "terrain:artemis-cabeus-peak": {
+      "file": "terrain.artemis-cabeus-peak.json"
+    },
+    "terrain:artemis-degerlache-rim-2": {
+      "file": "terrain.artemis-degerlache-rim-2.json"
+    },
+    "terrain:artemis-haworth": {
+      "file": "terrain.artemis-haworth.json"
+    },
+    "terrain:artemis-malapert-massif": {
+      "file": "terrain.artemis-malapert-massif.json"
+    },
+    "terrain:artemis-mons-mouton": {
+      "file": "terrain.artemis-mons-mouton.json"
+    },
+    "terrain:artemis-mons-mouton-plateau": {
+      "file": "terrain.artemis-mons-mouton-plateau.json"
+    },
+    "terrain:artemis-nobile-rim-1": {
+      "file": "terrain.artemis-nobile-rim-1.json"
+    },
+    "terrain:artemis-nobile-rim-2": {
+      "file": "terrain.artemis-nobile-rim-2.json"
+    },
+    "terrain:artemis-slater-plain": {
+      "file": "terrain.artemis-slater-plain.json"
     }
   },
-  "synthetic": true
+  "sites": {
+    "file": "sites.sample.json"
+  },
+  "synthetic": true,
+  "terrain:artemis-cabeus-peak": {
+    "file": "terrain.artemis-cabeus-peak.json"
+  },
+  "terrain:artemis-degerlache-rim-2": {
+    "file": "terrain.artemis-degerlache-rim-2.json"
+  },
+  "terrain:artemis-haworth": {
+    "file": "terrain.artemis-haworth.json"
+  },
+  "terrain:artemis-malapert-massif": {
+    "file": "terrain.artemis-malapert-massif.json"
+  },
+  "terrain:artemis-mons-mouton": {
+    "file": "terrain.artemis-mons-mouton.json"
+  },
+  "terrain:artemis-mons-mouton-plateau": {
+    "file": "terrain.artemis-mons-mouton-plateau.json"
+  },
+  "terrain:artemis-nobile-rim-1": {
+    "file": "terrain.artemis-nobile-rim-1.json"
+  },
+  "terrain:artemis-nobile-rim-2": {
+    "file": "terrain.artemis-nobile-rim-2.json"
+  },
+  "terrain:artemis-slater-plain": {
+    "file": "terrain.artemis-slater-plain.json"
+  }
 }
