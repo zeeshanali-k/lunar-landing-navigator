@@ -13,11 +13,13 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | Area | State | Owner |
 |---|---|---|
 | Governance (single plan, ownership, anti-tamper guards) | `DONE` | bauerceptor |
-| `M3` frontend corrected onto the plan | `DONE` (uncommitted on `bauerceptor`) | bauerceptor |
-| `M1` data pipeline | `BLOCKED` — no `uv.lock`, nothing downloaded | bauerceptor |
+| `M3` frontend corrected onto the plan | `DONE` (committed on `bauerceptor`, not yet merged to `main`) | bauerceptor |
+| `M3` frontend, P0 completeness | `BLOCKED` — 5 issues open (3, 6, 7, 8, 9) | bauerceptor |
+| `M1` data pipeline | `BLOCKED` — no `uv.lock`, nothing downloaded, 2 issues open (1, 10) | bauerceptor |
 | `M2` backend | `BLOCKED` — depends on `M1` packs | bauerceptor |
 | `M4` 3D | `BLOCKED` — gated behind `P0-GATE` | devscion |
 | `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
+| **P0 release** | **`NOT SHIPPABLE` — 6 blockers open, see below** | — |
 
 ---
 
@@ -70,21 +72,47 @@ Reviewed before merge: 13 blockers, all in two classes — client-side fabricate
 
 ## Open issues
 
+### P0 blockers — the release cannot ship until these are closed
+
+Six issues gate P0. None were introduced by the governance work; they are the gap between what module 3 shipped and what REQ-11 requires. Numbers refer to the table below.
+
+| # | Blocker | Owner module | Why it blocks P0 |
+|---|---|---|---|
+| 1 | No fixture generator, so offline mode has nothing to read | `M1` (`DATA-006`) | P0 promises a demo with no network; fixtures were deleted as duplicates and their replacement does not exist yet |
+| 3 | No test runner or `test` script | `M3` (`FE-001`) | Three ledger acceptance commands (`bun run test`) cannot execute, so those tasks cannot be marked done |
+| 6 | Horizon silhouette and timeline are placeholders | `M3` (`FE-002`) | These are the two visualisations REQ-11 names as the P0 core; today they render a count and a fake slot |
+| 7 | No Class B badge, spherical-limb notice, or provenance footer | `M3` (`FE-002`) | A limb-only site would display as if it had measured terrain, which REQ-05 forbids |
+| 8 | No `step`, `array_az`, or `min_comms` controls | `M3` (`FE-002`) | Three of the eight canonical scenario fields exist in state and URL but no UI writes them |
+| 10 | Registry holds 6 sites, not 14 | `M1` (`DATA-001`) | REQ-05 requires exactly 14; the demo would show less than half the curated set |
+
+### Full list
+
 | # | Issue | Where | Severity | Status |
 |---|---|---|---|---|
 | 1 | Fixtures deleted but no generator exists yet, so offline mode has nothing to read | `frontend/public/data/fixtures/` (absent), `DATA-006` | `BLOCKED` on `M1` | open |
 | 2 | `evaluateScenario`/`compareScenarios`/`scanWindows` now require a scenario key; comparison and windows callers are typed but their scenarios are P1 | `frontend/src/services/`, `P1-COMPARE`, `P1-WINDOWS` | low | open |
-| 3 | No test runner or `test` script, so three ledger acceptance commands cannot run | `frontend/package.json`, `frontend/vitest.config.ts` | MAJOR | open |
+| 3 | No test runner or `test` script, so three ledger acceptance commands cannot run | `frontend/package.json`, `frontend/vitest.config.ts` | `BLOCKED` — no runner | open |
 | 4 | Wire types are hand-maintained; `api.generated.ts` does not exist | `frontend/src/types/`, `ARCH-002` | MAJOR | open |
 | 5 | 2D map and persona mode are built but are P1, mounted unconditionally in the cockpit | `frontend/src/features/lunar-map-2d/`, `frontend/src/features/persona-mode/` | MAJOR | open |
 | 6 | Horizon silhouette and timeline are placeholders, the two P0 visualisations REQ-11 requires | `frontend/src/components/layout/AppShell.tsx` | BLOCKER for P0 | open |
 | 7 | No Class B badge, spherical-limb notice, or provenance footer in the UI | `frontend/src/components/`, `frontend/src/features/` | MAJOR | open |
 | 8 | No `step`, `array_az`, or `min_comms` controls; values exist in state and URL but no UI writes them | `frontend/src/features/time-controls/` | MAJOR | open |
-| 9 | Educational glossary still asserts unsourced science (1.54° tilt, 40 K, ±6.5° libration, "uninterrupted" DTE) and generates narrative from booleans | `frontend/src/features/persona-mode/educationalGlossary.ts` | MAJOR | open |
+| 9 | Educational glossary asserts unsourced science (1.54° tilt, 40 K, ±6.5° libration, "uninterrupted" DTE) and generates narrative from booleans | `frontend/src/features/persona-mode/educationalGlossary.ts` | MAJOR | open — deliberately deferred, see below |
 | 10 | Registry holds 6 sites, not the 14 REQ-05 requires | `backend/config/curated_sites.yaml` | `BLOCKED` on `DATA-001` | open |
 | 11 | `contracts/openapi-draft.yaml` still hand-maintained alongside Pydantic | `contracts/` | MAJOR | open |
 | 12 | `backend/uv.lock` absent, pytest not installed, so no Python check can run | `backend/` | `BLOCKED` on `ARCH-001` | open |
 | 13 | Fixture `terrain.sample.json` is 16×16; production contract is 128×128 | `contracts/fixtures/` | MINOR | open |
+
+### Deliberately not fixed
+
+**#9, the educational glossary.** Left unfixed on purpose, and it needs a human decision rather than a mechanical edit:
+
+- Several claims are unsourced and one is likely wrong — the "1.54° tilt" reads as obliquity to the ecliptic, not axial tilt.
+- Rewriting educational copy is editorial work: the correct replacements depend on which sources the team is willing to cite.
+- The fix belongs with `F3.6` persona mode, which is P1 and not mounted in the P0 flow.
+- Removing it outright would delete P1 work that is otherwise usable.
+
+**Action required:** someone must either supply cited figures or approve deleting the numeric claims before this ships. Until then it stays an open issue rather than being quietly dropped.
 
 ---
 
