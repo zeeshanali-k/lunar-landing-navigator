@@ -20,7 +20,7 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | `M2` backend | `BLOCKED` — depends on `M1` packs | bauerceptor |
 | `M4` 3D | `BLOCKED` — gated behind `P0-GATE` | devscion |
 | `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
-| **P0 release** | **`NOT SHIPPABLE` — 7 blockers open, all now encoded in ledger acceptance | — |
+| **P0 release** | **`NOT SHIPPABLE` — 8 blockers open, all now encoded in ledger acceptance** | — |
 
 ---
 
@@ -75,15 +75,16 @@ Reviewed before merge: 13 blockers, all in two classes — client-side fabricate
 
 ### P0 blockers — the release cannot ship until these are closed
 
-Seven issues gate P0. None were introduced by the governance work; they are the gap between what module 3 shipped and what REQ-11 requires. Numbers refer to the table below.
+Eight issues gate P0. None were introduced by the governance work; they are the gap between what module 3 shipped and what REQ-11 requires. Numbers refer to the table below.
 
-**Status as of this revision: all seven are now explicit ledger acceptance criteria.** They were previously implicit — living in this file but absent from the ledger — which meant an agent could satisfy `FE-002` while leaving P0 broken. The acceptance lists now name each one, so a task cannot be marked done with the gap open.
+**Status as of this revision: all eight are now explicit ledger acceptance criteria.** They were previously implicit — living in this file but absent from the ledger — which meant an agent could satisfy `FE-002` while leaving P0 broken. The acceptance lists now name each one, so a task cannot be marked done with the gap open.
 
 | # | Blocker | Ledger requirement | Why it blocks P0 |
 |---|---|---|---|
 | 1 | No fixture generator, so offline mode has nothing to read | `DATA-006` acceptance; `FE-003` depends on it | P0 promises a demo with no network; fixtures were deleted as duplicates and their replacement does not exist yet |
 | 3 | No test runner or `test` script | `ARCH-001` acceptance (new: `bun run test` must execute and pass); `FE-002` evidence requires it | Three ledger acceptance commands (`bun run test`) could not execute, so those tasks could never legitimately be marked done |
 | 5 | 2D map and persona mode are P1 but mounted in the P0 cockpit | `FE-001` acceptance (new: P0 cockpit mounts no P1 feature) | Ships P1 surface area as if it were P0 and invites the fabricated-data path back |
+| 5 | 2D map and persona mode are P1 but mounted in the P0 cockpit | `FE-001` acceptance (new: P0 cockpit mounts no P1 feature) | Ships P1 surface area as if it were P0, and invites the fabricated-data path back into the default view |
 | 6 | Horizon silhouette and timeline are placeholders | `FE-002` acceptance, items 4–6 (new) | These are the two visualisations REQ-11 names as the P0 core; today they render a count and a fake slot |
 | 7 | No Class B badge, spherical-limb notice, or provenance footer | `FE-002` acceptance, items 1–3 and 9 (new) | A limb-only site would display as if it had measured terrain, which REQ-05 forbids |
 | 8 | No `step`, `array_az`, or `min_comms` controls | `FE-002` acceptance, item 8 (new) | Three of the eight canonical scenario fields exist in state and URL but no UI writes them |
