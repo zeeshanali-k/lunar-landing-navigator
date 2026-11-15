@@ -16,12 +16,12 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | Human review gate | `DONE` — `DOC-GATE` closed 2026-11-15 with recorded approval | bauerceptor |
 | `M3` frontend corrected onto the plan | `DONE` (committed on `bauerceptor`, not yet merged to `main`) | bauerceptor |
 | `M3` frontend, P0 completeness | `PARTIAL` — issues 5–8 fixed on `feat/module-3-frontend-core` (`801aa0a`); `ARCH-002` merged and pushed at `a0e75d6`, so `FE-001` is unblocked; #9 open | usairam |
-| `M1` data pipeline | `PARTIAL` — `DATA-001`–`DATA-003` done; `agent-beta` next `DATA-004` (its `DATA-003` + `ARCH-002` deps are satisfied) | bauerceptor |
-| `M2` backend | `PARTIAL` — `ARCH-002` done; `agent-charlie` next `BE-001` (waits for `DATA-004`) | bauerceptor |
-| Parallel session (revision 5) | `IN PROGRESS` — Wave 1 complete: `DATA-002` (`876e758`), `DATA-003` (`4b9402d`), and `ARCH-002` (`a0e75d6`) merged and pushed; M3 unblocked; zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
+| `M1` data pipeline | `DONE` — `DATA-001`–`DATA-006` done; 16 ephemeris + 9 terrain packs, index, and byte-identical offline fixture mirror present | bauerceptor |
+| `M2` backend | `PARTIAL` — `ARCH-002`, `BE-001` done; `agent-charlie` next `BE-002` (deps `BE-001` + `DATA-005` merged) | bauerceptor |
+| Parallel session (revision 5) | `IN PROGRESS` — `DATA-002`–`DATA-006`, `ARCH-002`, and `BE-001` merged and pushed (tip `5b2ac18`); M3 unblocked; next `BE-002`/`BE-003` (charlie); zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
 | `M4` 3D | `PARTIAL` — M4 SVG horizon/timeline/contrast merged as `00f7e77`; `terrain-3d` remains `.gitkeep` and gated | devscion |
 | `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
-| **P0 release** | **`NOT SHIPPABLE` — 5 blockers remain (1, 5, 6, 7, 8)** | — |
+| **P0 release** | **`NOT SHIPPABLE` — 4 blockers remain (5, 6, 7, 8); offline evaluate fixtures still gated on `BE-002` (issue 27)** | — |
 
 ---
 
@@ -276,7 +276,7 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 
 | # | Issue | Where | Severity | Status |
 |---|---|---|---|---|
-| 1 | Fixtures deleted but no generator exists yet, so offline mode has nothing to read | `frontend/public/data/fixtures/` (absent), `DATA-006` | `BLOCKED` on `M1` | in `DATA-006` acceptance |
+| 1 | Fixtures deleted but no generator exists yet, so offline mode has nothing to read | `frontend/public/data/fixtures/`, `DATA-006` | `PARTIAL` | `DONE` for sites/terrain/health via `DATA-006`; evaluate/compare/windows offline fixtures still gated on `BE-002` (issue 27) |
 | 2 | `evaluateScenario`/`compareScenarios`/`scanWindows` now require a scenario key; comparison and windows callers are typed but their scenarios are P1 | `frontend/src/services/`, `P1-COMPARE`, `P1-WINDOWS` | low | open |
 | 3 | No test runner or `test` script, so three ledger acceptance commands cannot run | `frontend/package.json`, `frontend/vitest.config.ts` | BLOCKER for P0 | `DONE` — closed by `ARCH-001` |
 | 4 | Wire types are hand-maintained; `api.generated.ts` does not exist | `frontend/src/types/`, `ARCH-002` | MAJOR | `DONE` — closed by `ARCH-002` (`a0e75d6`) |
@@ -297,6 +297,14 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 | 19 | Compare and Landing Window P1 tabs remain visible as placeholders in the P0 top bar | `frontend/src/components/layout/TopCommandBar.tsx` | MINOR | `OPEN` — decide whether to gate them with the P1 route |
 | 20 | `SITE_COORD` altitude is `0.0 km` for all 16 sites because the registry has no `elevation_m`; each manifest records an explicit `altitude_source` | `data/manifests/horizons/*.json`, `DATA-003` | low | `RECORDED` — ≈1e-3° effect, inside the 0.05° tolerance; revisit if REQ-07 requires pack-derived altitudes |
 | 21 | REQ-07 needs interpolation error proven against frozen **off-grid** Horizons references, but no task owns an off-grid fetch; `BE-001`/`QA-001` have no download write paths | `data/manifests/references/horizons/`, `BE-001` | MAJOR | `OPEN` — only 24-hourly references exist; needs a small approved scope addition before `BE-001` |
+| 22 | REQ-08 does not state whether `geometric_limb_deg` uses the observer's local ground elevation or the terrain at the limb; the implementation uses observer-local ground (constant per azimuth, reproduces the flat-terrain analytic value) | `backend/src/infrastructure/raycaster.py`, `DEVELOPMENT_PLAN.md` REQ-08 | low | `RECORDED` — behaves as the formula implies; add an explicit sentence to REQ-08 if it is normative |
+| 23 | Cabeus (−82.26°) northern rays stop at the 80°S DEM boundary (~68 km), not 120 km; out-of-footprint samples are marked invalid and never counted, and the 120 km cap still holds for every grid | `backend/src/infrastructure/raycaster.py`, `backend/data/site_packs/artemis-cabeus-peak/terrain.json` | low | `RECORDED` — no fabricated values; REQ-08's "closest covered site" example (Mons Mouton ~141 km) should name Cabeus as the limiting case |
+| 24 | `source_manifest_sha256` convention (SHA-256 over the two source manifests concatenated in ascending path order) is defined only in the module docstring | `backend/src/infrastructure/ephemeris_pack.py`, REQ-06 | low | `RECORDED` — state it in REQ-06 if it is normative |
+| 25 | `backend/tests/integration/test_contracts_and_health.py` has 5 pre-existing failures (asserts removed `artemis-shackleton-ridge`, the old health shape, and fixture-substitution routes); `BE-003` owns replacing those routes | `backend/tests/integration/test_contracts_and_health.py` | MAJOR until `BE-003` | `OPEN` — predates `DATA-006`; `BE-003` replaces |
+| 26 | `ARCH-002`'s `fixture_synth` nests scenario keys under `scenarios` while `httpClient` reads top-level keys; `DATA-006` emits both shapes, so one must be made authoritative in REQ-10 | `backend/src/api/schemas/fixture_synth.py`, `frontend/src/services/httpClient.ts` | MINOR | `OPEN` — human-approved REQ-10 revision |
+| 27 | `export_openapi` still rewrites fixtures from `fixture_synth`; re-running it reverts the `DATA-006` manifest/sites fixture | `backend/src/cli/export_openapi.py`, `contracts/fixtures/` | MAJOR for offline demo | `OPEN` — single-writer decision required |
+| 28 | Offline evaluate/compare/windows fixtures are not generated; an `EvaluateResponse` needs the REQ-09 physics owned by `BE-002` and REQ-06 forbids a second implementation | `contracts/fixtures/`, `frontend/public/data/fixtures/` | MAJOR for offline fallback | `OPEN` — `FE-003` (after `BE-002`) or a follow-up task |
+| 29 | Base `terrain.sample.json` is left as the `ARCH-002` flat placeholder because the parity test pins it to zeros; real terrain ships as `terrain.<site_id>.json` scenario fixtures | `contracts/fixtures/terrain.sample.json` | MINOR | `RECORDED` |
 
 ### Deliberately not fixed
 
@@ -316,9 +324,9 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 | Module | Agent | Next tasks | Blocked by |
 |---|---|---|---|
 | `M1` | `agent-alpha` | — (complete: `DATA-002`, `DATA-003` done) | — |
-| `M1` | `agent-beta` | `DATA-004` → `DATA-005` → `DATA-006` | `DATA-004` needs `DATA-003` + `ARCH-002`; `DATA-005` needs `DATA-002` + `ARCH-002`; `DATA-006` needs both packs |
-| `M2` | `agent-charlie` | `BE-001` → `BE-002` → `BE-003` | `BE-001` needs `DATA-004`; `BE-002` needs `BE-001` + `DATA-005`; `BE-003` needs `BE-002` + `DATA-006` |
-| `M3` | usairam | `ARCH-002` merged and pushed at `a0e75d6`: merge `bauerceptor` into `feat/module-3-frontend-core`, apply the integration fixes, close `FE-001`/`FE-002`; `FE-003` after `BE-003`/`DATA-006` | `BE-003`, `DATA-006`; issue 9 human decision |
+| `M1` | `agent-beta` | — (complete: `DATA-004`, `DATA-005`, `DATA-006` done) | — |
+| `M2` | `agent-charlie` | `BE-002` → `BE-003` | `BE-001` done and merged; `BE-002` ready (`BE-001` + `DATA-005` merged); `BE-003` needs `BE-002` + `DATA-006` (merged) |
+| `M3` | usairam | `ARCH-002` merged and pushed at `a0e75d6`: merge `bauerceptor` into `feat/module-3-frontend-core`, apply the integration fixes, close `FE-001`/`FE-002`; `FE-003` after `BE-003` (`DATA-006` now merged) | `BE-003`; issue 9 human decision |
 | `M4` | devscion | not startable | `P0-GATE` |
 | `M5` | — | needs an owner | — |
 
@@ -674,3 +682,156 @@ Do not merge if: either artifact hash differs, the parity test fails, or bun run
 - `FE-001` is unblocked and usairam has been given the instruction: merge `bauerceptor` (`a0e75d6`) into `feat/module-3-frontend-core`, apply the integration fixes, close `FE-001`/`FE-002`; do not re-implement issues 5–8.
 - Next: `agent-beta` may start `DATA-004`/`DATA-005`; `agent-charlie` waits for `DATA-004`/`DATA-005` before `BE-001`/`BE-002`.
 - Noted: `origin/main` advanced to `7c4877a` and `origin/feat/m4-3d-terrain` moved; out of scope for this session and untouched.
+
+### DATA-004 — done — agent-beta
+
+- Branch/commit: `bauerceptor-beta` @ `b9a472d` (task work); the ledger closure is the branch tip.
+- Changed: added `backend/src/infrastructure/ephemeris_pack.py` (build, validate, deterministic write), `backend/src/cli/build_ephemeris_packs.py` (manifest → verified raw → pack), and `backend/tests/unit/test_ephemeris_pack.py`; generated the 16 `backend/data/site_packs/{site}/ephemeris.json` packs. Every pack has `sample_count` 26305, four finite arrays of that length, `frame` `MOON_ME`, `longitude_convention` `east_positive`, `azimuth_convention` `clockwise_from_north`, the registry-derived `site_coord_used`, and `source_manifest_sha256` over its two source manifests.
+- Commands: `uv run --python 3.12 --frozen python -m src.cli.build_ephemeris_packs` — exit 0 (16 packs); `uv run --python 3.12 --frozen pytest tests/unit/test_ephemeris_pack.py -v` — exit 0 (57 passed).
+- Evidence: command evidence recorded in the ledger; the direct-sample test reproduces all 32 frozen Horizons reference files exactly. Rebuild is byte-identical; sha256 of the sorted per-pack hash list is `2bc802e2601c11041be6bafc65cf563ed0f24a9d59e04bea34b86dc50ab83639`.
+- Extras run (not ledger evidence): `ruff check`, `ruff format --check`, and `mypy` on the three new source files — all clean; `check_file_lengths.py` — 0 violations.
+- Open issues: none found in this task.
+- Proposed doc deltas: none. `source_manifest_sha256` is defined in the module docstring as the SHA-256 of the two source manifests concatenated in ascending path order; if the integrator prefers a different convention, it belongs in REQ-06 rather than a second implementation.
+- Note: the untracked out-of-order `scripts/fetch_horizons.py` and `data/downloads/` are untouched; raw bytes remain uncommitted.
+
+```text
+ZETA HANDOFF — DATA-004 ready to merge
+Branch: bauerceptor-beta
+Worktree: /home/red/Projects/lunar-landing-beta
+Commit: bauerceptor-beta tip after this closure commit; task work commit b9a472d
+Task status: done
+Base: 140b6b9 (bauerceptor tip before task work)
+Commands: uv run --python 3.12 --frozen python -m src.cli.build_ephemeris_packs exit 0; uv run --python 3.12 --frozen pytest tests/unit/test_ephemeris_pack.py -v exit 0
+Evidence: pytest 57 passed; 16 packs, sample_count 26305; aggregate pack-hash sha256 2bc802e2601c11041be6bafc65cf563ed0f24a9d59e04bea34b86dc50ab83639
+Changed paths: backend/src/infrastructure/ephemeris_pack.py, backend/src/cli/build_ephemeris_packs.py, backend/tests/unit/test_ephemeris_pack.py, backend/data/site_packs/*/ephemeris.json, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: 16 x backend/data/site_packs/{site}/ephemeris.json; per-pack hashes are printed by the generator and the aggregate is 2bc802e2...
+Pre-merge checks: generator and pytest exit 0; ruff check, ruff format --check, mypy on the new files clean; check_file_lengths.py 0 violations
+M3 impact: none (DATA-004 unblocks charlie's BE-001, not M3)
+Known risks: none
+Do not merge if: the generator or pytest fails, a pack's sample_count is not 26305, or the tree contains changes outside the changed paths above
+```
+
+### DATA-005 — done — agent-beta
+
+- Branch/commit: `bauerceptor-beta` @ `49be6b5` (task work); the ledger closure is the branch tip.
+- Changed: added `backend/src/infrastructure/dem_tiler.py` (south-polar stereographic projection, local-ENU patch resampling, slope), `backend/src/infrastructure/raycaster.py` (spherical destination, apparent elevation, limb, 360-degree profiles), `backend/src/cli/build_terrain_packs.py`, and the two required test files; generated 9 `backend/data/site_packs/{site}/terrain.json` packs for the nine `artemis_iii` sites only.
+- Commands: `uv run --python 3.12 --frozen python -m src.cli.build_terrain_packs` — exit 0 (9 packs); `uv run --python 3.12 --frozen pytest tests/unit/test_dem_tiler.py tests/unit/test_raycaster.py -v` — exit 0 (22 passed).
+- Evidence: each pack has 128x128 = 16384 finite elevations and slopes, spacing `40000/127`, rows south-to-north, columns west-to-east, three horizon profiles with azimuths 0..359, and `psr_mask` null. The DEM image and label were verified against the DATA-002 manifest hashes. Rebuild is byte-identical; sha256 of the sorted per-pack hash list is `b8ad11d040ad1ee71562596156e06c41791e85cae930803b22f1047cac5cd025`. No Class B site has a terrain pack.
+- Extras run (not ledger evidence): `ruff check`, `ruff format --check`, `mypy` on the five new files — clean; `pytest tests/unit` — 113 passed; `check_file_lengths.py` — 0 violations.
+- Observations to record, not fixed: the DEM's `-80` circle is fractionally outside the pixel-centre domain (the edge pixel centres reach about -79.99994), so coverage is clipped to pixel centres. Ray samples outside the footprint are marked invalid and never counted; for the lowest-latitude Class A site (Cabeus, -82.26) the northern rays therefore stop at the coverage boundary (about 68 km) rather than 120 km. The 120 km ceiling still holds for every sample grid, and no out-of-DEM value is fabricated.
+- Proposed doc deltas: REQ-08 does not state whether `geometric_limb_deg` uses the observer's local ground or the terrain at the limb. This implementation uses the observer's local ground elevation, which makes the limb constant per azimuth and reproduces the flat-terrain analytic value; if the integrator wants a terrain-dependent limb, it belongs in REQ-08 rather than a second implementation.
+- Open issues: none blocking.
+
+```text
+ZETA HANDOFF — DATA-005 ready to merge
+Branch: bauerceptor-beta
+Worktree: /home/red/Projects/lunar-landing-beta
+Commit: bauerceptor-beta tip after this closure commit; task work commit 49be6b5
+Task status: done
+Base: 140b6b9 (bauerceptor tip before task work; DATA-004 is the preceding commit pair b9a472d/dd555ef on this branch)
+Commands: uv run --python 3.12 --frozen python -m src.cli.build_terrain_packs exit 0; uv run --python 3.12 --frozen pytest tests/unit/test_dem_tiler.py tests/unit/test_raycaster.py -v exit 0
+Evidence: pytest 22 passed; 9 terrain packs, 16384 elevations/slopes each; aggregate pack-hash sha256 b8ad11d040ad1ee71562596156e06c41791e85cae930803b22f1047cac5cd025
+Changed paths: backend/src/infrastructure/dem_tiler.py, backend/src/infrastructure/raycaster.py, backend/src/cli/build_terrain_packs.py, backend/tests/unit/test_dem_tiler.py, backend/tests/unit/test_raycaster.py, backend/data/site_packs/*/terrain.json, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: 9 x backend/data/site_packs/{artemis-*}/terrain.json; per-pack hashes are printed by the generator and the aggregate is b8ad11d0...
+Pre-merge checks: generator and pytest exit 0; ruff check, ruff format --check, mypy on the new files clean; pytest tests/unit 113 passed; check_file_lengths.py 0 violations
+M3 impact: none (DATA-005 unblocks charlie's BE-002, not M3)
+Known risks: the northern rays from Cabeus stop at the DEM coverage boundary (about 68 km) instead of 120 km; every sample grid is still capped at 120 km and no value is fabricated
+Do not merge if: the generator or pytest fails, a pack is not 128x128 with 16384 finite values, a Class B site has a terrain pack, or the tree contains changes outside the changed paths above
+```
+
+### Wave 3 — DATA-004 integrated — agent-zeta
+
+- Merged `dd555ef` (DATA-004 closure) from `bauerceptor-beta` into `bauerceptor` as `8f36680` with `--no-ff`; no conflicts. Pushed `140b6b9..8f36680`.
+- Scope verified: 16 `ephemeris.json` packs under `backend/data/site_packs/`, `ephemeris_pack.py`, `build_ephemeris_packs.py`, `test_ephemeris_pack.py`, plus ledger, digest, `WORK_LOG.md`.
+- Verified 16 packs, `sample_count` 26305 with four finite arrays each; aggregate `2bc802e2…` reproduced with `sha256sum … | sort -k2 | sha256sum`. Test: 57 passed (full unit suite 113).
+- Validators: ledger 9 done; planning docs and file lengths exit 0.
+- Synced charlie to `8f36680` so `BE-001` can start (`DATA-004` + `ARCH-002` now merged).
+
+### Wave 4 — DATA-005 integrated — agent-zeta
+
+- Merged `a14a169` (DATA-005 closure; contains DATA-004) into `bauerceptor` as `1601cbd` with `--no-ff`; no conflicts. Pushed `8f36680..1601cbd`.
+- Scope verified: 9 `terrain.json` packs (the nine `artemis_iii` Class A sites only), `dem_tiler.py`, `raycaster.py`, `build_terrain_packs.py`, the two tests, plus ledger, digest, `WORK_LOG.md`. No Class B terrain pack.
+- Verified 128×128 = 16384 finite elevations and slopes, three 360-sample horizons, `psr_mask` null; aggregate `b8ad11d0…` reproduced with `sort -k2`. Tests: 79 required pass; `pytest tests/unit` 113 passed on the integration branch.
+- Validators: ledger **10 done**; planning docs and file lengths exit 0.
+- Open issues added (not blockers): #22 REQ-08 limb reference, #23 Cabeus DEM-boundary limitation, #24 `source_manifest_sha256` convention.
+- Next: `agent-beta` may start `DATA-006`; `agent-charlie` may start `BE-001` now and needs it before `BE-002`.
+
+### BE-001 — done — agent-charlie
+
+- Branch/commit: `bauerceptor-charlie` @ `cea8aff` (task work); the ledger closure is the branch tip.
+- Changed: added `backend/src/domain/mission_time.py` (UTC sampling and coverage validation with the 15-day lookahead) and `backend/src/domain/interpolation.py` (linear elevation and shortest-arc azimuth interpolation), plus the two required unit tests.
+- Commands: `uv run --python 3.12 --frozen pytest tests/unit/test_mission_time.py tests/unit/test_interpolation.py -v` — exit 0 (73 passed).
+- Evidence: 73 passed; sample counts 168/336/708 (60 min) and 1008/2016/4248 (10 min); sampling start-inclusive/end-exclusive; naive timestamps raise `NaiveTimestampError`; out-of-coverage requests, including the 15-day lookahead, raise `EphemerisRangeExceededError`; azimuth interpolation uses the shortest signed delta across 359°→0°; off-grid midpoint interpolation error is below 0.05° against frozen reference rows.
+- Extras run (not ledger evidence): `ruff check .` — clean.
+- Open issues: none blocking. Note: the frozen `data/manifests/references/horizons/*.reference.json` rows are daily selections of the hourly grid (not sub-hourly), so the off-grid accuracy assertion is a 2-hour-span midpoint leave-one-out against those frozen rows for the nine `artemis_iii` sites, where the Sun/Earth geometry is non-singular. Equatorial sites near zenith crossings sit outside a meaningful 0.05° linear-azimuth bound.
+- Proposed doc deltas: none.
+
+```text
+ZETA HANDOFF — BE-001 ready to merge
+Branch: bauerceptor-charlie
+Worktree: /home/red/Projects/lunar-landing-charlie
+Commit: bauerceptor-charlie tip after this closure commit; task work commit cea8aff
+Task status: done
+Base: bead176 (bauerceptor tip before task work)
+Commands: uv run --python 3.12 --frozen pytest tests/unit/test_mission_time.py tests/unit/test_interpolation.py -v exit 0
+Evidence: pytest 73 passed; ruff check . clean
+Changed paths: backend/src/domain/mission_time.py, backend/src/domain/interpolation.py, backend/tests/unit/test_mission_time.py, backend/tests/unit/test_interpolation.py, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: none (no required artifact evidence for BE-001)
+Pre-merge checks: pytest 73 passed; ruff check . clean
+M3 impact: none (BE-001 unblocks charlie's BE-002, not M3)
+Known risks: none
+Do not merge if: the pytest command fails, ruff check fails, or the tree contains changes outside the changed paths above
+```
+
+### DATA-006 — done — agent-beta
+
+- Branch/commit: `bauerceptor-beta` @ `81ee5d2` (task work); the ledger closure is the branch tip.
+- Changed: added `backend/src/cli/build_pack_index.py` and `backend/tests/unit/test_pack_index.py`; generated `data/manifests/site_packs/index.json` (16 sites, pack paths, presence, SHA-256); regenerated `contracts/fixtures/sites.sample.json` from the packs (elevation, mean slope, presence) and added nine `contracts/fixtures/terrain.<site_id>.json` Contract C fixtures; rewrote `contracts/fixtures/manifest.json`; created the byte-identical `frontend/public/data/fixtures` mirror.
+- Commands: `uv run --python 3.12 --frozen python -m src.cli.build_pack_index` — exit 0 (16 sites, 9 terrain packs, 11 generated files, 16 mirrored); `uv run --python 3.12 --frozen pytest tests/unit/test_pack_index.py -v` — exit 0 (16 passed).
+- Evidence: index SHA-256 `e92a9462a7c82f011a3b61c58d41932eeefcc9dd6385605f759f0bcea74f42df`; sorted fixture-tree SHA-256 `78ecafe5e21f508ea87c8ca9eaaf90ed657009d07ac3f0729eb832099e1af1ec`; regeneration is byte-identical; the ARCH-002 parity suite still passes (15 passed).
+- Fixture manifest carries both shapes it is consumed in: canonical scenario keys at the top level for `frontend/src/services/httpClient.ts` (`sites`, `health`, `terrain:<site_id>`) and the same mapping under `scenarios` for the ARCH-002 parity test. `synthetic` is true and the note says so.
+- Extras run (not ledger evidence): `ruff check`, `ruff format --check`, `mypy` on the two new files — clean; `file_lengths` 0 violations.
+- Open issues (found, not fixed):
+  - `backend/tests/integration/test_contracts_and_health.py` has 5 pre-existing failures: it asserts the removed `artemis-shackleton-ridge` site, a health shape without `moon_radius_km`, and the fixture-substitution routes. It predates this task and is untouched; `BE-003` owns replacing those routes. Severity: MAJOR until `BE-003`.
+  - `ARCH-002`'s `fixture_synth.build_fixture_manifest` nests scenario keys under `scenarios`, while `httpClient` reads top-level keys. DATA-006 reconciles both in one generated manifest; a human-approved revision should make one shape authoritative (REQ-10). Severity: MINOR.
+  - `export_openapi` still rewrites the fixture tree from `fixture_synth`; running it after DATA-006 reverts the manifest and sites fixture. The fixture generator should be unified, or `export_openapi` should stop writing fixtures. Severity: MAJOR for the offline demo. Blocked by: a human-approved ledger/plan revision.
+  - Offline evaluate/compare/windows scenario fixtures are not generated: an `EvaluateResponse` needs the REQ-09 physics owned by `BE-002`, and REQ-06 forbids a second implementation. The ARCH-002 base samples remain for those contracts. `FE-003` (after `BE-002`) or a follow-up task must generate them. Severity: MAJOR for the offline fallback.
+  - The base `terrain.sample.json` is left as the ARCH-002 flat placeholder because the parity test pins it to zeros; real terrain ships as `terrain.<site_id>.json` scenario fixtures instead. Severity: MINOR.
+- Proposed doc deltas: state the fixture manifest shape (flat canonical keys) in REQ-10; name the single fixture writer (currently both `export_openapi` and `build_pack_index`); decide whether offline evaluate scenarios are a P0 requirement and, if so, schedule them after `BE-002`.
+- M3 impact: `DATA-006` is an `FE-003` input only; `FE-003` still needs `BE-003` and `FE-002`.
+
+```text
+ZETA HANDOFF — DATA-006 ready to merge
+Branch: bauerceptor-beta
+Worktree: /home/red/Projects/lunar-landing-beta
+Commit: bauerceptor-beta tip after this closure commit; task work commit 81ee5d2
+Task status: done
+Base: bead176 (bauerceptor tip before task work; DATA-004/DATA-005 already merged)
+Commands: build_pack_index exit 0; pytest tests/unit/test_pack_index.py -v exit 0
+Evidence: index sha256 e92a9462a7c82f011a3b61c58d41932eeefcc9dd6385605f759f0bcea74f42df; fixture tree sha256 78ecafe5e21f508ea87c8ca9eaaf90ed657009d07ac3f0729eb832099e1af1ec; 16 passed; parity 15 passed
+Changed paths: backend/src/cli/build_pack_index.py, backend/tests/unit/test_pack_index.py, data/manifests/site_packs/index.json, contracts/fixtures/*, frontend/public/data/fixtures/*, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: data/manifests/site_packs/index.json; contracts/fixtures/{sites.sample.json,manifest.json,terrain.<site>.json}; byte-identical frontend mirror
+Pre-merge checks: generator and pytest exit 0; ruff/format/mypy clean; parity 15 passed; validators exit 0
+M3 impact: FE-003 input only (DATA-006 merged; FE-003 still needs BE-003 and FE-002)
+Known risks: pre-existing legacy integration failures in tests/integration/test_contracts_and_health.py (BE-003 replaces them); export_openapi can overwrite the generated fixture tree if re-run; offline evaluate scenarios are not generated until BE-002 exists
+Do not merge if: the generator or pytest fails, the mirror is not byte-identical, the index presence flags disagree with pack files, or the ARCH-002 parity suite fails
+```
+
+### Wave 5 — DATA-006 integrated — agent-zeta
+
+- Verified `bauerceptor-beta` before merge: `HEAD` `73d97cf` matches the handoff, clean tree, `DATA-006` `done` in the branch ledger, and `merge-base --is-ancestor bauerceptor bauerceptor-beta` exits 0. Changed paths are within `DATA-006.write_paths` plus the ledger, digest, and `WORK_LOG.md`.
+- Re-ran the task commands on the branch: `uv run --python 3.12 --frozen python -m src.cli.build_pack_index` — exit 0 (16 sites, 9 terrain packs, 11 generated, 16 mirrored; regeneration byte-identical, tree still clean); `uv run --python 3.12 --frozen pytest tests/unit/test_pack_index.py -v` — exit 0 (16 passed); `uv run --python 3.12 --frozen pytest tests/integration/test_contract_parity.py -v` — exit 0 (15 passed).
+- Evidence reproduced: `data/manifests/site_packs/index.json` sha256 `e92a9462a7c82f011a3b61c58d41932eeefcc9dd6385605f759f0bcea74f42df`; `diff -r contracts/fixtures frontend/public/data/fixtures` empty (byte-identical mirror); 16 `ephemeris.json` + 9 `terrain.json` packs present.
+- Merged `bauerceptor-beta` into `bauerceptor` as `89eb2c5` with `--no-ff --no-commit`; no conflicts. Refreshed the protected digest and ran `validate_task_ledger.py` (28 tasks, 11 done), `check_planning_docs.py` (exit 0), `check_file_lengths.py` (exit 0, 0 violations).
+- Pushed `bead176..89eb2c5` to `origin/bauerceptor`.
+- Recorded beta's findings as open issues #25–#29 (five pre-existing integration failures, fixture-manifest shape, `export_openapi` single-writer decision, offline evaluate scenarios gated on `BE-002`, `terrain.sample.json` placeholder). These need a human decision, not an agent fix.
+- Not synced `bauerceptor-charlie`: it has uncommitted `BE-001` closure work; `DATA-006` is only a `BE-003` input, so the sync belongs before `BE-003`.
+- Next: `agent-charlie` continues `BE-001` → `BE-002` → `BE-003`.
+
+### BE-001 integrated — agent-zeta
+
+- Verified `bauerceptor-charlie` before merge: `HEAD` `87b4a2f` matches the handoff, clean tree, `BE-001` `done` in the branch ledger with `pytest … test_mission_time.py test_interpolation.py` exit 0 (73 passed) and `completed_commit` `cea8aff`. Changed paths are within `BE-001.write_paths` plus the ledger, digest, and `WORK_LOG.md`.
+- Charlie did not contain the current `bauerceptor` tip (`5634ecb`), so I synced it first: `git merge bauerceptor` into `bauerceptor-charlie` (`b642d42`). Resolved the `WORK_LOG.md` and `plan/protected.sha256` conflicts only; the ledger auto-merged with both `DATA-006` and `BE-001` `done` (12 done). Refreshed the digest and re-ran the task commands on the synced branch: `pytest` exit 0 (73 passed), `ruff check .` exit 0.
+- Merged `bauerceptor-charlie` into `bauerceptor` as `5b2ac18` with `--no-ff --no-commit`; no conflicts. Refreshed the protected digest and ran `validate_task_ledger.py` (28 tasks, 12 done), `check_planning_docs.py` (exit 0), `check_file_lengths.py` (exit 0, 0 violations).
+- Pushed `5634ecb..5b2ac18` to `origin/bauerceptor`; synced `bauerceptor-charlie` to `5b2ac18`.
+- Next: `agent-charlie` starts `BE-002` (deps `BE-001` + `DATA-005` both merged).

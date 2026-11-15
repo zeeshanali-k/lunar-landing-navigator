@@ -1,0 +1,128 @@
+{
+  "mission_duration_days": 14,
+  "site_id": "artemis-cabeus-peak",
+  "solar_array_type": "vertical_tracking",
+  "top_windows": [
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "rank": 1,
+      "start_utc": "2027-01-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    },
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "rank": 2,
+      "start_utc": "2027-02-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    },
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "rank": 3,
+      "start_utc": "2027-03-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    },
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "rank": 4,
+      "start_utc": "2027-04-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    },
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "rank": 5,
+      "start_utc": "2027-05-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    }
+  ],
+  "windows": [
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "longest_dark_streak_hours": 0.0,
+      "start_utc": "2027-01-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    },
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "longest_dark_streak_hours": 0.0,
+      "start_utc": "2027-02-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    },
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "longest_dark_streak_hours": 0.0,
+      "start_utc": "2027-03-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    },
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "longest_dark_streak_hours": 0.0,
+      "start_utc": "2027-04-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    },
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "longest_dark_streak_hours": 0.0,
+      "start_utc": "2027-05-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    },
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "longest_dark_streak_hours": 0.0,
+      "start_utc": "2027-06-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    },
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "longest_dark_streak_hours": 0.0,
+      "start_utc": "2027-07-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    },
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "longest_dark_streak_hours": 0.0,
+      "start_utc": "2027-08-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    },
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "longest_dark_streak_hours": 0.0,
+      "start_utc": "2027-09-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    },
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "longest_dark_streak_hours": 0.0,
+      "start_utc": "2027-10-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    },
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "longest_dark_streak_hours": 0.0,
+      "start_utc": "2027-11-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    },
+    {
+      "dte_fraction": 0.0,
+      "feasibility_score": 0.0,
+      "longest_dark_streak_hours": 0.0,
+      "start_utc": "2027-12-01T00:00:00Z",
+      "sunlit_fraction": 0.0
+    }
+  ]
+}

@@ -2,144 +2,144 @@
   {
     "agency": "NASA",
     "category": "artemis_iii",
-    "elevation_m": null,
+    "elevation_m": -3945.8735044839486,
     "external_links": {
       "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=-54.5800&y=-82.2600",
       "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-82.2600&lon=-54.5800"
     },
-    "has_precomputed_terrain": false,
+    "has_precomputed_terrain": true,
     "id": "artemis-cabeus-peak",
     "lat_deg": -82.26,
     "lon_deg": -54.58,
-    "mean_slope_deg": null,
+    "mean_slope_deg": 9.675157049383314,
     "name": "Peak near Cabeus B",
     "summary": "Artemis III candidate landing region at a massif peak beside Cabeus B crater in the south polar highlands."
   },
   {
     "agency": "NASA",
     "category": "artemis_iii",
-    "elevation_m": null,
+    "elevation_m": -1577.2862778053839,
     "external_links": {
       "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=-4.0000&y=-86.9000",
       "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-86.9000&lon=-4.0000"
     },
-    "has_precomputed_terrain": false,
+    "has_precomputed_terrain": true,
     "id": "artemis-haworth",
     "lat_deg": -86.9,
     "lon_deg": -4.0,
-    "mean_slope_deg": null,
+    "mean_slope_deg": 11.351830138848856,
     "name": "Haworth",
     "summary": "Artemis III candidate landing region on the Haworth crater rim in the south polar highlands."
   },
   {
     "agency": "NASA",
     "category": "artemis_iii",
-    "elevation_m": null,
+    "elevation_m": 4919.830102308503,
     "external_links": {
       "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=-1.6700&y=-85.9800",
       "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-85.9800&lon=-1.6700"
     },
-    "has_precomputed_terrain": false,
+    "has_precomputed_terrain": true,
     "id": "artemis-malapert-massif",
     "lat_deg": -85.98,
     "lon_deg": -1.67,
-    "mean_slope_deg": null,
+    "mean_slope_deg": 14.496755907253268,
     "name": "Malapert Massif",
     "summary": "Artemis III candidate landing region on the Mons Malapert massif near the lunar south pole."
   },
   {
     "agency": "NASA",
     "category": "artemis_iii",
-    "elevation_m": null,
+    "elevation_m": 5039.634020514855,
     "external_links": {
       "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=31.0000&y=-84.6000",
       "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-84.6000&lon=31.0000"
     },
-    "has_precomputed_terrain": false,
+    "has_precomputed_terrain": true,
     "id": "artemis-mons-mouton-plateau",
     "lat_deg": -84.6,
     "lon_deg": 31.0,
-    "mean_slope_deg": null,
+    "mean_slope_deg": 8.03305801362337,
     "name": "Mons Mouton Plateau",
     "summary": "Artemis III candidate landing region on the plateau of Mons Mouton, a distinct region from Mons Mouton on the same massif."
   },
   {
     "agency": "NASA",
     "category": "artemis_iii",
-    "elevation_m": null,
+    "elevation_m": 5039.634020514855,
     "external_links": {
       "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=31.0000&y=-84.6000",
       "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-84.6000&lon=31.0000"
     },
-    "has_precomputed_terrain": false,
+    "has_precomputed_terrain": true,
     "id": "artemis-mons-mouton",
     "lat_deg": -84.6,
     "lon_deg": 31.0,
-    "mean_slope_deg": null,
+    "mean_slope_deg": 8.03305801362337,
     "name": "Mons Mouton",
     "summary": "Artemis III candidate landing region on the Mons Mouton massif, a distinct region from Mons Mouton Plateau on the same massif."
   },
   {
     "agency": "NASA",
     "category": "artemis_iii",
-    "elevation_m": null,
+    "elevation_m": 915.7029462450491,
     "external_links": {
       "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=53.2700&y=-85.2800",
       "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-85.2800&lon=53.2700"
     },
-    "has_precomputed_terrain": false,
+    "has_precomputed_terrain": true,
     "id": "artemis-nobile-rim-1",
     "lat_deg": -85.28,
     "lon_deg": 53.27,
-    "mean_slope_deg": null,
+    "mean_slope_deg": 9.336453567211567,
     "name": "Nobile Rim 1",
     "summary": "Artemis III candidate landing region on the rim of Nobile crater, one of two Nobile Rim regions."
   },
   {
     "agency": "NASA",
     "category": "artemis_iii",
-    "elevation_m": null,
+    "elevation_m": 915.7029462450491,
     "external_links": {
       "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=53.2700&y=-85.2800",
       "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-85.2800&lon=53.2700"
     },
-    "has_precomputed_terrain": false,
+    "has_precomputed_terrain": true,
     "id": "artemis-nobile-rim-2",
     "lat_deg": -85.28,
     "lon_deg": 53.27,
-    "mean_slope_deg": null,
+    "mean_slope_deg": 9.336453567211567,
     "name": "Nobile Rim 2",
     "summary": "Artemis III candidate landing region on the rim of Nobile crater, the second of the two Nobile Rim regions."
   },
   {
     "agency": "NASA",
     "category": "artemis_iii",
-    "elevation_m": null,
+    "elevation_m": -1222.7595939435087,
     "external_links": {
       "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=-88.3400&y=-88.4800",
       "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-88.4800&lon=-88.3400"
     },
-    "has_precomputed_terrain": false,
+    "has_precomputed_terrain": true,
     "id": "artemis-degerlache-rim-2",
     "lat_deg": -88.48,
     "lon_deg": -88.34,
-    "mean_slope_deg": null,
+    "mean_slope_deg": 12.246324721258445,
     "name": "de Gerlache Rim 2",
     "summary": "Artemis III candidate landing region on the rim of de Gerlache crater near the lunar south pole."
   },
   {
     "agency": "NASA",
     "category": "artemis_iii",
-    "elevation_m": null,
+    "elevation_m": -1741.497937920666,
     "external_links": {
       "moon_trek_url": "https://trek.nasa.gov/moon/#v=0.1&x=111.2900&y=-88.0800",
       "quickmap_url": "https://quickmap.lroc.asu.edu/?lat=-88.0800&lon=111.2900"
     },
-    "has_precomputed_terrain": false,
+    "has_precomputed_terrain": true,
     "id": "artemis-slater-plain",
     "lat_deg": -88.08,
     "lon_deg": 111.29,
-    "mean_slope_deg": null,
+    "mean_slope_deg": 8.709293852609637,
     "name": "Slater Plain",
     "summary": "Artemis III candidate landing region in the Slater Plain area of the south polar highlands."
   },
