@@ -1,6 +1,6 @@
 # Module 2: Clean-Architecture Backend API & Mission Scoring Engine
 
-<!-- STATUS: HISTORICAL | REASON: HACKATHON_BUILD_PLAN.md and plan/task-ledger.json are now the only operative authorities; this document is design context only | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-01 | TASKS: DOC-001 -->
+<!-- STATUS: HISTORICAL | REASON: DEVELOPMENT_PLAN.md and plan/task-ledger.json are the only operative authorities; this document is design context only | REPLACEMENT: DEVELOPMENT_PLAN.md#req-01 | TASKS: DOC-001 -->
 
 **Parent Plan:** [DEVELOPMENT_PLAN.md](../DEVELOPMENT_PLAN.md)
 **Architecture Spec:** [00-architecture-and-standards.md](00-architecture-and-standards.md)
@@ -30,7 +30,7 @@ infrastructure/*.py      (Implements application/ports.py: site packs, vectorize
 
 ## Feature Breakdown
 
-<!-- STATUS: SUPERSEDED | REASON: SPICE adapters and in-memory DEM wiring are removed from runtime; ports remain | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-06 | TASKS: BE-003 -->
+<!-- STATUS: SUPERSEDED | REASON: SPICE adapters and in-memory DEM wiring are removed from runtime; ports remain | REPLACEMENT: DEVELOPMENT_PLAN.md#req-06 | TASKS: BE-003 -->
 ### `F2.1` — Domain Entities, Ports & Clean Architecture Skeleton
 * **Target Files:**
   * `backend/src/domain/constants.py` (~45 lines)
@@ -49,7 +49,7 @@ infrastructure/*.py      (Implements application/ports.py: site packs, vectorize
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: the disk formula below is a linear approximation, not an exact circular-segment area fraction | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-09 | TASKS: BE-002 -->
+<!-- STATUS: SUPERSEDED | REASON: the disk formula below is a linear approximation, not an exact circular-segment area fraction | REPLACEMENT: DEVELOPMENT_PLAN.md#req-09 | TASKS: BE-002 -->
 ### `F2.2` — Finite-Disk Solar Illumination, Mast Height & 3-Mode Array Power Engine
 * **Target Files:**
   * `backend/src/domain/horizon_geometry.py` (~95 lines)
@@ -71,7 +71,7 @@ infrastructure/*.py      (Implements application/ports.py: site packs, vectorize
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: min_comms_elev_deg means clearance above the effective horizon; conjunction is reported separately | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-09 | TASKS: BE-002 -->
+<!-- STATUS: SUPERSEDED | REASON: min_comms_elev_deg means clearance above the effective horizon; conjunction is reported separately | REPLACEMENT: DEVELOPMENT_PLAN.md#req-09 | TASKS: BE-002 -->
 ### `F2.3` — Direct-to-Earth (DTE) Communication Window, Margin & Conjunction Engine
 * **Target File:** `backend/src/domain/comms_visibility.py` (~110 lines)
 * **What to Build:**
@@ -97,7 +97,7 @@ infrastructure/*.py      (Implements application/ports.py: site packs, vectorize
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: scoring equations are now closed and must not be tuned toward expected percentages | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-09 | TASKS: BE-002 -->
+<!-- STATUS: SUPERSEDED | REASON: scoring equations are now closed and must not be tuned toward expected percentages | REPLACEMENT: DEVELOPMENT_PLAN.md#req-09 | TASKS: BE-002 -->
 ### `F2.5` — Mission Feasibility Scoring Engine & Risk Warnings
 * **Target File:** `backend/src/domain/feasibility_scorer.py` (~125 lines)
 * **What to Build:**
@@ -111,7 +111,7 @@ infrastructure/*.py      (Implements application/ports.py: site packs, vectorize
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: arbitrary custom evaluation is out of P0; comparison is gated behind P1-APPROVAL | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-02 | TASKS: BE-003, P1-COMPARE -->
+<!-- STATUS: SUPERSEDED | REASON: arbitrary custom evaluation is out of P0; comparison is gated behind P1-APPROVAL | REPLACEMENT: DEVELOPMENT_PLAN.md#req-02 | TASKS: BE-003, P1-COMPARE -->
 ### `F2.6` — Scenario Evaluation, Multi-Site Comparison & Schedule-Shift Use Cases
 * **Target Files:**
   * `backend/src/application/evaluate_scenario.py` (~115 lines)
@@ -123,7 +123,7 @@ infrastructure/*.py      (Implements application/ports.py: site packs, vectorize
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: window scanning is a gated P1 task and performance budgets are not acceptance criteria | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-12 | TASKS: P1-WINDOWS -->
+<!-- STATUS: SUPERSEDED | REASON: window scanning is a gated P1 task and performance budgets are not acceptance criteria | REPLACEMENT: DEVELOPMENT_PLAN.md#req-12 | TASKS: P1-WINDOWS -->
 ### `F2.7` — 12-Month Window Scanner & FastAPI Delivery Endpoints
 * **Target Files:**
   * `backend/src/application/scan_windows.py` (~135 lines)

@@ -1,6 +1,6 @@
 # Module 3: Frontend Core, Site Selection, 2D Map & Dual-Audience UX
 
-<!-- STATUS: HISTORICAL | REASON: HACKATHON_BUILD_PLAN.md and plan/task-ledger.json are now the only operative authorities; this document is design context only | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-01 | TASKS: DOC-001 -->
+<!-- STATUS: HISTORICAL | REASON: DEVELOPMENT_PLAN.md and plan/task-ledger.json are the only operative authorities; this document is design context only | REPLACEMENT: DEVELOPMENT_PLAN.md#req-01 | TASKS: DOC-001 -->
 
 **Parent Plan:** [DEVELOPMENT_PLAN.md](../DEVELOPMENT_PLAN.md)
 **Architecture Spec:** [00-architecture-and-standards.md](00-architecture-and-standards.md)
@@ -9,7 +9,7 @@
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: Tailwind is dropped in favour of the committed CSS-variable theme | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-03 | TASKS: FE-001 -->
+<!-- STATUS: SUPERSEDED | REASON: Tailwind is dropped in favour of the committed CSS-variable theme | REPLACEMENT: DEVELOPMENT_PLAN.md#req-03 | TASKS: FE-001 -->
 ## Module Objective
 Build the modular **React + TypeScript + Tailwind** workspace shell, global state stores (with shareable URL query sync), typed API client (with offline fixture fallback), site explorer, interactive 2D lunar map, playback time controller, and dual **Mission Planner / Explorer** experience—so `Module 4` (3D & sky charts) and `Module 5` (comparison & window finder) plug cleanly into shared hooks and layout slots.
 
@@ -17,7 +17,7 @@ Build the modular **React + TypeScript + Tailwind** workspace shell, global stat
 
 ## Feature Breakdown
 
-<!-- STATUS: SUPERSEDED | REASON: the canonical URL key set is now exactly site,start,days,step,array,array_az,mast,min_comms | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-11 | TASKS: FE-001 -->
+<!-- STATUS: SUPERSEDED | REASON: the canonical URL key set is now exactly site,start,days,step,array,array_az,mast,min_comms | REPLACEMENT: DEVELOPMENT_PLAN.md#req-11 | TASKS: FE-001 -->
 ### `F3.1` — App Shell, Workspace Layout, State Stores & Shareable URL Sync
 * **Target Files:**
   * `frontend/src/components/layout/AppShell.tsx` (~90 lines)
@@ -37,7 +37,7 @@ Build the modular **React + TypeScript + Tailwind** workspace shell, global stat
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: wire types are generated from Pydantic; fallback applies only on network failure with an exact fixture-key match | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-10 | TASKS: ARCH-002, FE-003 -->
+<!-- STATUS: SUPERSEDED | REASON: wire types are generated from Pydantic; fallback applies only on network failure with an exact fixture-key match | REPLACEMENT: DEVELOPMENT_PLAN.md#req-10 | TASKS: ARCH-002, FE-003 -->
 ### `F3.2` — Typed API Client & Offline Fixture Fallback Layer
 * **Target Files:**
   * `frontend/src/types/site.ts`, `evaluation.ts`, `comparison.ts`, `windows.ts` (4 small files, ~65 lines each)
@@ -51,7 +51,7 @@ Build the modular **React + TypeScript + Tailwind** workspace shell, global stat
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: custom coordinates are out of P0 and only enter via build-time onboarding in P1 | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-02 | TASKS: P1-CUSTOM-SITES -->
+<!-- STATUS: SUPERSEDED | REASON: custom coordinates are out of P0 and only enter via build-time onboarding in P1 | REPLACEMENT: DEVELOPMENT_PLAN.md#req-02 | TASKS: P1-CUSTOM-SITES -->
 ### `F3.3` — Landing Site Explorer & Custom Coordinate Input
 * **Target Files:**
   * `frontend/src/features/site-explorer/SiteExplorerDrawer.tsx` (~130 lines)
@@ -66,7 +66,7 @@ Build the modular **React + TypeScript + Tailwind** workspace shell, global stat
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: the 2D map is promoted to P1-MAP and consumes a generated overview product | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-11 | TASKS: P1-MAP -->
+<!-- STATUS: SUPERSEDED | REASON: the 2D map is promoted to P1-MAP and consumes a generated overview product | REPLACEMENT: DEVELOPMENT_PLAN.md#req-11 | TASKS: P1-MAP -->
 ### `F3.4` — Interactive 2D Lunar South Pole Map & Quickmap/Moon Trek Bridge
 * **Target Files:**
   * `frontend/src/features/lunar-map-2d/SouthPoleMap.tsx` (~170 lines)
@@ -83,7 +83,7 @@ Build the modular **React + TypeScript + Tailwind** workspace shell, global stat
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: 3D synchronisation is removed; P0 scrubs the SVG horizon and timeline only | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-11 | TASKS: FE-002 -->
+<!-- STATUS: SUPERSEDED | REASON: 3D synchronisation is removed; P0 scrubs the SVG horizon and timeline only | REPLACEMENT: DEVELOPMENT_PLAN.md#req-11 | TASKS: FE-002 -->
 ### `F3.5` — Date, Duration & Time-Scrubber Playback Controller
 * **Target Files:**
   * `frontend/src/features/time-controls/DateAndDurationBar.tsx` (~120 lines)
@@ -95,7 +95,7 @@ Build the modular **React + TypeScript + Tailwind** workspace shell, global stat
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: persona mode is expressed as labels and callouts over the single P0 workspace, not a second UI | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-11 | TASKS: FE-002 -->
+<!-- STATUS: SUPERSEDED | REASON: persona mode is expressed as labels and callouts over the single P0 workspace, not a second UI | REPLACEMENT: DEVELOPMENT_PLAN.md#req-11 | TASKS: FE-002 -->
 ### `F3.6` — Dual-Audience Mode (*Mission Planner* vs. *Explorer / Educator*)
 * **Target Files:**
   * `frontend/src/features/persona-mode/ModeSwitchPill.tsx` (~60 lines)

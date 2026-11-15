@@ -10,7 +10,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 LEDGER = ROOT / "plan" / "task-ledger.json"
 SCHEMA = ROOT / "plan" / "task-ledger.schema.json"
-PLAN = ROOT / "HACKATHON_BUILD_PLAN.md"
+PLAN = ROOT / "DEVELOPMENT_PLAN.md"
 AGENTS = ROOT / "AGENTS.md"
 README = ROOT / "README.md"
 
@@ -28,8 +28,9 @@ REQUIRED_KEYS = {
 }
 PHASES = {"planning", "foundation", "data", "backend", "frontend", "qa", "gate", "p1", "delivery"}
 PRIORITIES = {"P0", "P1", "delivery"}
-OWNERS = {"A", "B", "both"}
-REVIEWERS = {"A", "B", "human"}
+OWNERS = {f"M{n}" for n in range(1, 6)}
+REVIEWERS = {f"M{n}" for n in range(1, 6)} | {"human"}
+MODULES = OWNERS
 STATUSES = {"pending", "in_progress", "blocked", "done"}
 EVIDENCE_KINDS = {"command", "artifact", "approval", "report"}
 
@@ -73,7 +74,7 @@ AI_TOKENS = (
 REQUIRED_ANCHORS = [f"req-{n:02d}" for n in range(1, 13)]
 HISTORICAL_MARKER = "STATUS: HISTORICAL"
 TASK_REF_RE = re.compile(r"TASKS?:\s*([A-Z0-9,\s-]+)")
-ANCHOR_REF_RE = re.compile(r"HACKATHON_BUILD_PLAN\.md#(req-\d{2})")
+ANCHOR_REF_RE = re.compile(r"DEVELOPMENT_PLAN\.md#(req-\d{2})")
 VAGUE_ACCEPTANCE = (
     "looks right",
     "looks like a moon ridge",

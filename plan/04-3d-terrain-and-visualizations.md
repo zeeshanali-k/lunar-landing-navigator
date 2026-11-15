@@ -1,6 +1,6 @@
 # Module 4: 3D Lunar Terrain, Sky-Dome & Operational Visualizations
 
-<!-- STATUS: HISTORICAL | REASON: HACKATHON_BUILD_PLAN.md and plan/task-ledger.json are now the only operative authorities; this document is design context only | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-01 | TASKS: DOC-001 -->
+<!-- STATUS: HISTORICAL | REASON: DEVELOPMENT_PLAN.md and plan/task-ledger.json are the only operative authorities; this document is design context only | REPLACEMENT: DEVELOPMENT_PLAN.md#req-01 | TASKS: DOC-001 -->
 
 **Parent Plan:** [DEVELOPMENT_PLAN.md](../DEVELOPMENT_PLAN.md)
 **Architecture Spec:** [00-architecture-and-standards.md](00-architecture-and-standards.md)
@@ -9,7 +9,7 @@
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: the entire 3D module is post-P1 and requires a new human-approved revision | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-02 | TASKS: P1-GATE -->
+<!-- STATUS: SUPERSEDED | REASON: the entire 3D module is post-P1 and requires a new human-approved revision | REPLACEMENT: DEVELOPMENT_PLAN.md#req-02 | TASKS: P1-GATE -->
 ## Module Objective
 Deliver the high-impact visual heart of the application—translating NASA elevation grids (`local_enu` frame) and ephemeris angles into **four synchronized, unmistakable visual perspectives**:
 1. Real-time **3D Lunar Terrain & Sharp Zero-Atmosphere Shadows** (`F4.1`–`F4.2`)
@@ -43,7 +43,7 @@ Deliver the high-impact visual heart of the application—translating NASA eleva
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: the 3D grazing-angle shadow engine is the highest-cost, highest-risk item and is not in P0 or P1 | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-02 | TASKS: P1-GATE -->
+<!-- STATUS: SUPERSEDED | REASON: the 3D grazing-angle shadow engine is the highest-cost, highest-risk item and is not in P0 or P1 | REPLACEMENT: DEVELOPMENT_PLAN.md#req-02 | TASKS: P1-GATE -->
 ### `F4.2` — Grazing-Angle Solar Ray & Real-Time Crater Shadow Engine
 * **Target Files:**
   * `frontend/src/features/terrain-3d/celestialVectors.ts` (~95 lines — pure `(az, elev) → (x, y, z)` vector math)
@@ -61,7 +61,7 @@ Deliver the high-impact visual heart of the application—translating NASA eleva
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: the horizon silhouette is promoted into P0 as an SVG component | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-11 | TASKS: FE-002 -->
+<!-- STATUS: SUPERSEDED | REASON: the horizon silhouette is promoted into P0 as an SVG component | REPLACEMENT: DEVELOPMENT_PLAN.md#req-11 | TASKS: FE-002 -->
 ### `F4.3` — 360° Panoramic Horizon Silhouette Chart
 * **Target Files:**
   * `frontend/src/features/sky-horizon/PanoramaHorizonChart.tsx` (~165 lines)
@@ -88,7 +88,7 @@ Deliver the high-impact visual heart of the application—translating NASA eleva
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: the timeline is promoted into P0 as an SVG component | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-11 | TASKS: FE-002 -->
+<!-- STATUS: SUPERSEDED | REASON: the timeline is promoted into P0 as an SVG component | REPLACEMENT: DEVELOPMENT_PLAN.md#req-11 | TASKS: FE-002 -->
 ### `F4.5` — Synchronized Multi-Day Power & DTE Comms Timeline
 * **Target Files:**
   * `frontend/src/features/mission-timeline/MissionTimelinePanel.tsx` (~160 lines)

@@ -1,6 +1,6 @@
 # Module 5: Scenario Comparison, Landing Window Finder, QA & Hackathon Delivery
 
-<!-- STATUS: HISTORICAL | REASON: HACKATHON_BUILD_PLAN.md and plan/task-ledger.json are now the only operative authorities; this document is design context only | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-01 | TASKS: DOC-001 -->
+<!-- STATUS: HISTORICAL | REASON: DEVELOPMENT_PLAN.md and plan/task-ledger.json are the only operative authorities; this document is design context only | REPLACEMENT: DEVELOPMENT_PLAN.md#req-01 | TASKS: DOC-001 -->
 
 **Parent Plan:** [DEVELOPMENT_PLAN.md](../DEVELOPMENT_PLAN.md)
 **Architecture Spec:** [00-architecture-and-standards.md](00-architecture-and-standards.md)
@@ -16,7 +16,7 @@ Address the core mission-planning pain point emphasized in the NASA challenge de
 
 ## Feature Breakdown
 
-<!-- STATUS: SUPERSEDED | REASON: comparison is promoted to the first P1 task and requires P1-APPROVAL | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-02 | TASKS: P1-COMPARE -->
+<!-- STATUS: SUPERSEDED | REASON: comparison is promoted to the first P1 task and requires P1-APPROVAL | REPLACEMENT: DEVELOPMENT_PLAN.md#req-02 | TASKS: P1-COMPARE -->
 ### `F5.1` — Side-by-Side Scenario Comparison Matrix
 * **Target Files:**
   * `frontend/src/features/comparison-board/ComparisonBoardView.tsx` (~155 lines)
@@ -32,7 +32,7 @@ Address the core mission-planning pain point emphasized in the NASA challenge de
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: launch delays are fixed at +14, +29.5, +90, and +180 days | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-02 | TASKS: P1-DELAYS -->
+<!-- STATUS: SUPERSEDED | REASON: launch delays are fixed at +14, +29.5, +90, and +180 days | REPLACEMENT: DEVELOPMENT_PLAN.md#req-02 | TASKS: P1-DELAYS -->
 ### `F5.2` — Launch Delay / Schedule-Shift Sensitivity Explorer
 * **Target Files:**
   * `frontend/src/features/comparison-board/ScheduleShiftExplorer.tsx` (~145 lines)
@@ -45,7 +45,7 @@ Address the core mission-planning pain point emphasized in the NASA challenge de
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: window scanning is gated P1; the seasonal-cycle claim below was scientifically wrong and is corrected inline | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-09 | TASKS: P1-WINDOWS -->
+<!-- STATUS: SUPERSEDED | REASON: window scanning is gated P1; the seasonal-cycle claim below was scientifically wrong and is corrected inline | REPLACEMENT: DEVELOPMENT_PLAN.md#req-09 | TASKS: P1-WINDOWS -->
 ### `F5.3` — 12-Month Optimal Landing Window Heatmap
 * **Target Files:**
   * `frontend/src/features/window-finder/WindowHeatmapView.tsx` (~160 lines)
@@ -61,7 +61,7 @@ Address the core mission-planning pain point emphasized in the NASA challenge de
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: export is not a dependency of any P0 or P1 task | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-02 | TASKS: DELIVERY-001 -->
+<!-- STATUS: SUPERSEDED | REASON: export is not a dependency of any P0 or P1 task | REPLACEMENT: DEVELOPMENT_PLAN.md#req-02 | TASKS: DELIVERY-001 -->
 ### `F5.4` — Mission Briefing Exporter (Planner & Educator Output)
 * **Target Files:**
   * `frontend/src/features/briefing-export/exportHelpers.ts` (~110 lines — CSV/JSON builders)
@@ -75,7 +75,7 @@ Address the core mission-planning pain point emphasized in the NASA challenge de
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: acceptance evidence is now command-based and recorded in docs/QA_REPORT.md | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-12 | TASKS: QA-001 -->
+<!-- STATUS: SUPERSEDED | REASON: acceptance evidence is now command-based and recorded in docs/QA_REPORT.md | REPLACEMENT: DEVELOPMENT_PLAN.md#req-12 | TASKS: QA-001 -->
 ### `F5.5` — End-to-End Integration, Edge-Case & File-Size Gate QA
 * **Target Files:**
   * `scripts/check_file_lengths.py` (~55 lines)
@@ -93,7 +93,7 @@ Address the core mission-planning pain point emphasized in the NASA challenge de
 
 ---
 
-<!-- STATUS: SUPERSEDED | REASON: Docker and cloud deployment are out of scope; demo rehearsal and delivery remain as delivery tasks | REPLACEMENT: HACKATHON_BUILD_PLAN.md#req-02 | TASKS: DELIVERY-001 -->
+<!-- STATUS: SUPERSEDED | REASON: Docker and cloud deployment are out of scope; demo rehearsal and delivery remain as delivery tasks | REPLACEMENT: DEVELOPMENT_PLAN.md#req-02 | TASKS: DELIVERY-001 -->
 ### `F5.6` — Deployment, Offline Fail-Safe & Space Apps Pitch Package
 * **Target Files:**
   * `Dockerfile.backend` & `Dockerfile.frontend` (~40 lines each)

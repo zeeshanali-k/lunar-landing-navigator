@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# Pre-commit gate: branch correctness, protected-file digests, and staged test tampering.
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+cd "$repo_root"
+
+# 1. Correct branch for this human.
+"./.githooks/check-branch"
+
+# 2. Protected paths may only be committed with explicit human sign-off.
+if [[ -f plan/protected-paths.txt ]]; then
+  mapfile -t patterns < <(grep -vE '^\s*(#|$)' plan/protected-paths.txt)
+  hits=()
+  while IFS= read -r path; do
+    [[ -z "$path" ]] && continue
+    for pattern in "${patterns[@]}"; do
+      # shellcheck disable=SC2053
+      if [[ "$path" == $pattern ]]; then
+        hits+=("$path")
+        break
+      fi
+    done
+  done < <(git diff --cached --name-only)
+
+  if (( ${#hits[@]} > 0 )) && [[ "${ALLOW_PROTECTED:-0}" != "1" ]]; then
+    echo "PRE-COMMIT REJECTED: protected paths staged without sign-off." >&2
+    printf '  %s\n' "${hits[@]}" >&2
+    echo >&2
+    echo "These files define the rules and the checks, so a human reviews them." >&2
+    echo "If you are that human and the change is intended:" >&2
+    echo "  ALLOW_PROTECTED=1 git commit ..." >&2
+    exit 1
+  fi
+fi
+
+# 3. A test file may be modified but not removed, and no test count may drop.
+removed_tests="$(git diff --cached --name-status --diff-filter=D | awk '{print $2}' | grep -E '(^|/)(test_|.*\.test\.|.*\.spec\.)' || true)"
+if [[ -n "$removed_tests" ]]; then
+  echo "PRE-COMMIT REJECTED: test files deleted:" >&2
+  echo "$removed_tests" >&2
+  echo "Extend a test instead of removing it; see PROTECTED.md." >&2
+  exit 1
+fi
+
+# 4. Tautological assertions are a tamper signal.
+if git diff --cached -U0 -- '*.py' '*.ts' '*.tsx' \
+   | grep -E '^\+.*(assert True|expect\(true\)\.toBe\(true\)|expect\(1\)\.toBe\(1\))' >/dev/null; then
+  echo "PRE-COMMIT REJECTED: tautological assertion added." >&2
+  echo "Replace it with a real assertion; see PROTECTED.md, 'Test integrity'." >&2
+  exit 1
+fi
+
+# 5. The planning validators must pass before any commit.
+if command -v python3 >/dev/null 2>&1; then
+  python3 scripts/validate_task_ledger.py >/dev/null
+  python3 scripts/check_planning_docs.py >/dev/null
+fi
+
+exit 0

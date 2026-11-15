@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import re
 import sys
 
@@ -17,14 +18,85 @@ from planning_checks import (
     ROOT,
     TASK_REF_RE,
     VAGUE_ACCEPTANCE,
-    PlanError,
+    PlanError as _PlanError,
     find_prohibited,
     load_json,
     read,
     require,
 )
 
+PlanError = _PlanError
+
 SKIP_TOKENS = {"TASKS", "TASK", "REQ", "STATUS", "REASON", "REPLACEMENT"}
+
+PROTECTED_MANIFEST = ROOT / "plan" / "protected.sha256"
+
+
+def refresh_protected_digests() -> None:
+    """Rewrite the digest manifest. Human-only: requires ALLOW_PROTECTED=1."""
+    import os
+
+    require(
+        os.environ.get("ALLOW_PROTECTED") == "1",
+        "refusing to rewrite digests without ALLOW_PROTECTED=1; a human must sign off",
+    )
+    if not PROTECTED_MANIFEST.exists():
+        raise PlanError("no digest manifest to refresh")
+    entries: list[str] = []
+    for line in PROTECTED_MANIFEST.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        _, relative = line.split(None, 1)
+        path = ROOT / relative
+        require(path.exists(), f"protected file missing: {relative}")
+        entries.append(f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {relative}")
+    header = (
+        "# SHA-256 digests of protected files.\n"
+        "# Regenerate only with human sign-off:\n"
+        "#   ALLOW_PROTECTED=1 python3 scripts/check_planning_docs.py --refresh\n\n"
+    )
+    PROTECTED_MANIFEST.write_text(header + "\n".join(entries) + "\n", encoding="utf-8")
+
+
+def check_protected_digests() -> None:
+    """Protected files must match recorded digests; drift means a rule was edited."""
+    if not PROTECTED_MANIFEST.exists():
+        return
+    for line in PROTECTED_MANIFEST.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split(None, 1)
+        if len(parts) != 2:
+            raise PlanError(f"malformed protected digest line: {line!r}")
+        expected, relative = parts
+        path = ROOT / relative
+        require(path.exists(), f"protected file missing: {relative}")
+        actual = hashlib.sha256(path.read_bytes()).hexdigest()
+        require(
+            actual == expected,
+            f"protected file changed: {relative}. A human must review protected edits; "
+            "regenerate plan/protected.sha256 only with human sign-off.",
+        )
+
+
+def check_agent_dirs_untracked() -> None:
+    """Agent tool state must never be committed, and AGENTS.md must stay tracked."""
+    import subprocess
+
+    tracked = subprocess.run(
+        ["git", "ls-files"], cwd=ROOT, capture_output=True, text=True, check=False
+    ).stdout.splitlines()
+    banned = (
+        ".commandcode/", ".claude/", ".opencode/", ".codex/", ".cursor/",
+        ".continue/", ".windsurf/", ".roo/", ".gemini/", ".qwen/",
+        ".specstory/", ".agents/", ".copilot/",
+    )
+    offenders = [path for path in tracked if any(path.startswith(b) for b in banned)]
+    require(not offenders, f"agent tool state is tracked: {offenders}")
+    require("AGENTS.md" in tracked, "AGENTS.md must stay tracked as the shared protocol")
+
 
 
 def check_plan_anchors() -> set[str]:
@@ -49,7 +121,7 @@ def check_plan_is_closed() -> None:
 def check_plan_declares_authority() -> None:
     """The plan must name the three authorities, the conflict rule, and the AI non-goal."""
     text = read(PLAN)
-    for authority in ("AGENTS.md", "plan/task-ledger.json", "HACKATHON_BUILD_PLAN.md"):
+    for authority in ("AGENTS.md", "plan/task-ledger.json", "DEVELOPMENT_PLAN.md"):
         require(authority in text, f"plan does not name authority {authority}")
     require("Conflict rule" in text, "plan does not state the conflict rule")
     require("Non-goal — no runtime AI" in text, "plan does not state the no-AI non-goal")
@@ -93,7 +165,7 @@ def check_legacy_annotations(task_ids: set[str], anchors: set[str]) -> None:
         relative = path.relative_to(path.parents[len(path.parents) - 1])
         name = "/".join(relative.parts[1:]) if len(relative.parts) > 1 else path.name
         require(HISTORICAL_MARKER in text, f"{name} lacks a top-level historical marker")
-        require("HACKATHON_BUILD_PLAN.md" in text, f"{name} does not point at the operative plan")
+        require("DEVELOPMENT_PLAN.md" in text, f"{name} does not point at the operative plan")
         offending = find_prohibited(text)
         require(offending is None, f"{name} contains prohibited command form {offending!r}")
         for reference in TASK_REF_RE.findall(text):
@@ -126,6 +198,15 @@ def check_no_vague_acceptance() -> None:
 
 def main() -> int:
     """Run every documentation check and report the outcome."""
+    if "--refresh" in sys.argv[1:]:
+        try:
+            refresh_protected_digests()
+        except PlanError as exc:
+            print(f"FAIL  {exc}")
+            return 1
+        print("OK    protected digests refreshed")
+        return 0
+
     try:
         anchors = check_plan_anchors()
         check_plan_is_closed()
@@ -136,6 +217,8 @@ def main() -> int:
         check_ledger_consistency(task_ids, anchors)
         check_no_vague_acceptance()
         check_no_duplicate_fixtures()
+        check_agent_dirs_untracked()
+        check_protected_digests()
     except PlanError as exc:
         print(f"FAIL  {exc}")
         return 1

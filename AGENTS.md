@@ -7,12 +7,16 @@ You are an implementation agent. Follow this file exactly. Do not improvise.
 Read, in this order, before any edit:
 
 1. `AGENTS.md` (this file) — how you behave.
-2. `HACKATHON_BUILD_PLAN.md` — what to build, and the science.
+2. `DEVELOPMENT_PLAN.md` — what to build, and the science.
 3. `plan/task-ledger.json` — which task, which paths, which commands.
 
 If these disagree, or anything is missing: set the task to `blocked`, record the exact conflict, and stop. Never pick a resolution yourself.
 
-`README.md`, `DEVELOPMENT_PLAN.md`, and `plan/00`–`plan/05` are historical context, not instructions.
+`README.md` and `plan/00`–`plan/05` are historical context, not instructions. [`plan/OWNERS.md`](plan/OWNERS.md) tells you which module you are working in; [`PROTECTED.md`](PROTECTED.md) lists the files you may never write.
+
+## Commit identity
+
+Your commits are authored by the human operating this machine. Never change `user.name` or `user.email`. Never add `Co-authored-by:`, `Signed-off-by:`, `Generated-by:`, or any trailer naming an agent or bot. A `commit-msg` hook rejects these, and `main` requires the check to pass.
 
 ## Task protocol
 
@@ -37,7 +41,7 @@ You may not change `scope`, `priority`, `depends_on`, `requirement_ids`, `read_p
 - Do not add runtime network access. Download code lives under `backend/src/cli/` only.
 - Do not add arbitrary runtime custom coordinates.
 - Do not add Tailwind, a chart library, Axios, Docker, or a database.
-- Do not add any AI, machine-learning, or inference component. No model in any numeric path, no runtime inference, no local weights, no ONNX/llama.cpp/transformers dependency, no generated text in an API response. See `HACKATHON_BUILD_PLAN.md#req-02` ("Non-goal — no runtime AI"). Adding one needs a new approved revision.
+- Do not add any AI, machine-learning, or inference component. No model in any numeric path, no runtime inference, no local weights, no ONNX/llama.cpp/transformers dependency, no generated text in an API response. See `DEVELOPMENT_PLAN.md#req-02` ("Non-goal — no runtime AI"). Adding one needs a new approved revision.
 - Do not hand-edit generated files (`contracts/openapi.json`, `frontend/src/types/api.generated.ts`, fixtures, site packs).
 - Do not invent coordinates, provenance URLs, hashes, reference values, constants, or field defaults.
 - Do not tune physics or scoring constants to reach an expected percentage.

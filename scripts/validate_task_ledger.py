@@ -32,6 +32,7 @@ from planning_checks import (
 )
 from prohibited_checks import (
     verify_frontend_has_no_physics,
+    verify_unowned_modules_blocked,
     verify_manifests_have_no_ai,
     verify_no_ai,
     verify_three_d,
@@ -53,7 +54,7 @@ def verify_schema_document(schema: dict[str, Any]) -> None:
 def verify_structure(ledger: dict[str, Any], schema: dict[str, Any]) -> list[dict[str, Any]]:
     """Apply required keys, unknown-key rejection, and enum constraints."""
     require(
-        not set(ledger) - {"schema_version", "requirement_anchors", "tasks"},
+        not set(ledger) - {"schema_version", "requirement_anchors", "ownership", "tasks"},
         "ledger has unexpected top-level keys",
     )
     require(
@@ -64,6 +65,17 @@ def verify_structure(ledger: dict[str, Any], schema: dict[str, Any]) -> list[dic
     require(
         anchors == [f"REQ-{n:02d}" for n in range(1, 13)],
         "requirement_anchors must be exactly REQ-01 .. REQ-12 in order",
+    )
+    ownership = ledger.get("ownership", {})
+    require(ownership.get("model") == "module", "ownership.model must be 'module'")
+    require(
+        ownership.get("source") == "plan/OWNERS.md",
+        "ownership.source must point at plan/OWNERS.md",
+    )
+    modules = ownership.get("modules", {})
+    require(
+        set(modules) == {f"M{n}" for n in range(1, 6)},
+        "ownership must declare exactly M1..M5",
     )
     enums = {
         "phase": PHASES,
@@ -83,6 +95,10 @@ def verify_structure(ledger: dict[str, Any], schema: dict[str, Any]) -> list[dic
         )
         for field, allowed in enums.items():
             require(task[field] in allowed, f"{where} invalid {field} {task[field]!r}")
+        require(
+            task["owner"] != task["reviewer"],
+            f"{where} owner and reviewer are the same module",
+        )
     return tasks
 
 
@@ -202,7 +218,7 @@ def verify_close_out(tasks: list[dict[str, Any]], by_id: dict[str, dict[str, Any
 
 def verify_plan_anchors(anchors: set[str]) -> None:
     """Confirm every requirement anchor exists in the operative plan."""
-    require(PLAN.exists(), "HACKATHON_BUILD_PLAN.md is missing")
+    require(PLAN.exists(), "DEVELOPMENT_PLAN.md is missing")
     text = PLAN.read_text(encoding="utf-8")
     for anchor in anchors:
         require(
@@ -240,6 +256,7 @@ def main() -> int:
             verify_three_d(task, by_id)
             verify_no_ai(task)
         verify_close_out(tasks, by_id)
+        verify_unowned_modules_blocked(tasks, ledger)
         verify_readme_untouched()
         verify_manifests_have_no_ai()
         verify_frontend_has_no_physics()

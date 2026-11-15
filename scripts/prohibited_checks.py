@@ -69,3 +69,40 @@ def verify_frontend_has_no_physics() -> None:
                 f"{path.relative_to(ROOT)} restates physical constant {literal!r}; "
                 "import it from the API contract instead",
             )
+
+
+def verify_unowned_modules_blocked(tasks: list[dict[str, Any]], ledger: dict[str, Any]) -> None:
+    """A task may not start or finish while its module has no assigned human."""
+    modules = ledger["ownership"]["modules"]
+    for task in tasks:
+        if task["status"] not in {"in_progress", "done"}:
+            continue
+        module = task["owner"]
+        require(
+            modules[module]["owner"] is not None,
+            f"{task['id']} is {task['status']} but module {module} has no assigned owner. "
+            "Assign the module in plan/OWNERS.md first.",
+        )
+
+
+def verify_dependencies(tasks: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    """Check unique ids, existing dependencies, and acyclicity."""
+    by_id: dict[str, dict[str, Any]] = {}
+    for task in tasks:
+        require(bool(ID_RE.match(task["id"])), f"invalid task id format: {task['id']!r}")
+        require(task["id"] not in by_id, f"duplicate task id: {task['id']}")
+        by_id[task["id"]] = task
+    for task in tasks:
+        for dependency in task["depends_on"]:
+            require(dependency in by_id, f"{task['id']} depends on unknown task {dependency}")
+            require(dependency != task["id"], f"{task['id']} depends on itself")
+
+    remaining = {task["id"]: set(task["depends_on"]) for task in tasks}
+    while remaining:
+        ready = [node for node, deps in remaining.items() if not deps]
+        require(bool(ready), f"dependency cycle among {sorted(remaining)}")
+        for node in ready:
+            del remaining[node]
+        for deps in remaining.values():
+            deps.difference_update(ready)
+    return by_id
