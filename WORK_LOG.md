@@ -16,11 +16,11 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | Human review gate | `DONE` — `DOC-GATE` closed 2026-11-15 with recorded approval | bauerceptor |
 | `M3` frontend corrected onto the plan | `DONE` (committed on `bauerceptor`, not yet merged to `main`) | bauerceptor |
 | `M3` frontend, P0 completeness | `BLOCKED` — 5 issues open (5, 6, 7, 8, 9) | bauerceptor |
-| `M1` data pipeline | `PARTIAL` — `ARCH-001` done; LOLA DEM and one Horizons site fetched out of order; registry still 6 of 16 (`DATA-001`) | bauerceptor |
+| `M1` data pipeline | `PARTIAL` — `ARCH-001` and `DATA-001` done; LOLA DEM and one Horizons site fetched out of order; `DATA-002`/`DATA-003` next | bauerceptor |
 | `M2` backend | `READY` — `ARCH-001` done; `ARCH-002` contracts next | bauerceptor |
 | `M4` 3D | `BLOCKED` — gated behind `P0-GATE` | devscion |
 | `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
-| **P0 release** | **`NOT SHIPPABLE` — 6 blockers remain (1, 5, 6, 7, 8, 10)** | — |
+| **P0 release** | **`NOT SHIPPABLE` — 5 blockers remain (1, 5, 6, 7, 8)** | — |
 
 ---
 
@@ -138,11 +138,29 @@ hard limit. Recorded as evidence `prettier-baseline-scope`.
 Verified: `uv sync`, `ruff check`, `bun install`, `typecheck`, `test`, `lint`, `format:check`,
 `build`, and `check_file_lengths` all exit 0.
 
+### DATA-001 — 16-site registry with coordinate provenance (done)
+
+| Change | Files |
+|---|---|
+| Rebuilt the registry to the 16 REQ-05 entries in order, each anchored to an IAU-adopted named-feature centre with a `planetarynames.wr.usgs.gov/Feature/<id>` provenance URL | `backend/config/curated_sites.yaml` |
+| Added a validated registry loader (PyYAML plus Pydantic v2, `extra=forbid`, coordinate bounds) | `backend/src/infrastructure/site_registry_loader.py` |
+| Added unit coverage for order, uniqueness, HTTPS provenance, coordinate range, the two Mons Mouton entries, removed regions, and the nine south-polar Artemis III sites | `backend/tests/unit/test_site_registry.py` |
+| Confirmed the source config references only `ldem_80s_80m` and the Horizons endpoint; no stale 120 m or global DEM URLs remain | `backend/config/data_sources.yaml` |
+
+Coordinate anchors (IAU feature ID): Cabeus B `8058`; Haworth `14502`; Mons Malapert `16338`;
+Mons Mouton `16070` (shared by both Mons Mouton regions); Nobile `4321` (shared by both Nobile Rim
+regions); de Gerlache `1439`; Slater `15325`; Mons Latreille `15996` for Blue Ghost; Mons
+Gruithuisen Delta `3981`; Lacus Mortis `3212`; Statio Tranquillitatis `5684`; Rima Hadley `5064`;
+Statio Shiv Shakti `16272`; Statio Tianhe `15781`.
+
+Verified: `pytest tests/unit/test_site_registry.py -v` (6 passed), `ruff check .` (clean),
+`validate_task_ledger.py`, `check_planning_docs.py`, and `check_file_lengths.py` all exit 0.
+`DATA-001` is closed at `e1dd973` with the evidence recorded in the ledger.
+
 ### Next session
 
-The human will resolve the registry coordinates (`DATA-001`) in a fresh session to avoid stale
-context. `NEXT_SESSION.md` is the runbook: it lists the 16 entries, the provenance rule, and the
-exact command and evidence sequence.
+The next eligible tasks are `ARCH-002` (`M2`) and `DATA-002` (`M1`). `NEXT_SESSION.md` should be
+refreshed to point at one of them before the next session.
 
 ---
 
@@ -150,9 +168,9 @@ exact command and evidence sequence.
 
 ### P0 blockers — the release cannot ship until these are closed
 
-Six issues gate P0. None were introduced by the governance work; they are the gap between what module 3 shipped and what REQ-11 requires. Numbers refer to the table below.
+Five issues gate P0 (issue 10 was closed by `DATA-001`). None were introduced by the governance work; they are the gap between what module 3 shipped and what REQ-11 requires. Numbers refer to the table below.
 
-**Status as of this revision: all six are explicit ledger acceptance criteria.** They were previously implicit — living in this file but absent from the ledger — which meant an agent could satisfy `FE-002` while leaving P0 broken. The acceptance lists now name each one, so a task cannot be marked done with the gap open. Issue 3 (test runner) and issue 12 (`uv.lock`) were closed by `ARCH-001`.
+**Status as of this revision: all five are explicit ledger acceptance criteria.** They were previously implicit — living in this file but absent from the ledger — which meant an agent could satisfy `FE-002` while leaving P0 broken. The acceptance lists now name each one, so a task cannot be marked done with the gap open. Issue 3 (test runner) and issue 12 (`uv.lock`) were closed by `ARCH-001`; issue 10 (registry) was closed by `DATA-001`.
 
 | # | Blocker | Ledger requirement | Why it blocks P0 |
 |---|---|---|---|
@@ -176,7 +194,7 @@ Six issues gate P0. None were introduced by the governance work; they are the ga
 | 7 | No Class B badge, spherical-limb notice, or provenance footer in the UI | `frontend/src/components/`, `frontend/src/features/` | BLOCKER for P0 | in `FE-002` acceptance |
 | 8 | No `step`, `array_az`, or `min_comms` controls; values exist in state and URL but no UI writes them | `frontend/src/features/time-controls/` | BLOCKER for P0 | in `FE-002` acceptance |
 | 9 | Educational glossary asserts unsourced science (1.54° tilt, 40 K, ±6.5° libration, "uninterrupted" DTE) and generates narrative from booleans | `frontend/src/features/persona-mode/educationalGlossary.ts` | MAJOR | open — deliberately deferred, see below |
-| 10 | Registry holds 6 sites, not the 16 REQ-05 requires | `backend/config/curated_sites.yaml` | BLOCKER for P0 | in `DATA-001` acceptance |
+| 10 | Registry holds 6 sites, not the 16 REQ-05 requires | `backend/config/curated_sites.yaml` | BLOCKER for P0 | `DONE` — closed by `DATA-001` |
 | 11 | `contracts/openapi-draft.yaml` still hand-maintained alongside Pydantic | `contracts/` | MAJOR | in `ARCH-002` acceptance |
 | 12 | `backend/uv.lock` absent, pytest not installed, so no Python check can run | `backend/` | BLOCKER for P0 | `DONE` — closed by `ARCH-001` |
 | 13 | Fixture `terrain.sample.json` is 16×16; production contract is 128×128 | `contracts/fixtures/` | MINOR | open |

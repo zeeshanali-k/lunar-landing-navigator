@@ -502,7 +502,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "ARCH-001"
       ],
@@ -551,12 +551,28 @@
           "ref": "pytest tests/unit/test_site_registry.py"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_site_registry.py",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen ruff check .",
+          "exit": 0
+        },
+        {
+          "kind": "artifact",
+          "ref": "backend/config/curated_sites.yaml",
+          "sha256": "8e93a0624d2cf401a0518f2a907a35b5cc872b25ac36d1fc95372fe065a66a85"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-15T11:22:48Z",
+      "completed_commit": "e1dd9732e280f740fea81c5877bc52c374d0d518"
     },
     {
       "id": "DATA-002",
