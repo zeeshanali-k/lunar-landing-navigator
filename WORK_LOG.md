@@ -750,3 +750,37 @@ Do not merge if: the generator or pytest fails, a pack is not 128x128 with 16384
 - Validators: ledger **10 done**; planning docs and file lengths exit 0.
 - Open issues added (not blockers): #22 REQ-08 limb reference, #23 Cabeus DEM-boundary limitation, #24 `source_manifest_sha256` convention.
 - Next: `agent-beta` may start `DATA-006`; `agent-charlie` may start `BE-001` now and needs it before `BE-002`.
+
+### DATA-006 — done — agent-beta
+
+- Branch/commit: `bauerceptor-beta` @ `81ee5d2` (task work); the ledger closure is the branch tip.
+- Changed: added `backend/src/cli/build_pack_index.py` and `backend/tests/unit/test_pack_index.py`; generated `data/manifests/site_packs/index.json` (16 sites, pack paths, presence, SHA-256); regenerated `contracts/fixtures/sites.sample.json` from the packs (elevation, mean slope, presence) and added nine `contracts/fixtures/terrain.<site_id>.json` Contract C fixtures; rewrote `contracts/fixtures/manifest.json`; created the byte-identical `frontend/public/data/fixtures` mirror.
+- Commands: `uv run --python 3.12 --frozen python -m src.cli.build_pack_index` — exit 0 (16 sites, 9 terrain packs, 11 generated files, 16 mirrored); `uv run --python 3.12 --frozen pytest tests/unit/test_pack_index.py -v` — exit 0 (16 passed).
+- Evidence: index SHA-256 `e92a9462a7c82f011a3b61c58d41932eeefcc9dd6385605f759f0bcea74f42df`; sorted fixture-tree SHA-256 `78ecafe5e21f508ea87c8ca9eaaf90ed657009d07ac3f0729eb832099e1af1ec`; regeneration is byte-identical; the ARCH-002 parity suite still passes (15 passed).
+- Fixture manifest carries both shapes it is consumed in: canonical scenario keys at the top level for `frontend/src/services/httpClient.ts` (`sites`, `health`, `terrain:<site_id>`) and the same mapping under `scenarios` for the ARCH-002 parity test. `synthetic` is true and the note says so.
+- Extras run (not ledger evidence): `ruff check`, `ruff format --check`, `mypy` on the two new files — clean; `file_lengths` 0 violations.
+- Open issues (found, not fixed):
+  - `backend/tests/integration/test_contracts_and_health.py` has 5 pre-existing failures: it asserts the removed `artemis-shackleton-ridge` site, a health shape without `moon_radius_km`, and the fixture-substitution routes. It predates this task and is untouched; `BE-003` owns replacing those routes. Severity: MAJOR until `BE-003`.
+  - `ARCH-002`'s `fixture_synth.build_fixture_manifest` nests scenario keys under `scenarios`, while `httpClient` reads top-level keys. DATA-006 reconciles both in one generated manifest; a human-approved revision should make one shape authoritative (REQ-10). Severity: MINOR.
+  - `export_openapi` still rewrites the fixture tree from `fixture_synth`; running it after DATA-006 reverts the manifest and sites fixture. The fixture generator should be unified, or `export_openapi` should stop writing fixtures. Severity: MAJOR for the offline demo. Blocked by: a human-approved ledger/plan revision.
+  - Offline evaluate/compare/windows scenario fixtures are not generated: an `EvaluateResponse` needs the REQ-09 physics owned by `BE-002`, and REQ-06 forbids a second implementation. The ARCH-002 base samples remain for those contracts. `FE-003` (after `BE-002`) or a follow-up task must generate them. Severity: MAJOR for the offline fallback.
+  - The base `terrain.sample.json` is left as the ARCH-002 flat placeholder because the parity test pins it to zeros; real terrain ships as `terrain.<site_id>.json` scenario fixtures instead. Severity: MINOR.
+- Proposed doc deltas: state the fixture manifest shape (flat canonical keys) in REQ-10; name the single fixture writer (currently both `export_openapi` and `build_pack_index`); decide whether offline evaluate scenarios are a P0 requirement and, if so, schedule them after `BE-002`.
+- M3 impact: `DATA-006` is an `FE-003` input only; `FE-003` still needs `BE-003` and `FE-002`.
+
+```text
+ZETA HANDOFF — DATA-006 ready to merge
+Branch: bauerceptor-beta
+Worktree: /home/red/Projects/lunar-landing-beta
+Commit: bauerceptor-beta tip after this closure commit; task work commit 81ee5d2
+Task status: done
+Base: bead176 (bauerceptor tip before task work; DATA-004/DATA-005 already merged)
+Commands: build_pack_index exit 0; pytest tests/unit/test_pack_index.py -v exit 0
+Evidence: index sha256 e92a9462a7c82f011a3b61c58d41932eeefcc9dd6385605f759f0bcea74f42df; fixture tree sha256 78ecafe5e21f508ea87c8ca9eaaf90ed657009d07ac3f0729eb832099e1af1ec; 16 passed; parity 15 passed
+Changed paths: backend/src/cli/build_pack_index.py, backend/tests/unit/test_pack_index.py, data/manifests/site_packs/index.json, contracts/fixtures/*, frontend/public/data/fixtures/*, plan/task-ledger.json, plan/protected.sha256, WORK_LOG.md
+Artefacts: data/manifests/site_packs/index.json; contracts/fixtures/{sites.sample.json,manifest.json,terrain.<site>.json}; byte-identical frontend mirror
+Pre-merge checks: generator and pytest exit 0; ruff/format/mypy clean; parity 15 passed; validators exit 0
+M3 impact: FE-003 input only (DATA-006 merged; FE-003 still needs BE-003 and FE-002)
+Known risks: pre-existing legacy integration failures in tests/integration/test_contracts_and_health.py (BE-003 replaces them); export_openapi can overwrite the generated fixture tree if re-run; offline evaluate scenarios are not generated until BE-002 exists
+Do not merge if: the generator or pytest fails, the mirror is not byte-identical, the index presence flags disagree with pack files, or the ARCH-002 parity suite fails
+```
