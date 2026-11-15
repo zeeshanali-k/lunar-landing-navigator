@@ -80,7 +80,7 @@ When a check fails, the agent reports the failure and stops. Making the check pa
 
 ### P0 — first shippable release
 
-Fourteen curated sites; site/date/duration controls; precomputed Sun and Earth ephemeris; real LOLA terrain for covered sites and an honest `spherical_limb_only` model elsewhere; 360° horizon silhouette; multi-day power/DTE timeline; KPI strip with solar elevation and hours-to-sunset/earthset; power and DTE assessment; canonical shareable URL; and an offline demo that requires no network.
+Sixteen curated sites; site/date/duration controls; precomputed Sun and Earth ephemeris; real LOLA terrain for covered sites and an honest `spherical_limb_only` model elsewhere; 360° horizon silhouette; multi-day power/DTE timeline; KPI strip with solar elevation and hours-to-sunset/earthset; power and DTE assessment; canonical shareable URL; and an offline demo that requires no network.
 
 **P0 has no** custom coordinates, comparison, window heatmap, 2D polar map, 3D, PSR masks, export, Docker, cloud deployment, or database.
 
@@ -300,36 +300,39 @@ Downloads write to `<name>.part`, verify size and hash, then atomically rename. 
 <a id="req-05"></a>
 ## REQ-05 Closed site registry and terrain availability
 
-Exactly **14 unique** entries, in this order, which is the `GET /api/v1/sites` response order:
+Exactly **16 unique** entries, in this order, which is the `GET /api/v1/sites` response order:
 
 | # | `id` | Name | Category | Terrain |
 |---|---|---|---|---|
-| 1 | `artemis-shackleton-ridge` | Shackleton Connecting Ridge | `artemis_iii` | LOLA |
-| 2 | `artemis-faustini-rim-a` | Faustini Rim A | `artemis_iii` | LOLA |
-| 3 | `artemis-haworth` | Haworth | `artemis_iii` | LOLA |
-| 4 | `artemis-malapert-massif` | Malapert Massif | `artemis_iii` | LOLA |
-| 5 | `artemis-mons-mouton` | Mons Mouton (Leibnitz Beta Plateau) | `artemis_iii` | LOLA |
+| 1 | `artemis-cabeus-peak` | Peak near Cabeus B | `artemis_iii` | LOLA |
+| 2 | `artemis-haworth` | Haworth | `artemis_iii` | LOLA |
+| 3 | `artemis-malapert-massif` | Malapert Massif | `artemis_iii` | LOLA |
+| 4 | `artemis-mons-mouton-plateau` | Mons Mouton Plateau | `artemis_iii` | LOLA |
+| 5 | `artemis-mons-mouton` | Mons Mouton | `artemis_iii` | LOLA |
 | 6 | `artemis-nobile-rim-1` | Nobile Rim 1 | `artemis_iii` | LOLA |
-| 7 | `artemis-cabeus-peak` | Peak near Cabeus | `artemis_iii` | LOLA |
-| 8 | `clps-mare-crisium` | Mare Crisium (Blue Ghost) | `clps_commercial` | limb only |
-| 9 | `clps-gruithuisen-domes` | Gruithuisen Domes | `clps_commercial` | limb only |
-| 10 | `clps-lacus-mortis` | Lacus Mortis | `clps_commercial` | limb only |
-| 11 | `apollo-11-tranquillitatis` | Apollo 11 (Mare Tranquillitatis) | `apollo_historic` | limb only |
-| 12 | `apollo-15-hadley-rille` | Apollo 15 (Hadley Rille) | `apollo_historic` | limb only |
-| 13 | `isro-chandrayaan-3-shiv-shakti` | Chandrayaan-3 (Shiv Shakti Point) | `international` | limb only |
-| 14 | `cnsa-change-4-von-karman` | Chang'e-4 (Von Kármán Crater) | `international` | limb only |
+| 7 | `artemis-nobile-rim-2` | Nobile Rim 2 | `artemis_iii` | LOLA |
+| 8 | `artemis-degerlache-rim-2` | de Gerlache Rim 2 | `artemis_iii` | LOLA |
+| 9 | `artemis-slater-plain` | Slater Plain | `artemis_iii` | LOLA |
+| 10 | `clps-mare-crisium` | Mare Crisium (Blue Ghost) | `clps_commercial` | limb only |
+| 11 | `clps-gruithuisen-domes` | Gruithuisen Domes | `clps_commercial` | limb only |
+| 12 | `clps-lacus-mortis` | Lacus Mortis | `clps_commercial` | limb only |
+| 13 | `apollo-11-tranquillitatis` | Apollo 11 (Mare Tranquillitatis) | `apollo_historic` | limb only |
+| 14 | `apollo-15-hadley-rille` | Apollo 15 (Hadley Rille) | `apollo_historic` | limb only |
+| 15 | `isro-chandrayaan-3-shiv-shakti` | Chandrayaan-3 (Shiv Shakti Point) | `international` | limb only |
+| 16 | `cnsa-change-4-von-karman` | Chang'e-4 (Von Kármán Crater) | `international` | limb only |
 
 Rules:
 
-1. Every entry carries a `coordinate_source_url` recording where its `lat_deg`/`lon_deg` came from. **An agent must never invent a coordinate.** If a provenance URL cannot be captured, `DATA-001` is `blocked`.
-2. Mons Mouton appears **once** (the duplicate in the legacy prose is corrected). Secondary mission associations live in `summary`, not in extra categories.
-3. `elevation_m` and `mean_slope_deg` are derived from the generated site pack, never hand-entered.
-4. `has_precomputed_terrain` reflects actual pack presence, not registry intent.
-5. `parent_body` is not modelled; lunar sites only.
+1. The `artemis_iii` nine are NASA's current Artemis III candidate landing regions, announced 2024-10-28 ([NASA release 24-136](https://www.nasa.gov/news-release/nasa-provides-update-on-artemis-iii-moon-landing-regions/)). They replaced the original 2022 set of thirteen; Shackleton Connecting Ridge and Faustini Rim A were excluded in that downselect and are not in the registry.
+2. Every entry carries a `coordinate_source_url` recording where its `lat_deg`/`lon_deg` came from. **An agent must never invent a coordinate.** If a provenance URL cannot be captured, `DATA-001` is `blocked`.
+3. `Mons Mouton` and `Mons Mouton Plateau` are two distinct Artemis III regions on the same massif, not a duplicate. Secondary mission associations live in `summary`, not in extra categories.
+4. `elevation_m` and `mean_slope_deg` are derived from the generated site pack, never hand-entered.
+5. `has_precomputed_terrain` reflects actual pack presence, not registry intent.
+6. `parent_body` is not modelled; lunar sites only.
 
 ### Terrain availability model — two explicit classes
 
-**Class A — LOLA-covered (the 7 south-polar sites, latitude ≤ −80°).** Real DEM patch, real elevation, real slope, real 360° horizon.
+**Class A — LOLA-covered (the 9 south-polar sites, latitude ≤ −80°).** Real DEM patch, real elevation, real slope, real 360° horizon.
 
 **Class B — `spherical_limb_only` (the other 7).** No fabricated data whatsoever:
 
@@ -394,7 +397,7 @@ observer_height_m: 1.5 | 2.0 | 10.0
 solar_array_type : horizontal_fixed | vertical_fixed | vertical_tracking
 fixed_array_azimuth_deg : default 0.0        (0 = north, 90 = east), range [0, 360)
 min_comms_elev_deg      : default 5.0, range [-5.0, 45.0]
-site_id                 : one of the 14 registry IDs
+site_id                 : one of the 16 registry IDs
 ```
 
 Values outside an allowlist are a **422**. `observer_height_m` is an allowlist rather than a range because only three horizon profiles are precomputed (REQ-08).
@@ -408,10 +411,10 @@ Values outside an allowlist are a **422**. `observer_height_m` is an allowlist r
   "frame": "MOON_ME",
   "longitude_convention": "east_positive",
   "azimuth_convention": "clockwise_from_north",
-  "start_utc": "2027-01-01T00:00:00Z",
-  "stop_utc": "2028-07-01T00:00:00Z",
+  "start_utc": "2026-01-01T00:00:00Z",
+  "stop_utc": "2029-01-01T00:00:00Z",
   "step_seconds": 3600,
-  "sample_count": 13129,
+  "sample_count": 26305,
   "sun_az_deg": [0.0],
   "sun_elev_deg": [0.0],
   "earth_az_deg": [0.0],
@@ -456,9 +459,11 @@ Invariants: `elevations_m` and `slopes_deg` have exactly `grid_size² = 16384` f
 
 ### Coverage
 
-**2027-01-01T00:00:00Z through 2028-07-01T00:00:00Z inclusive, hourly, 13,129 samples per body per site.**
+**2026-01-01T00:00:00Z through 2029-01-01T00:00:00Z inclusive, hourly, 26,305 samples per body per site.**
 
-Rationale: supports the reference scenario (2027-11-01), all four launch delays (+14, +29.5, +90, +180 d), and every P1 window candidate including its 15-day lookahead.
+The stop date is **2029-01-01**, not 2028-12-31. A stop of 2028-12-31 yields only 26,281 samples and silently drops the final day. Verified against Horizons: `START_TIME='2026-01-01'`, `STOP_TIME='2029-01-01'`, `STEP_SIZE='1h'` returns exactly 26,305 rows.
+
+Rationale: supports current-date evaluation, the reference scenario (2027-11-01), all four launch delays (+14, +29.5, +90, +180 d), and every P1 window candidate including its 15-day lookahead. Latest evaluable start is ≈ 2028-11-16.
 
 **Hard rule:** an evaluation is valid only if `start + mission_duration + 15 days ≤ coverage_stop`, and `start ≥ coverage_start`. Otherwise reject with `422 EPHEMERIS_RANGE_EXCEEDED`. Never extrapolate, never clamp silently, never serve a neighbouring site's data.
 
@@ -713,7 +718,7 @@ All acceptance is a command or a frozen numeric comparison. Prohibited acceptanc
 
 ### Required evidence
 
-1. **Registry** — exactly 14 unique IDs, unique names, finite coordinates in range, a provenance URL per entry.
+1. **Registry** — exactly 16 unique IDs, unique names, finite coordinates in range, a provenance URL per entry.
 2. **Terrain availability** — pack presence matches `has_precomputed_terrain`; Class B terrain request returns 409.
 3. **Grid** — 128×128, 16,384 finite values, spacing `40000/127`, row/column directions, one axis-orientation unit test against probed pixels.
 4. **Raycast** — synthetic crater recovers analytic horizon within `< 0.02°`; flat surface yields the analytic limb for all three heights; a boundary test proves no sampling beyond 120 km.

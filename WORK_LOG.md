@@ -71,6 +71,54 @@ Reviewed before merge: 13 blockers, all in two classes — client-side fabricate
 
 ---
 
+## 2026-11-15 — bauerceptor
+
+### Registry scope revision (human-approved)
+
+Verified independently against NASA release 24-136 (2024-10-28): Artemis III candidate landing
+regions were downselected from thirteen (2022) to **nine**. The seven polar entries in `REQ-05`
+were not that nine — two (Shackleton Connecting Ridge, Faustini Rim A) were dropped in the 2024
+downselect, and four of the nine were absent. The human approved aligning the `artemis_iii`
+category to NASA's current nine and keeping the 2026-01-01…2029-01-01 ephemeris window.
+
+| Change | Files |
+|---|---|
+| `REQ-05` registry is now 16 entries: NASA's nine current Artemis III regions plus the seven CLPS/Apollo/international sites | `DEVELOPMENT_PLAN.md` |
+| Dropped `artemis-shackleton-ridge`, `artemis-faustini-rim-a`; added `artemis-mons-mouton-plateau`, `artemis-nobile-rim-2`, `artemis-degerlache-rim-2`, `artemis-slater-plain` | `DEVELOPMENT_PLAN.md` |
+| Class A count is 9; registry counts in REQ-02, REQ-06, REQ-12 updated to 16 | `DEVELOPMENT_PLAN.md` |
+| Ledger titles and acceptance updated from 14 to 16; Mons Mouton rule is now "two distinct regions", not "appears once" | `plan/task-ledger.json` |
+
+### Validator correction
+
+The `check_no_bare_python_invocations` check added in the previous session flagged its own regex
+definitions and docstrings, and a stale multi-line header wrote a literal newline escape into
+`plan/protected.sha256`. It now scans Markdown documentation only (excluding historical
+`README.md`), which is where command instructions live, and the header is a single line. No check
+was weakened: bare interpreter commands and disallowed package-manager forms in documentation
+still fail.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `uv run --project backend --python 3.12 --frozen python scripts/validate_task_ledger.py` | pass |
+| `uv run --project backend --python 3.12 --frozen python scripts/check_planning_docs.py` | pass |
+| `uv run --project backend --python 3.12 --frozen python scripts/check_file_lengths.py` | pass |
+
+### Not done — deliberately
+
+- `DATA-001` coordinate sourcing is **not** executed. `backend/config/curated_sites.yaml` still
+  holds six entries, including the now-removed `artemis-shackleton-ridge`; the registry must be
+  rebuilt to the 16 `REQ-05` entries with a provenance URL each. No coordinate was invented.
+- `DOC-GATE` is still `pending`. It is a human gate; the revision approval above is not the same
+  as closing it.
+- Uncommitted out-of-order artefacts remain in the tree (`backend/.python-version`,
+  `backend/uv.lock`, `data/downloads/`, `data/manifests/`, `scripts/fetch_horizons.py`,
+  `docs/COORDINATE_SOURCING_GUIDE.md`). `fetch_horizons.py` is in the wrong directory for
+  `DATA-003`; `backend/src/cli/` is the only permitted location.
+
+---
+
 ## Open issues
 
 ### P0 blockers — the release cannot ship until these are closed
@@ -88,7 +136,7 @@ Eight issues gate P0. None were introduced by the governance work; they are the 
 | 6 | Horizon silhouette and timeline are placeholders | `FE-002` acceptance, items 4–6 (new) | These are the two visualisations REQ-11 names as the P0 core; today they render a count and a fake slot |
 | 7 | No Class B badge, spherical-limb notice, or provenance footer | `FE-002` acceptance, items 1–3 and 9 (new) | A limb-only site would display as if it had measured terrain, which REQ-05 forbids |
 | 8 | No `step`, `array_az`, or `min_comms` controls | `FE-002` acceptance, item 8 (new) | Three of the eight canonical scenario fields exist in state and URL but no UI writes them |
-| 10 | Registry holds 6 sites, not 14 | `DATA-001` acceptance | REQ-05 requires exactly 14; the demo would show less than half the curated set |
+| 10 | Registry holds 6 sites, not 16 | `DATA-001` acceptance | REQ-05 requires exactly 16; the demo would show less than half the curated set |
 
 ### Full list
 
@@ -103,7 +151,7 @@ Eight issues gate P0. None were introduced by the governance work; they are the 
 | 7 | No Class B badge, spherical-limb notice, or provenance footer in the UI | `frontend/src/components/`, `frontend/src/features/` | BLOCKER for P0 | in `FE-002` acceptance |
 | 8 | No `step`, `array_az`, or `min_comms` controls; values exist in state and URL but no UI writes them | `frontend/src/features/time-controls/` | BLOCKER for P0 | in `FE-002` acceptance |
 | 9 | Educational glossary asserts unsourced science (1.54° tilt, 40 K, ±6.5° libration, "uninterrupted" DTE) and generates narrative from booleans | `frontend/src/features/persona-mode/educationalGlossary.ts` | MAJOR | open — deliberately deferred, see below |
-| 10 | Registry holds 6 sites, not the 14 REQ-05 requires | `backend/config/curated_sites.yaml` | BLOCKER for P0 | in `DATA-001` acceptance |
+| 10 | Registry holds 6 sites, not the 16 REQ-05 requires | `backend/config/curated_sites.yaml` | BLOCKER for P0 | in `DATA-001` acceptance |
 | 11 | `contracts/openapi-draft.yaml` still hand-maintained alongside Pydantic | `contracts/` | MAJOR | in `ARCH-002` acceptance |
 | 12 | `backend/uv.lock` absent, pytest not installed, so no Python check can run | `backend/` | BLOCKER for P0 | in `ARCH-001` acceptance |
 | 13 | Fixture `terrain.sample.json` is 16×16; production contract is 128×128 | `contracts/fixtures/` | MINOR | open |

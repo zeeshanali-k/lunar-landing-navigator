@@ -74,3 +74,8 @@ npm-debug.log*
 
 # Local session handoff — personal starting notes, not shared.
 NEXT_SESSION.md
+
+# Raw upstream data — disposable cache, never committed.
+# Provenance lives in data/manifests/; runtime reads backend/data/site_packs/.
+/data/downloads/
+**.part
