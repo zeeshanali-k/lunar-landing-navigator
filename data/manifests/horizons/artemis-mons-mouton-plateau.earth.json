@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "task": "DATA-003",
+  "parser_version": "horizons/1.0.0",
+  "site_id": "artemis-mons-mouton-plateau",
+  "body": "earth",
+  "command": "'399'",
+  "center": "'coord@301'",
+  "coord_type": "'GEODETIC'",
+  "site_coord": "'31.0,-84.6,0.0'",
+  "quantities": "'4'",
+  "ephem_type": "'OBSERVER'",
+  "obj_data": "'NO'",
+  "frame": "MOON_ME",
+  "frame_horizons_label": "MEAN_ME (high precision), East-longitude positive",
+  "longitude_convention": "east_positive",
+  "azimuth_convention": "clockwise_from_north",
+  "start_utc": "2026-01-01T00:00:00Z",
+  "stop_utc": "2029-01-01T00:00:00Z",
+  "step_seconds": 3600,
+  "request_params": {
+    "format": "text",
+    "COMMAND": "'399'",
+    "OBJ_DATA": "'NO'",
+    "MAKE_EPHEM": "'YES'",
+    "EPHEM_TYPE": "'OBSERVER'",
+    "CENTER": "'coord@301'",
+    "COORD_TYPE": "'GEODETIC'",
+    "SITE_COORD": "'31.0,-84.6,0.0'",
+    "QUANTITIES": "'4'",
+    "START_TIME": "'2026-01-01T00:00:00Z'",
+    "STOP_TIME": "'2029-01-01T00:00:00Z'",
+    "STEP_SIZE": "'1h'"
+  },
+  "request_params_ordered": [
+    [
+      "format",
+      "text"
+    ],
+    [
+      "COMMAND",
+      "'399'"
+    ],
+    [
+      "OBJ_DATA",
+      "'NO'"
+    ],
+    [
+      "MAKE_EPHEM",
+      "'YES'"
+    ],
+    [
+      "EPHEM_TYPE",
+      "'OBSERVER'"
+    ],
+    [
+      "CENTER",
+      "'coord@301'"
+    ],
+    [
+      "COORD_TYPE",
+      "'GEODETIC'"
+    ],
+    [
+      "SITE_COORD",
+      "'31.0,-84.6,0.0'"
+    ],
+    [
+      "QUANTITIES",
+      "'4'"
+    ],
+    [
+      "START_TIME",
+      "'2026-01-01T00:00:00Z'"
+    ],
+    [
+      "STOP_TIME",
+      "'2029-01-01T00:00:00Z'"
+    ],
+    [
+      "STEP_SIZE",
+      "'1h'"
+    ]
+  ],
+  "request_json": "{\"format\":\"text\",\"COMMAND\":\"'399'\",\"OBJ_DATA\":\"'NO'\",\"MAKE_EPHEM\":\"'YES'\",\"EPHEM_TYPE\":\"'OBSERVER'\",\"CENTER\":\"'coord@301'\",\"COORD_TYPE\":\"'GEODETIC'\",\"SITE_COORD\":\"'31.0,-84.6,0.0'\",\"QUANTITIES\":\"'4'\",\"START_TIME\":\"'2026-01-01T00:00:00Z'\",\"STOP_TIME\":\"'2029-01-01T00:00:00Z'\",\"STEP_SIZE\":\"'1h'\"}",
+  "request_url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%2731.0%2C-84.6%2C0.0%27&QUANTITIES=%274%27&START_TIME=%272026-01-01T00%3A00%3A00Z%27&STOP_TIME=%272029-01-01T00%3A00%3A00Z%27&STEP_SIZE=%271h%27",
+  "original_url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%2731.0%2C-84.6%2C0.0%27&QUANTITIES=%274%27&START_TIME=%272026-01-01T00%3A00%3A00Z%27&STOP_TIME=%272029-01-01T00%3A00%3A00Z%27&STEP_SIZE=%271h%27",
+  "final_url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27399%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%2731.0%2C-84.6%2C0.0%27&QUANTITIES=%274%27&START_TIME=%272026-01-01T00%3A00%3A00Z%27&STOP_TIME=%272029-01-01T00%3A00%3A00Z%27&STEP_SIZE=%271h%27",
+  "retrieved_utc": "2026-11-15T14:21:49Z",
+  "http_status": 200,
+  "bytes": 1189736,
+  "raw_path": "data/downloads/horizons/artemis-mons-mouton-plateau.earth.txt",
+  "raw_sha256": "8fd8ef9ac8a3fff278fa1a255fe78d408ce1c6a427821178b0fcad2a2d112cc2",
+  "parsed_rows": 26305,
+  "site_coord_used": {
+    "lon_deg_east_positive": 31.0,
+    "lat_deg": -84.6,
+    "altitude_km": 0.0,
+    "altitude_source": "reference_sphere_zero: registry has no elevation_m"
+  },
+  "generated_outputs": [
+    {
+      "path": "data/manifests/references/horizons/artemis-mons-mouton-plateau.earth.reference.json",
+      "sha256": "2767a10ae0509ef56d4d8db6f058898d3ee0f6d97f52f559fbb49a08a5928507"
+    }
+  ],
+  "generated_pack_sha256": null,
+  "generated_pack_note": "DATA-004 builds EphemerisPacks from these rows."
+}

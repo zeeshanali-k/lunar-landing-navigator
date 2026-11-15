@@ -560,7 +560,7 @@ Remaining:
 - Evidence: `data/manifests/lola/manifest.json` sha256 `2d2b4554755ef1799930cc1968e1aa330c95145fd113d7356336605298957817`; image 115,520,000 bytes sha256 `e6591eeea35402ca5e124ca00f5bf0774381a2d4fa919144b455d82b8ff65fdc`; label 4,986 bytes sha256 `107c7558cbf8832e4119d3c8c2b1b272623344275c85378a9b0e03c22876eb33`.
 - Parsed label: 7600×7600, `LSB_INTEGER` 16-bit, `SCALING_FACTOR` 0.5, `OFFSET` 1737400, 80 m/pix, `POLAR STEREOGRAPHIC`, `PLANETOCENTRIC`, centre longitude 0, latitude bounds −90…−80, projection offsets 3799.5.
 - Open issues: none. The untracked manifest that existed in the main worktree reversed `MINIMUM_LATITUDE`/`MAXIMUM_LATITUDE` and lacked `parser_version` and the label hash; it was regenerated under this task, so that stale file should not be reused.
-- Proposed doc deltas: `DEVELOPMENT_PLAN.md` REQ-04 does not record `SCALING_FACTOR = 0.5` (elevation = DN × 0.5), which the product label makes load-bearing; consider adding it for `DATA-005`.
+- Proposed doc deltas: none. `SCALING_FACTOR = 0.5` (elevation = DN × 0.5) was verified against the live PDS label, which is byte-identical to the cached copy (sha256 `107c7558cbf8832e4119d3c8c2b1b272623344275c85378a9b0e03c22876eb33`); the label states `HEIGHT = (DN * SCALING_FACTOR)`. The label is the source of record and `pds_dem.read_elevations` reads the factor from it, so a plan restatement is unnecessary. This withdraws the proposal recorded in the Wave 1 entry above; no plan edit is requested.
 
 ```text
 ZETA HANDOFF — DATA-002 ready to merge

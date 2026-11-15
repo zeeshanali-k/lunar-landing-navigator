@@ -668,7 +668,7 @@
       "priority": "P0",
       "owner": "M1",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "in_progress",
       "depends_on": [
         "DATA-001"
       ],
