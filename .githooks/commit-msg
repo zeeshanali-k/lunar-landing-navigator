@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# Reject commits that attribute work to an agent, or that touch protected files
+# without explicit human sign-off.
+set -euo pipefail
+
+msg_file="${1:?commit message file required}"
+repo_root="$(git rev-parse --show-toplevel)"
+
+# --- 1. Attribution trailers ------------------------------------------------
+# Commits are authored solely by the human. No trailer that names or credits any
+# other author is permitted, agent or otherwise: authorship is already recorded
+# in the commit's own Author/Committer fields.
+forbidden_pattern='^(Co-authored-by|Co-Authored-By|Signed-off-by|Signed-Off-By|Authored-by|Generated-by|Reviewed-by|Acked-by|Helped-by):'
+
+if grep -qiE "$forbidden_pattern" "$msg_file"; then
+  echo "COMMIT REJECTED: attribution trailer found." >&2
+  echo "Commits are authored solely by the human operating this machine." >&2
+  echo "Remove the trailer; authorship already lives in the Author/Committer fields." >&2
+  grep -iE "$forbidden_pattern" "$msg_file" >&2 || true
+  exit 1
+fi
+
+# --- 2. Protected paths ------------------------------------------------------
+protected_file="$repo_root/plan/protected-paths.txt"
+
+if [[ -f "$protected_file" ]]; then
+  mapfile -t protected < <(grep -vE '^\s*(#|$)' "$protected_file")
+  staged="$(git diff --cached --name-only)"
+
+  hit=()
+  while IFS= read -r path; do
+    [[ -z "$path" ]] && continue
+    for pattern in "${protected[@]}"; do
+      # shellcheck disable=SC2053
+      if [[ "$path" == $pattern ]]; then
+        hit+=("$path")
+        break
+      fi
+    done
+  done <<< "$staged"
+
+  if (( ${#hit[@]} > 0 )); then
+    if [[ "${ALLOW_PROTECTED:-0}" != "1" ]]; then
+      echo "COMMIT REJECTED: protected paths staged without sign-off." >&2
+      printf '  %s\n' "${hit[@]}" >&2
+      echo >&2
+      echo "These files define the rules and the checks. A human must review them." >&2
+      echo "If you are that human and the change is intended, re-run with:" >&2
+      echo "  ALLOW_PROTECTED=1 git commit ..." >&2
+      exit 1
+    fi
+    echo "NOTE: protected paths committed with human sign-off (ALLOW_PROTECTED=1)."
+  fi
+fi
+
+# --- 3. Identity sanity ------------------------------------------------------
+author_email="$(git config user.email || true)"
+if [[ -z "$author_email" ]]; then
+  echo "COMMIT REJECTED: user.email is not configured." >&2
+  exit 1
+fi
+
+exit 0

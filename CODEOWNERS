@@ -1,0 +1,26 @@
+# Pull-request review routing.
+# Every human reviews their own module's work; shared files require an explicit
+# human review so no agent can approve a change to the rules or the checks.
+
+# Shared, human-owned files: any change needs a human reviewer.
+/AGENTS.md                        @zeeshanali-k
+/DEVELOPMENT_PLAN.md              @zeeshanali-k
+/PROTECTED.md                     @zeeshanali-k
+/plan/**                          @zeeshanali-k
+/scripts/**                       @zeeshanali-k
+/.githooks/**                     @zeeshanali-k
+/.gitignore                       @zeeshanali-k
+/CODEOWNERS                       @zeeshanali-k
+
+# Module source trees.
+/backend/src/cli/**               @zeeshanali-k
+/backend/src/infrastructure/**    @zeeshanali-k
+/backend/config/**                @zeeshanali-k
+/data/**                          @zeeshanali-k
+
+/backend/src/api/**               @zeeshanali-k
+/backend/src/application/**       @zeeshanali-k
+/backend/src/domain/**            @zeeshanali-k
+/contracts/**                     @zeeshanali-k
+
+/frontend/src/**                  @zeeshanali-k

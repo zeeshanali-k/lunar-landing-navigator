@@ -9,13 +9,16 @@ export type {
 } from "./site";
 export type {
   CustomCoords,
+  DurationDays,
   EvaluateRequest,
   EvaluateResponse,
   EvaluatedSite,
   EvaluationSummary,
   HorizonProfilePoint,
   NextEventsFromStart,
+  ObserverHeightM,
   SolarArrayType,
+  StepMinutes,
   SubScores,
   TimeseriesPoint,
 } from "./evaluation";
@@ -32,12 +35,4 @@ export type {
   WindowsRequest,
   WindowsResponse,
 } from "./windows";
-export {
-  MOON_RADIUS_KM,
-  POLE_LAT_CLAMP_DEG,
-  azElevToThreeXYZ,
-  clampLunarLatitude,
-  degToRad,
-  normalizeAzimuthDeg,
-  radToDeg,
-} from "./coordinates";
+export { degToRad, normalizeAzimuthDeg, radToDeg } from "./coordinates";

@@ -1,0 +1,1978 @@
+{
+  "schema_version": 1,
+  "requirement_anchors": [
+    "REQ-01",
+    "REQ-02",
+    "REQ-03",
+    "REQ-04",
+    "REQ-05",
+    "REQ-06",
+    "REQ-07",
+    "REQ-08",
+    "REQ-09",
+    "REQ-10",
+    "REQ-11",
+    "REQ-12"
+  ],
+  "tasks": [
+    {
+      "id": "DOC-001",
+      "title": "Rewrite the operative build plan and annotate legacy documents",
+      "phase": "planning",
+      "priority": "P0",
+      "owner": "M1",
+      "reviewer": "M2",
+      "status": "done",
+      "depends_on": [],
+      "requirement_ids": [
+        "REQ-01",
+        "REQ-02"
+      ],
+      "working_directory": ".",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "DEVELOPMENT_PLAN.md",
+        "plan/00-architecture-and-standards.md"
+      ],
+      "write_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "DEVELOPMENT_PLAN.md",
+        "plan/00-architecture-and-standards.md",
+        "plan/01-data-and-ephemeris-module.md",
+        "plan/02-backend-api-module.md",
+        "plan/03-frontend-core-and-2d-map.md",
+        "plan/04-3d-terrain-and-visualizations.md",
+        "plan/05-comparison-qa-and-delivery.md"
+      ],
+      "inputs": [],
+      "outputs": [
+        "DEVELOPMENT_PLAN.md"
+      ],
+      "commands": [
+        {
+          "cwd": ".",
+          "run": "git diff --exit-code -- README.md",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "DEVELOPMENT_PLAN.md defines REQ-01 through REQ-12 with stable anchors",
+        "every legacy document carries a STATUS HISTORICAL comment at its top",
+        "no legacy section was deleted; superseded sections carry inline STATUS SUPERSEDED comments",
+        "README.md is byte-identical to its state at the start of the task"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "git diff --exit-code -- README.md"
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "git diff --exit-code -- README.md",
+          "exit": 0,
+          "note": "README byte-identical; rewrite deferred to DELIVERY-002"
+        },
+        {
+          "kind": "artifact",
+          "ref": "DEVELOPMENT_PLAN.md",
+          "sha256": "bfc7bb5278c46038c2f49eb0db129c3f8e92d08a069488baecae3c2dc665c897"
+        }
+      ],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": "2026-11-15T04:39:57Z",
+      "completed_commit": "249ad359a82d4d954c473b0c64cae4435f94abb8"
+    },
+    {
+      "id": "DOC-002",
+      "title": "Add the agent protocol, ledger schema, ledger, and planning validators",
+      "phase": "planning",
+      "priority": "P0",
+      "owner": "M1",
+      "reviewer": "M2",
+      "status": "done",
+      "depends_on": [
+        "DOC-001"
+      ],
+      "requirement_ids": [
+        "REQ-01",
+        "REQ-12"
+      ],
+      "working_directory": ".",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "plan/task-ledger.schema.json"
+      ],
+      "write_paths": [
+        "AGENTS.md",
+        "plan/task-ledger.schema.json",
+        "plan/task-ledger.json",
+        "scripts/validate_task_ledger.py",
+        "scripts/check_planning_docs.py"
+      ],
+      "inputs": [
+        "DEVELOPMENT_PLAN.md"
+      ],
+      "outputs": [
+        "AGENTS.md",
+        "plan/task-ledger.json",
+        "scripts/validate_task_ledger.py",
+        "scripts/check_planning_docs.py"
+      ],
+      "commands": [
+        {
+          "cwd": ".",
+          "run": "python3 scripts/validate_task_ledger.py",
+          "expected_exit": 0
+        },
+        {
+          "cwd": ".",
+          "run": "python3 scripts/check_planning_docs.py",
+          "expected_exit": 0
+        },
+        {
+          "cwd": ".",
+          "run": "python3 scripts/check_file_lengths.py",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "validate_task_ledger.py exits 0 on the committed ledger",
+        "check_planning_docs.py exits 0 and confirms README.md is untouched",
+        "check_file_lengths.py reports zero violations",
+        "AGENTS.md enumerates the authorities, task protocol, and hard prohibitions"
+      ],
+      "required_evidence": [
+        {
+          "kind": "report",
+          "ref": "planning-validators-pass"
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "python3 scripts/validate_task_ledger.py",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "python3 scripts/check_planning_docs.py",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "python3 scripts/check_file_lengths.py",
+          "exit": 0
+        },
+        {
+          "kind": "artifact",
+          "ref": "AGENTS.md",
+          "sha256": "43db3fe5d5abddecefbc8120d35b5a820f1778730e8adb4a9a823d89fec43a57"
+        },
+        {
+          "kind": "artifact",
+          "ref": "plan/task-ledger.json",
+          "sha256": "bf6cca9d458b8d7fe6586621e0d7e6064b4cc24f9a660eb274c9fa1b4ca58e82"
+        },
+        {
+          "kind": "report",
+          "ref": "planning-validators-pass",
+          "note": "validate_task_ledger.py, check_planning_docs.py, check_file_lengths.py all exit 0 at 249ad35"
+        }
+      ],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": "2026-11-15T04:39:57Z",
+      "completed_commit": "249ad359a82d4d954c473b0c64cae4435f94abb8"
+    },
+    {
+      "id": "DOC-GATE",
+      "title": "Human review of the closed operative plan and ledger",
+      "phase": "gate",
+      "priority": "P0",
+      "owner": "M1",
+      "reviewer": "human",
+      "status": "pending",
+      "depends_on": [
+        "DOC-002"
+      ],
+      "requirement_ids": [
+        "REQ-01",
+        "REQ-02",
+        "REQ-12"
+      ],
+      "working_directory": ".",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "AGENTS.md",
+        "plan/task-ledger.json"
+      ],
+      "write_paths": [
+        "plan/task-ledger.json"
+      ],
+      "inputs": [
+        "plan/task-ledger.json"
+      ],
+      "outputs": [],
+      "commands": [
+        {
+          "cwd": ".",
+          "run": "python3 scripts/validate_task_ledger.py",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "a human has read DEVELOPMENT_PLAN.md and AGENTS.md in full",
+        "the human confirms P0 scope and the P1 activation rule",
+        "approval string is recorded in this task"
+      ],
+      "required_evidence": [
+        {
+          "kind": "approval",
+          "ref": "DOC-GATE human sign-off"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": true,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "ARCH-001",
+      "title": "Pin Python 3.12/uv, Bun, lint/format/test configuration, and Git data policy",
+      "phase": "foundation",
+      "priority": "P0",
+      "owner": "M2",
+      "reviewer": "M1",
+      "status": "pending",
+      "depends_on": [
+        "DOC-GATE"
+      ],
+      "requirement_ids": [
+        "REQ-03",
+        "REQ-04"
+      ],
+      "working_directory": ".",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "backend/pyproject.toml",
+        "frontend/package.json"
+      ],
+      "write_paths": [
+        "backend/pyproject.toml",
+        "backend/.python-version",
+        "backend/uv.lock",
+        "frontend/package.json",
+        "frontend/bun.lock",
+        "frontend/eslint.config.js",
+        "frontend/.prettierrc.json",
+        "frontend/vitest.config.ts",
+        ".gitignore",
+        "data/downloads/.gitkeep",
+        "data/manifests/.gitkeep"
+      ],
+      "inputs": [],
+      "outputs": [
+        "backend/uv.lock",
+        "frontend/bun.lock"
+      ],
+      "commands": [
+        {
+          "cwd": "backend",
+          "run": "uv sync --python 3.12",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen ruff check .",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun install",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run typecheck",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "requires-python is ==3.12.*, ruff target py312, mypy python_version 3.12 and strict false",
+        ".python-version contains exactly 3.12",
+        "backend/uv.lock and frontend/bun.lock are committed; no other lockfile exists",
+        "eslint.config.js, .prettierrc.json, and vitest.config.ts exist and scripts typecheck, lint, format:check, test, build are defined",
+        "bun run test executes and reports a passing suite; vitest is a declared devDependency",
+        "bun run lint and bun run format:check both exit 0 on the committed tree",
+        ".gitignore ignores /data/downloads/ and no longer ignores backend/data/site_packs/",
+        "package-lock.json is removed with the removal recorded in the task evidence"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "uv sync --python 3.12"
+        },
+        {
+          "kind": "command",
+          "ref": "bun run typecheck"
+        },
+        {
+          "kind": "command",
+          "ref": "bun run test"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "ARCH-002",
+      "title": "Close Pydantic contracts and generate OpenAPI, TypeScript types, and fixtures",
+      "phase": "foundation",
+      "priority": "P0",
+      "owner": "M2",
+      "reviewer": "M1",
+      "status": "pending",
+      "depends_on": [
+        "ARCH-001"
+      ],
+      "requirement_ids": [
+        "REQ-06",
+        "REQ-07",
+        "REQ-09",
+        "REQ-10"
+      ],
+      "working_directory": "backend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "backend/src/api/schemas"
+      ],
+      "write_paths": [
+        "backend/src/api/schemas",
+        "backend/src/cli/export_openapi.py",
+        "contracts/openapi.json",
+        "contracts/fixtures",
+        "frontend/src/types/api.generated.ts",
+        "frontend/package.json",
+        "backend/tests/integration/test_contract_parity.py"
+      ],
+      "inputs": [
+        "backend/src/api/schemas"
+      ],
+      "outputs": [
+        "contracts/openapi.json",
+        "frontend/src/types/api.generated.ts"
+      ],
+      "commands": [
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen python -m src.cli.export_openapi",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen pytest tests/integration/test_contract_parity.py -v",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "request models use extra=forbid and the REQ-06 allowlists",
+        "openapi.json is generated, not hand-written, and nested values are fully expanded",
+        "contracts/openapi-draft.yaml is removed once openapi.json is generated and committed",
+        "api.generated.ts is generated and no hand-written wire interface remains authoritative",
+        "frontend/src/types/{site,evaluation,comparison,windows}.ts hand-written wire interfaces are deleted; only coordinates.ts and generated types remain",
+        "fixtures regenerate deterministically and are labelled synthetic",
+        "the terrain fixture is regenerated at grid_size 128 with 16384 values to match production",
+        "the sites fixture is regenerated from the 14-site registry, not hand-maintained",
+        "contract parity test fails if Pydantic, OpenAPI, generated types, or fixtures diverge"
+      ],
+      "required_evidence": [
+        {
+          "kind": "artifact",
+          "ref": "contracts/openapi.json"
+        },
+        {
+          "kind": "artifact",
+          "ref": "frontend/src/types/api.generated.ts"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "DATA-001",
+      "title": "Close the 14-site registry with coordinate provenance",
+      "phase": "data",
+      "priority": "P0",
+      "owner": "M1",
+      "reviewer": "M2",
+      "status": "pending",
+      "depends_on": [
+        "ARCH-001"
+      ],
+      "requirement_ids": [
+        "REQ-05"
+      ],
+      "working_directory": "backend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "backend/config/curated_sites.yaml"
+      ],
+      "write_paths": [
+        "backend/config/curated_sites.yaml",
+        "backend/config/data_sources.yaml",
+        "backend/src/infrastructure/site_registry_loader.py",
+        "backend/tests/unit/test_site_registry.py"
+      ],
+      "inputs": [
+        "DEVELOPMENT_PLAN.md"
+      ],
+      "outputs": [
+        "backend/config/curated_sites.yaml"
+      ],
+      "commands": [
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen pytest tests/unit/test_site_registry.py -v",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen ruff check .",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "exactly 14 unique ids and 14 unique names in the REQ-05 order",
+        "every entry carries coordinate_source_url",
+        "Mons Mouton appears exactly once",
+        "coordinates are finite and east-positive within range",
+        "data_sources.yaml references only ldem_80s_80m and the Horizons endpoint; stale 120m and global URLs are gone"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_site_registry.py"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "DATA-002",
+      "title": "Acquire and verify the LOLA 80 m south-polar DEM",
+      "phase": "data",
+      "priority": "P0",
+      "owner": "M1",
+      "reviewer": "M2",
+      "status": "pending",
+      "depends_on": [
+        "DATA-001"
+      ],
+      "requirement_ids": [
+        "REQ-04",
+        "REQ-08"
+      ],
+      "working_directory": "backend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "backend/config/data_sources.yaml"
+      ],
+      "write_paths": [
+        "backend/src/cli/download_lola.py",
+        "backend/src/infrastructure/pds_dem.py",
+        "data/downloads/lola",
+        "data/manifests/lola/manifest.json",
+        "backend/tests/unit/test_pds_dem.py"
+      ],
+      "inputs": [
+        "backend/config/data_sources.yaml"
+      ],
+      "outputs": [
+        "data/manifests/lola/manifest.json"
+      ],
+      "commands": [
+        {
+          "cwd": ".",
+          "run": "uv run --project backend --frozen python -m src.cli.download_lola",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen pytest tests/unit/test_pds_dem.py -v",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "downloaded .img is exactly 115520000 bytes and its SHA-256 is recorded",
+        "label parsed values match 7600x7600, 16-bit LSB, 80 m/pix, planetocentric, centre lon 0, OFFSET 1737400",
+        "download writes .part and renames atomically after verification",
+        "manifest records URLs, retrieval UTC, status, bytes, and hashes",
+        "reader rejects a byte-count or hash mismatch"
+      ],
+      "required_evidence": [
+        {
+          "kind": "artifact",
+          "ref": "data/manifests/lola/manifest.json"
+        },
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_pds_dem.py"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "DATA-003",
+      "title": "Acquire and parse Horizons Sun/Earth tracks for all 14 sites",
+      "phase": "data",
+      "priority": "P0",
+      "owner": "M1",
+      "reviewer": "M2",
+      "status": "pending",
+      "depends_on": [
+        "DATA-001"
+      ],
+      "requirement_ids": [
+        "REQ-04",
+        "REQ-07"
+      ],
+      "working_directory": "backend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "backend/config/curated_sites.yaml"
+      ],
+      "write_paths": [
+        "backend/src/cli/download_horizons.py",
+        "backend/src/cli/horizons_client.py",
+        "data/downloads/horizons",
+        "data/manifests/horizons",
+        "data/manifests/references/horizons",
+        "backend/tests/unit/test_horizons_parser.py"
+      ],
+      "inputs": [
+        "backend/config/curated_sites.yaml"
+      ],
+      "outputs": [
+        "data/manifests/horizons"
+      ],
+      "commands": [
+        {
+          "cwd": ".",
+          "run": "uv run --project backend --frozen python -m src.cli.download_horizons",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen pytest tests/unit/test_horizons_parser.py -v",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "requests use COMMAND 10 and 399, CENTER coord@301, COORD_TYPE GEODETIC, QUANTITIES 4",
+        "SITE_COORD altitude is metres divided by 1000 and longitude is east-positive",
+        "coverage is 2027-01-01T00:00:00Z through 2028-07-01T00:00:00Z hourly",
+        "row parsing handles *, *i, and *m markers between $$SOE and $$EOE",
+        "raw responses are archived and hashed; full-precision reference rows are frozen under data/manifests/references/horizons"
+      ],
+      "required_evidence": [
+        {
+          "kind": "artifact",
+          "ref": "data/manifests/horizons"
+        },
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_horizons_parser.py"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "DATA-004",
+      "title": "Build and validate EphemerisPacks for all 14 sites",
+      "phase": "data",
+      "priority": "P0",
+      "owner": "M1",
+      "reviewer": "M2",
+      "status": "pending",
+      "depends_on": [
+        "DATA-003",
+        "ARCH-002"
+      ],
+      "requirement_ids": [
+        "REQ-06",
+        "REQ-07"
+      ],
+      "working_directory": "backend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "data/manifests/horizons"
+      ],
+      "write_paths": [
+        "backend/src/cli/build_ephemeris_packs.py",
+        "backend/src/infrastructure/ephemeris_pack.py",
+        "backend/data/site_packs/*/ephemeris.json",
+        "backend/tests/unit/test_ephemeris_pack.py"
+      ],
+      "inputs": [
+        "data/manifests/horizons"
+      ],
+      "outputs": [
+        "backend/data/site_packs"
+      ],
+      "commands": [
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen python -m src.cli.build_ephemeris_packs",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen pytest tests/unit/test_ephemeris_pack.py -v",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "each pack has sample_count 13129 and four arrays of exactly that length",
+        "frame is MOON_ME and longitude_convention is east_positive",
+        "azimuths are within [0,360) and elevations within [-90,90] and all values finite",
+        "source manifest SHA-256 is recorded in every pack",
+        "a direct-sample test reproduces frozen Horizons rows exactly"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_ephemeris_pack.py"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "DATA-005",
+      "title": "Build TerrainPacks and 360-degree horizon profiles for LOLA-covered sites",
+      "phase": "data",
+      "priority": "P0",
+      "owner": "M1",
+      "reviewer": "M2",
+      "status": "pending",
+      "depends_on": [
+        "DATA-002",
+        "ARCH-002"
+      ],
+      "requirement_ids": [
+        "REQ-06",
+        "REQ-08"
+      ],
+      "working_directory": "backend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "data/manifests/lola/manifest.json"
+      ],
+      "write_paths": [
+        "backend/src/cli/build_terrain_packs.py",
+        "backend/src/infrastructure/dem_tiler.py",
+        "backend/src/infrastructure/raycaster.py",
+        "backend/data/site_packs/*/terrain.json",
+        "backend/tests/unit/test_dem_tiler.py",
+        "backend/tests/unit/test_raycaster.py"
+      ],
+      "inputs": [
+        "data/manifests/lola/manifest.json"
+      ],
+      "outputs": [
+        "backend/data/site_packs"
+      ],
+      "commands": [
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen python -m src.cli.build_terrain_packs",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen pytest tests/unit/test_dem_tiler.py tests/unit/test_raycaster.py -v",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "each terrain pack is 128x128 with 16384 finite elevation and slope values",
+        "spacing is 40000/127 and row/column directions match REQ-08",
+        "an axis-orientation test asserts the probed longitude direction and fails on a mirror flip",
+        "synthetic crater recovers the analytic horizon within 0.02 degrees",
+        "flat terrain yields the analytic limb angle for all three observer heights",
+        "a boundary test proves no radial sample exceeds 120 km",
+        "no terrain pack is produced for a limb-only site"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_dem_tiler.py tests/unit/test_raycaster.py"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "DATA-006",
+      "title": "Publish the pack index and exact-match offline fixtures",
+      "phase": "data",
+      "priority": "P0",
+      "owner": "M1",
+      "reviewer": "M2",
+      "status": "pending",
+      "depends_on": [
+        "DATA-004",
+        "DATA-005"
+      ],
+      "requirement_ids": [
+        "REQ-04",
+        "REQ-06",
+        "REQ-10"
+      ],
+      "working_directory": "backend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "backend/data/site_packs"
+      ],
+      "write_paths": [
+        "backend/src/cli/build_pack_index.py",
+        "data/manifests/site_packs/index.json",
+        "contracts/fixtures",
+        "frontend/public/data/fixtures",
+        "backend/tests/unit/test_pack_index.py"
+      ],
+      "inputs": [
+        "backend/data/site_packs"
+      ],
+      "outputs": [
+        "data/manifests/site_packs/index.json",
+        "contracts/fixtures"
+      ],
+      "commands": [
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen python -m src.cli.build_pack_index",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen pytest tests/unit/test_pack_index.py -v",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "index lists every site with pack presence and SHA-256 values",
+        "has_precomputed_terrain matches actual terrain pack presence for all 14 sites",
+        "offline fixtures are generated from validated packs and carry matching scenario keys",
+        "frontend copies are produced by a generator step, never edited by hand, and are byte-identical to contracts/fixtures"
+      ],
+      "required_evidence": [
+        {
+          "kind": "artifact",
+          "ref": "data/manifests/site_packs/index.json"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "BE-001",
+      "title": "Implement UTC mission sampling and circular azimuth interpolation",
+      "phase": "backend",
+      "priority": "P0",
+      "owner": "M2",
+      "reviewer": "M1",
+      "status": "pending",
+      "depends_on": [
+        "DATA-004",
+        "ARCH-002"
+      ],
+      "requirement_ids": [
+        "REQ-07",
+        "REQ-10"
+      ],
+      "working_directory": "backend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "backend/data/site_packs"
+      ],
+      "write_paths": [
+        "backend/src/domain/mission_time.py",
+        "backend/src/domain/interpolation.py",
+        "backend/tests/unit/test_mission_time.py",
+        "backend/tests/unit/test_interpolation.py"
+      ],
+      "inputs": [
+        "backend/data/site_packs"
+      ],
+      "outputs": [
+        "backend/src/domain/mission_time.py"
+      ],
+      "commands": [
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen pytest tests/unit/test_mission_time.py tests/unit/test_interpolation.py -v",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "7/14/29.5 day durations at 10 and 60 minutes produce 168/336/708 and 1008/2016/4248 samples",
+        "sampling is start-inclusive and end-exclusive",
+        "naive timestamps raise a validation error",
+        "out-of-coverage requests raise EPHEMERIS_RANGE_EXCEEDED including the 15-day lookahead",
+        "azimuth interpolation uses the shortest signed delta and is tested across 359 to 0",
+        "off-grid interpolation error is below 0.05 degrees against frozen references"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit/test_mission_time.py tests/unit/test_interpolation.py"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "BE-002",
+      "title": "Implement horizon, illumination, power, DTE, countdowns, and scoring",
+      "phase": "backend",
+      "priority": "P0",
+      "owner": "M2",
+      "reviewer": "M1",
+      "status": "pending",
+      "depends_on": [
+        "BE-001",
+        "DATA-005"
+      ],
+      "requirement_ids": [
+        "REQ-05",
+        "REQ-08",
+        "REQ-09"
+      ],
+      "working_directory": "backend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "backend/data/site_packs"
+      ],
+      "write_paths": [
+        "backend/src/domain/horizon_geometry.py",
+        "backend/src/domain/solar_power.py",
+        "backend/src/domain/comms_visibility.py",
+        "backend/src/domain/countdown_detector.py",
+        "backend/src/domain/feasibility_scorer.py",
+        "backend/tests/unit/test_horizon_geometry.py",
+        "backend/tests/unit/test_solar_power.py",
+        "backend/tests/unit/test_comms_visibility.py",
+        "backend/tests/unit/test_countdown_detector.py",
+        "backend/tests/unit/test_feasibility_scorer.py"
+      ],
+      "inputs": [
+        "backend/data/site_packs"
+      ],
+      "outputs": [
+        "backend/src/domain"
+      ],
+      "commands": [
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen pytest tests/unit -v",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen ruff check .",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "effective horizon is max of terrain and limb",
+        "f_sun matches the REQ-09 linear approximation at zero, partial, and full occultation",
+        "all three array modes match golden values",
+        "DTE passes on clearance equality and is suppressed during conjunction",
+        "Class B sites return null terrain and feasibility scores",
+        "aggregates equal count times step hours and streaks are clipped to the mission window",
+        "next_events_from_start equals timeseries index zero exactly",
+        "no constant was adjusted to reach a target percentage"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/unit"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "BE-003",
+      "title": "Serve real P0 endpoints with the closed error contract and no network access",
+      "phase": "backend",
+      "priority": "P0",
+      "owner": "M2",
+      "reviewer": "M1",
+      "status": "pending",
+      "depends_on": [
+        "BE-002",
+        "DATA-006"
+      ],
+      "requirement_ids": [
+        "REQ-06",
+        "REQ-10"
+      ],
+      "working_directory": "backend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "backend/src/api"
+      ],
+      "write_paths": [
+        "backend/src/api",
+        "backend/src/application",
+        "backend/tests/integration",
+        "backend/src/api/main.py"
+      ],
+      "inputs": [
+        "backend/data/site_packs"
+      ],
+      "outputs": [
+        "backend/src/api"
+      ],
+      "commands": [
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen pytest tests/integration -v",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen ruff check .",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen mypy src tests",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "only health, sites, site terrain, and evaluate are registered in P0",
+        "fixture-substitution routes are removed; no route returns canned data",
+        "errors use the REQ-10 envelope and exact status codes",
+        "Class B terrain requests return 409 TERRAIN_NOT_AVAILABLE",
+        "unknown sites return 404 and out-of-range dates return 422 EPHEMERIS_RANGE_EXCEEDED",
+        "integration suite passes with sockets disabled",
+        "no api, application, or domain module imports a download client"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/integration"
+        },
+        {
+          "kind": "command",
+          "ref": "mypy src tests"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "FE-001",
+      "title": "Build the app shell, split Zustand stores, canonical URL state, and typed client",
+      "phase": "frontend",
+      "priority": "P0",
+      "owner": "M3",
+      "reviewer": "M1",
+      "status": "pending",
+      "depends_on": [
+        "ARCH-002"
+      ],
+      "requirement_ids": [
+        "REQ-03",
+        "REQ-06",
+        "REQ-11"
+      ],
+      "working_directory": "frontend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "frontend/src/types/api.generated.ts"
+      ],
+      "write_paths": [
+        "frontend/src/components/layout",
+        "frontend/src/state",
+        "frontend/src/services",
+        "frontend/src/App.tsx",
+        "frontend/src/types/coordinates.ts",
+        "frontend/src/types/index.ts",
+        "frontend/src/__tests__/urlSync.test.ts"
+      ],
+      "inputs": [
+        "frontend/src/types/api.generated.ts"
+      ],
+      "outputs": [
+        "frontend/src/state"
+      ],
+      "commands": [
+        {
+          "cwd": "frontend",
+          "run": "bun run typecheck",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run test",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "mission, playback, and comparison stores are separate",
+        "URL keys are exactly site,start,days,step,array,array_az,mast,min_comms and round-trip canonically",
+        "invalid values fall back to documented defaults and surface a notice in the UI",
+        "custom-coordinate keys are rejected",
+        "the client uses generated types, native fetch, and AbortController",
+        "coordinates.ts is reduced to degToRad, radToDeg, and normalizeAzimuthDeg; MOON_RADIUS_KM, POLE_LAT_CLAMP_DEG, clampLunarLatitude, and azElevToThreeXYZ are removed",
+        "no physical constant literal appears under frontend/src; the lunar radius is read from GET /api/v1/health",
+        "no Tailwind, chart library, Axios, or 3D renderer is imported",
+        "the P0 cockpit mounts no P1 feature: the 2D map and persona mode are reachable only from a P1-gated route, not the default workspace",
+        "the scenario notices from URL parsing are rendered, not discarded"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "bun run test"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "FE-002",
+      "title": "Build site/time controls, KPI strip, horizon silhouette, and timeline",
+      "phase": "frontend",
+      "priority": "P0",
+      "owner": "M3",
+      "reviewer": "M1",
+      "status": "pending",
+      "depends_on": [
+        "FE-001"
+      ],
+      "requirement_ids": [
+        "REQ-11"
+      ],
+      "working_directory": "frontend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "frontend/src/state"
+      ],
+      "write_paths": [
+        "frontend/src/__tests__/horizonMath.test.ts",
+        "frontend/src/__tests__/timelineSegments.test.ts",
+        "frontend/src/components/layout",
+        "frontend/src/components/ui",
+        "frontend/src/features/mission-kpis",
+        "frontend/src/features/mission-timeline",
+        "frontend/src/features/site-explorer",
+        "frontend/src/features/sky-horizon",
+        "frontend/src/features/time-controls"
+      ],
+      "inputs": [
+        "frontend/src/types/api.generated.ts"
+      ],
+      "outputs": [
+        "frontend/src/features"
+      ],
+      "commands": [
+        {
+          "cwd": "frontend",
+          "run": "bun run typecheck",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run test",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "site selector groups by category and badges every Class B site",
+        "a Class B site shows a persistent spherical-limb-only notice wherever a terrain value would appear, and never renders a numeric elevation, slope, or feasibility score for it",
+        "a terrain request returning 409 TERRAIN_NOT_AVAILABLE renders the unavailable state, not an error banner and not another site's data",
+        "horizon silhouette is SVG, draws terrain from terrain_elev_deg and a separate dashed geometric limb from geometric_limb_deg, marks the active Sun and Earth, and shows azimuth, body elevation, horizon elevation, and clearance on hover",
+        "the horizon component renders nothing but the limb when horizon_profile is empty",
+        "timeline renders three tracks: solar (sunlit / grazing / dark), DTE (available / blocked), and elevation; a draggable playhead scrubs the active sample",
+        "KPI strip shows feasibility with sub-scores, solar elevation and status, and hours to sunset and earthset, rendering N/A rather than a number when a value is null",
+        "controls exist for step_minutes (10 or 60), fixed_array_azimuth_deg, and min_comms_elev_deg, and changing any of them writes the store and the canonical URL",
+        "a persistent data-provenance footer cites LOLA, JPL Horizons, QuickMap, Moon Trek, and CSA, and states whether the active site uses measured terrain or the spherical limb",
+        "playback state is isolated so scrubbing does not re-render the shell",
+        "an automated test covers horizon and timeline geometry; it fails if the number of rendered tracks or azimuth samples changes"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "bun run typecheck"
+        },
+        {
+          "kind": "command",
+          "ref": "bun run test"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "FE-003",
+      "title": "Wire the real API and implement exact offline fixture behaviour",
+      "phase": "frontend",
+      "priority": "P0",
+      "owner": "M3",
+      "reviewer": "M1",
+      "status": "pending",
+      "depends_on": [
+        "FE-002",
+        "BE-003",
+        "DATA-006"
+      ],
+      "requirement_ids": [
+        "REQ-10",
+        "REQ-11"
+      ],
+      "working_directory": "frontend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "data/manifests/site_packs/index.json"
+      ],
+      "write_paths": [
+        "frontend/src/services",
+        "frontend/public/data/fixtures",
+        "frontend/src/__tests__/offlineFallback.test.ts",
+        "frontend/.env.example"
+      ],
+      "inputs": [
+        "data/manifests/site_packs/index.json"
+      ],
+      "outputs": [
+        "frontend/src/services"
+      ],
+      "commands": [
+        {
+          "cwd": "frontend",
+          "run": "bun run test",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run build",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "fallback triggers only on network failure or 5xx and only on an exact fixture-key match",
+        "a persistent Offline fixture badge is shown",
+        "4xx contract errors never fall back",
+        "unmatched scenarios show OFFLINE_FIXTURE_UNAVAILABLE",
+        "no fixture is reused across sites or dates",
+        "production build succeeds"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "bun run test"
+        },
+        {
+          "kind": "command",
+          "ref": "bun run build"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "QA-001",
+      "title": "Run the frozen numerical, contract-drift, build, and offline end-to-end suite",
+      "phase": "qa",
+      "priority": "P0",
+      "owner": "M5",
+      "reviewer": "M2",
+      "status": "pending",
+      "depends_on": [
+        "BE-003",
+        "FE-003"
+      ],
+      "requirement_ids": [
+        "REQ-12"
+      ],
+      "working_directory": ".",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "plan/task-ledger.json"
+      ],
+      "write_paths": [
+        "scripts/smoke_test.sh",
+        "docs/QA_REPORT.md"
+      ],
+      "inputs": [
+        "backend/data/site_packs"
+      ],
+      "outputs": [
+        "docs/QA_REPORT.md"
+      ],
+      "commands": [
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen pytest -v",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen ruff check .",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen ruff format --check .",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen mypy src tests",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run typecheck",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run lint",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run format:check",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run test",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run build",
+          "expected_exit": 0
+        },
+        {
+          "cwd": ".",
+          "run": "python3 scripts/validate_task_ledger.py",
+          "expected_exit": 0
+        },
+        {
+          "cwd": ".",
+          "run": "python3 scripts/check_planning_docs.py",
+          "expected_exit": 0
+        },
+        {
+          "cwd": ".",
+          "run": "python3 scripts/check_file_lengths.py",
+          "expected_exit": 0
+        },
+        {
+          "cwd": ".",
+          "run": "git diff --exit-code -- README.md",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "all eleven REQ-12 evidence categories are recorded in docs/QA_REPORT.md",
+        "the API suite passes with sockets disabled",
+        "contract drift check passes across Pydantic, OpenAPI, generated types, and fixtures",
+        "no acceptance statement uses prohibited vague language",
+        "README.md is unchanged"
+      ],
+      "required_evidence": [
+        {
+          "kind": "report",
+          "ref": "docs/QA_REPORT.md"
+        },
+        {
+          "kind": "command",
+          "ref": "pytest -v"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "P0-GATE",
+      "title": "Human acceptance of the P0 release",
+      "phase": "gate",
+      "priority": "P0",
+      "owner": "M5",
+      "reviewer": "human",
+      "status": "pending",
+      "depends_on": [
+        "QA-001"
+      ],
+      "requirement_ids": [
+        "REQ-02",
+        "REQ-12"
+      ],
+      "working_directory": ".",
+      "read_paths": [
+        "docs/QA_REPORT.md",
+        "DEVELOPMENT_PLAN.md"
+      ],
+      "write_paths": [
+        "plan/task-ledger.json"
+      ],
+      "inputs": [
+        "docs/QA_REPORT.md"
+      ],
+      "outputs": [],
+      "commands": [
+        {
+          "cwd": ".",
+          "run": "python3 scripts/validate_task_ledger.py",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "a human has run the app locally and exercised at least one Class A and one Class B site",
+        "the human confirms P0 scope matches REQ-02",
+        "approval string is recorded in this task"
+      ],
+      "required_evidence": [
+        {
+          "kind": "approval",
+          "ref": "P0-GATE human sign-off"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": true,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "P1-APPROVAL",
+      "title": "Human activation of the P1 scope",
+      "phase": "gate",
+      "priority": "P1",
+      "owner": "M5",
+      "reviewer": "human",
+      "status": "pending",
+      "depends_on": [
+        "P0-GATE"
+      ],
+      "requirement_ids": [
+        "REQ-02"
+      ],
+      "working_directory": ".",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md"
+      ],
+      "write_paths": [
+        "plan/task-ledger.json"
+      ],
+      "inputs": [],
+      "outputs": [],
+      "commands": [
+        {
+          "cwd": ".",
+          "run": "python3 scripts/validate_task_ledger.py",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "a human explicitly approves starting P1",
+        "the approved P1 subset is recorded in the approval string",
+        "no P1 task is started before this record is done"
+      ],
+      "required_evidence": [
+        {
+          "kind": "approval",
+          "ref": "P1-APPROVAL human sign-off"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": true,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "P1-COMPARE",
+      "title": "Side-by-side comparison of 2 to 4 scenarios with deltas",
+      "phase": "p1",
+      "priority": "P1",
+      "owner": "M5",
+      "reviewer": "M2",
+      "status": "pending",
+      "depends_on": [
+        "P1-APPROVAL",
+        "BE-003",
+        "FE-003"
+      ],
+      "requirement_ids": [
+        "REQ-02",
+        "REQ-06",
+        "REQ-11"
+      ],
+      "working_directory": "backend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "backend/src/application"
+      ],
+      "write_paths": [
+        "backend/src/api/routes/compare.py",
+        "backend/src/application/compare_scenarios.py",
+        "backend/src/api/schemas/comparison_schemas.py",
+        "backend/tests/integration/test_compare.py",
+        "frontend/src/features/comparison-board"
+      ],
+      "inputs": [
+        "backend/data/site_packs"
+      ],
+      "outputs": [
+        "backend/src/api/routes/compare.py"
+      ],
+      "commands": [
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen pytest tests/integration/test_compare.py -v",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "2 to 4 scenarios are required and scenario_ids are unique and non-empty",
+        "baseline_index is bounds-checked in the schema and use case",
+        "every delta is scenario minus baseline and baseline deltas are exactly zero",
+        "recommendation is the highest feasibility with ties broken by input order",
+        "each scenario is evaluated independently from its own request",
+        "only full evaluation responses are returned"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/integration/test_compare.py"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "P1-DELAYS",
+      "title": "Launch-delay sensitivity at +14, +29.5, +90, and +180 days",
+      "phase": "p1",
+      "priority": "P1",
+      "owner": "M5",
+      "reviewer": "M2",
+      "status": "pending",
+      "depends_on": [
+        "P1-COMPARE"
+      ],
+      "requirement_ids": [
+        "REQ-02",
+        "REQ-07",
+        "REQ-11"
+      ],
+      "working_directory": "frontend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "backend/src/application/compare_scenarios.py"
+      ],
+      "write_paths": [
+        "frontend/src/features/comparison-board",
+        "frontend/src/__tests__/delayOffsets.test.ts"
+      ],
+      "inputs": [
+        "backend/data/site_packs"
+      ],
+      "outputs": [
+        "frontend/src/features/comparison-board"
+      ],
+      "commands": [
+        {
+          "cwd": "frontend",
+          "run": "bun run test",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "exactly four offsets are offered: 14, 29.5, 90, and 180 days",
+        "each shifted scenario passes the same coverage check including lookahead",
+        "out-of-coverage shifts surface EPHEMERIS_RANGE_EXCEEDED rather than extrapolating"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "bun run test"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "P1-MAP",
+      "title": "2D south-pole stereographic map from the generated overview product",
+      "phase": "p1",
+      "priority": "P1",
+      "owner": "M3",
+      "reviewer": "M1",
+      "status": "pending",
+      "depends_on": [
+        "P1-APPROVAL",
+        "DATA-005"
+      ],
+      "requirement_ids": [
+        "REQ-02",
+        "REQ-11"
+      ],
+      "working_directory": "backend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "backend/data/site_packs"
+      ],
+      "write_paths": [
+        "backend/src/cli/build_overview.py",
+        "data/manifests/site_packs/overview.json",
+        "frontend/public/data/site-packs",
+        "frontend/src/features/lunar-map-2d",
+        "frontend/src/__tests__/mapProjection.test.ts"
+      ],
+      "inputs": [
+        "backend/data/site_packs"
+      ],
+      "outputs": [
+        "frontend/public/data/site-packs"
+      ],
+      "commands": [
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen python -m src.cli.build_overview",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "bun run test",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "overview product covers 80S to 90S and is generated, not hand-edited",
+        "forward and inverse stereographic projection round-trip within 0.01 degrees",
+        "clicking a Class A site selects it; Class B sites are not shown as having terrain",
+        "QuickMap and Moon Trek links are centred on the selected coordinates"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "bun run test"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "P1-WINDOWS",
+      "title": "Annual landing-window heatmap over precomputed data",
+      "phase": "p1",
+      "priority": "P1",
+      "owner": "M5",
+      "reviewer": "M2",
+      "status": "pending",
+      "depends_on": [
+        "P1-APPROVAL",
+        "BE-003"
+      ],
+      "requirement_ids": [
+        "REQ-02",
+        "REQ-07",
+        "REQ-09"
+      ],
+      "working_directory": "backend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "backend/data/site_packs"
+      ],
+      "write_paths": [
+        "backend/src/application/scan_windows.py",
+        "backend/src/api/routes/windows.py",
+        "backend/src/api/schemas/window_schemas.py",
+        "backend/tests/integration/test_windows.py",
+        "frontend/src/features/window-finder"
+      ],
+      "inputs": [
+        "backend/data/site_packs"
+      ],
+      "outputs": [
+        "backend/src/application/scan_windows.py"
+      ],
+      "commands": [
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen pytest tests/integration/test_windows.py -v",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "candidates are 180-minute grid starts that fit fully inside coverage including lookahead",
+        "longest dark runs and nonlinear scores are computed exactly, not approximated by rolling sums",
+        "top windows are ranked by descending score with earliest start breaking ties",
+        "results are documented as 180-minute screening versus higher-resolution evaluate"
+      ],
+      "required_evidence": [
+        {
+          "kind": "command",
+          "ref": "pytest tests/integration/test_windows.py"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "P1-CUSTOM-SITES",
+      "title": "Build-time onboarding of a new approved site pack",
+      "phase": "p1",
+      "priority": "P1",
+      "owner": "M1",
+      "reviewer": "human",
+      "status": "pending",
+      "depends_on": [
+        "P1-APPROVAL",
+        "DATA-006"
+      ],
+      "requirement_ids": [
+        "REQ-04",
+        "REQ-05",
+        "REQ-07"
+      ],
+      "working_directory": "backend",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "backend/config/curated_sites.yaml"
+      ],
+      "write_paths": [
+        "backend/src/cli/onboard_site.py",
+        "backend/config/curated_sites.yaml",
+        "backend/data/site_packs/*/ephemeris.json",
+        "backend/data/site_packs/*/terrain.json",
+        "data/manifests/site_packs/index.json",
+        "backend/tests/unit/test_onboard_site.py"
+      ],
+      "inputs": [
+        "backend/config/curated_sites.yaml"
+      ],
+      "outputs": [
+        "backend/data/site_packs"
+      ],
+      "commands": [
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen pytest tests/unit/test_onboard_site.py -v",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "onboarding happens only at build time and requires a recorded coordinate provenance URL",
+        "the new site receives ephemeris coverage for the full 2027-01-01 through 2028-07-01 window",
+        "terrain is generated only when the coordinate is inside verified DEM coverage, otherwise the site is limb-only",
+        "no runtime custom terrain route, runtime Horizons call, or runtime download is added",
+        "a human approves the added coordinate before it enters the registry"
+      ],
+      "required_evidence": [
+        {
+          "kind": "approval",
+          "ref": "P1-CUSTOM-SITES coordinate approval"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": true,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "P1-GATE",
+      "title": "Human acceptance of the P1 scope",
+      "phase": "gate",
+      "priority": "P1",
+      "owner": "M5",
+      "reviewer": "human",
+      "status": "pending",
+      "depends_on": [
+        "P1-COMPARE",
+        "P1-DELAYS",
+        "P1-MAP",
+        "P1-WINDOWS",
+        "P1-CUSTOM-SITES"
+      ],
+      "requirement_ids": [
+        "REQ-02",
+        "REQ-12"
+      ],
+      "working_directory": ".",
+      "read_paths": [
+        "docs/QA_REPORT.md",
+        "DEVELOPMENT_PLAN.md"
+      ],
+      "write_paths": [
+        "plan/task-ledger.json"
+      ],
+      "inputs": [
+        "docs/QA_REPORT.md"
+      ],
+      "outputs": [],
+      "commands": [
+        {
+          "cwd": ".",
+          "run": "python3 scripts/validate_task_ledger.py",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "every approved P1 task is done and its evidence recorded",
+        "a human has exercised comparison, delays, map, and windows in the running app",
+        "approval string is recorded in this task"
+      ],
+      "required_evidence": [
+        {
+          "kind": "approval",
+          "ref": "P1-GATE human sign-off"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": true,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "DELIVERY-001",
+      "title": "Rehearse the offline demo and record the three-minute video",
+      "phase": "delivery",
+      "priority": "delivery",
+      "owner": "M5",
+      "reviewer": "M2",
+      "status": "pending",
+      "depends_on": [
+        "P0-GATE"
+      ],
+      "requirement_ids": [
+        "REQ-10",
+        "REQ-12"
+      ],
+      "working_directory": ".",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "docs/QA_REPORT.md"
+      ],
+      "write_paths": [
+        "docs/DEMO_SCRIPT.md",
+        "docs/screenshots"
+      ],
+      "inputs": [
+        "docs/QA_REPORT.md"
+      ],
+      "outputs": [
+        "docs/DEMO_SCRIPT.md"
+      ],
+      "commands": [
+        {
+          "cwd": ".",
+          "run": "git diff --exit-code -- README.md",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "the demo runs with the API serving committed packs and the network disabled",
+        "the script covers compare-sites, shift-date, and far-side-zero-DTE beats",
+        "screenshots are captured for a Class A and a Class B site",
+        "the recorded video is under three minutes"
+      ],
+      "required_evidence": [
+        {
+          "kind": "artifact",
+          "ref": "docs/DEMO_SCRIPT.md"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
+      "id": "DELIVERY-002",
+      "title": "Rewrite README as the judge-facing project page",
+      "phase": "delivery",
+      "priority": "delivery",
+      "owner": "M5",
+      "reviewer": "M2",
+      "status": "pending",
+      "depends_on": [
+        "DELIVERY-001"
+      ],
+      "requirement_ids": [
+        "REQ-02",
+        "REQ-12"
+      ],
+      "working_directory": ".",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "docs/DEMO_SCRIPT.md"
+      ],
+      "write_paths": [
+        "README.md"
+      ],
+      "inputs": [
+        "docs/DEMO_SCRIPT.md"
+      ],
+      "outputs": [
+        "README.md"
+      ],
+      "commands": [
+        {
+          "cwd": ".",
+          "run": "python3 scripts/check_file_lengths.py",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "README states the challenge and a one-line problem statement",
+        "README includes a screenshot and a working setup that uses uv and Bun only",
+        "README cites LOLA, JPL Horizons, QuickMap, Moon Trek, and CSA as data resources",
+        "README documents the Class A versus Class B terrain model honestly",
+        "README states a license"
+      ],
+      "required_evidence": [
+        {
+          "kind": "artifact",
+          "ref": "README.md"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    }
+  ],
+  "ownership": {
+    "model": "module",
+    "source": "plan/OWNERS.md",
+    "modules": {
+      "M1": {
+        "scope": "data, topography, ephemeris",
+        "owner": "bauerceptor"
+      },
+      "M2": {
+        "scope": "backend api, physics, contracts",
+        "owner": "bauerceptor"
+      },
+      "M3": {
+        "scope": "frontend core, map, kpis",
+        "owner": "usairam"
+      },
+      "M4": {
+        "scope": "3d terrain, sky dome",
+        "owner": "devscion"
+      },
+      "M5": {
+        "scope": "comparison, windows, qa, delivery",
+        "owner": null
+      }
+    }
+  }
+}
