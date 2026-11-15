@@ -37,7 +37,6 @@ You may not change `scope`, `priority`, `depends_on`, `requirement_ids`, `read_p
 ## Hard prohibitions
 
 - Do not edit `README.md`. Its rewrite is `DELIVERY-002`.
-- Do not start 3D, Three.js, or React Three Fiber work. It is not in the ledger; it needs a new approved revision.
 - Do not add runtime network access. Download code lives under `backend/src/cli/` only.
 - Do not add arbitrary runtime custom coordinates.
 - Do not add Tailwind, a chart library, Axios, Docker, or a database.

@@ -9,12 +9,12 @@ Three humans, three machines, three different agents. This file is the **only** 
 | `M1` | Data, LOLA topography, ephemeris, raycast | bauerceptor | `bauerceptor` | active |
 | `M2` | Backend API, physics, scoring, contracts | bauerceptor | `bauerceptor` | active |
 | `M3` | Frontend core, site selection, 2D map, KPIs | usairam | `feat/module-3-frontend-core` | fixes 5–8 pushed at `801aa0a`; verified in integration; pending merge |
-| `M4` | 3D terrain, sky-dome, advanced visualizations | devscion | `feat/m4-3d-terrain` | partial — SVG horizon/timeline/contrast merged; `terrain-3d` remains `.gitkeep` and gated |
-| `M5` | Comparison, window finder, delivery | **unassigned** | — | blocked |
+| `M4` | 3D terrain, sky-dome, advanced visualizations | devscion | `feat/m4-3d-terrain` | partial — SVG horizon/timeline/contrast and the Three.js 3D terrain viewer are merged (PRs #5 and #6, revision at `d0d0c54`); still no M4 ledger task |
+| `M5` | Comparison, window finder, delivery | devscion | `feat/m5-comparison-qa-delivery` | in review |
 
-`M5` is the remaining gap: QA, comparison, windows, and delivery have no owner.
+`M5` is owned by devscion: comparison board, window finder, briefing export, and QA smoke checks are merged via PR #5; their ledger tasks (`QA-001`, `P1-COMPARE`, `P1-WINDOWS`, `P1-DELAYS`, delivery) remain pending.
 
-The merged M4 SVG horizon/timeline/contrast panels are P0 visualization inputs for `FE-002`, not the deferred 3D terrain. `frontend/src/features/terrain-3d/` remains `.gitkeep`; actual 3D terrain still needs a human-approved revision after `P0-GATE`. See `DEVELOPMENT_PLAN.md` Appendix F.
+The merged M4 SVG horizon/timeline/contrast panels are P0 visualization inputs for `FE-002`. The Three.js 3D terrain viewer from `feat/m4-3d-terrain` (PR #6) is allowed by the `d0d0c54` revision, which removed the 3D prohibition from `AGENTS.md`; it has no ledger task and stays gated behind `P0-GATE`. See `DEVELOPMENT_PLAN.md` Appendix F.
 
 `M1` and `M2` are both held by bauerceptor because they are tightly coupled: `M1` produces the packs and `M2` is the only consumer that can serve them, so one owner avoids a handoff stall on the critical path. Split `M2` out when a third backend person joins.
 

@@ -19,8 +19,8 @@ Update it whenever work lands. Do not duplicate this history into `DEVELOPMENT_P
 | `M1` data pipeline | `DONE` — `DATA-001`–`DATA-006` done; 16 ephemeris + 9 terrain packs, index, and byte-identical offline fixture mirror present | bauerceptor |
 | `M2` backend | `PARTIAL` — `ARCH-002`, `BE-001`, `BE-002` done; `agent-charlie` next `BE-003` (deps `BE-002` + `DATA-006` merged) | bauerceptor |
 | Parallel session (revision 5) | `IN PROGRESS` — `DATA-002`–`DATA-006`, `ARCH-002`, `BE-001`, and `BE-002` merged and pushed (tip `20d3fb4`); M3 unblocked; next `BE-003` (charlie); zeta is the continuous merge queue and sole pusher of `bauerceptor` | bauerceptor |
-| `M4` 3D | `PARTIAL` — M4 SVG horizon/timeline/contrast merged as `00f7e77`; `terrain-3d` remains `.gitkeep` and gated | devscion |
-| `M5` comparison / QA / delivery | `BLOCKED` — unowned | — |
+| `M4` 3D | `PARTIAL` — SVG horizon/timeline/contrast (`00f7e77`) and the Three.js 3D terrain viewer (PR #6, allowed by the `d0d0c54` revision) merged from `origin/main`; no M4 ledger task; gated behind `P0-GATE` | devscion |
+| `M5` comparison / QA / delivery | `IN PROGRESS` — owned by devscion; comparison board, window finder, briefing export, QA/delivery docs merged from `origin/main` (PR #5); ledger tasks `QA-001`, `P1-COMPARE`, `P1-WINDOWS`, `P1-DELAYS`, `DELIVERY-*` still pending | devscion |
 | **P0 release** | **`NOT SHIPPABLE` — 4 blockers remain (5, 6, 7, 8); offline evaluate fixtures still need generation (issue 28, `BE-002` physics now merged)** | — |
 
 ---
@@ -305,6 +305,11 @@ Five issues gate P0 (issue 10 was closed by `DATA-001`). The M4 merge partially 
 | 27 | `export_openapi` still rewrites fixtures from `fixture_synth`; re-running it reverts the `DATA-006` manifest/sites fixture | `backend/src/cli/export_openapi.py`, `contracts/fixtures/` | MAJOR for offline demo | `OPEN` — single-writer decision required |
 | 28 | Offline evaluate/compare/windows fixtures are not generated; the REQ-09 physics now exists (`BE-002` merged), but the fixtures still need a generator | `contracts/fixtures/`, `frontend/public/data/fixtures/` | MAJOR for offline fallback | `OPEN` — `FE-003` (after `BE-003`) or a follow-up task |
 | 29 | Base `terrain.sample.json` is left as the `ARCH-002` flat placeholder because the parity test pins it to zeros; real terrain ships as `terrain.<site_id>.json` scenario fixtures | `contracts/fixtures/terrain.sample.json` | MINOR | `RECORDED` |
+| 30 | The M4 `terrainPatchUpsampler` fabricates a 12-crater "Shackleton" scene with invented depths/PSR flags; unreachable for wire-contract patches (grid_size pinned 128 ⇒ passthrough), so it is dead code today, but it would silently render fiction if a sub-64 fixture ever appears | `frontend/src/features/terrain-3d/terrainPatchUpsampler.ts` | MAJOR if ever reached | `OPEN` — human/devscion decision: delete it or keep it clearly labelled synthetic |
+| 31 | The 3D "PSR Frost" surface mode has no data source under the current contract (`psr_mask` is null by design; PSR is never computed); the button is now hidden for wire patches | `frontend/src/features/terrain-3d/terrainColors.ts`, `LunarTerrainCanvas.tsx` | MINOR | `OPEN` — keep hidden pending real PSR data, or remove the mode |
+| 32 | M4 3D code merged on `main` before `P0-GATE`; the `d0d0c54` revision removed the `AGENTS.md` prohibition but `DEVELOPMENT_PLAN.md` Appendix F still describes 3D as gated behind `P0-GATE` | `DEVELOPMENT_PLAN.md` Appendix F | governance | `OPEN` — plan text needs the same human-approved revision |
+| 33 | `QA-001`, `P1-COMPARE`, `P1-WINDOWS`, `P1-DELAYS`, `DELIVERY-001/002` remain `pending` in the ledger although their code and docs now exist on the branch (merged from `main` without ledger tasks); acceptance evidence must still be recorded when the DAG allows | `plan/task-ledger.json`, M5 docs | MAJOR for delivery | `OPEN` — needs an M5 closure pass |
+| 34 | `main` committed `package.json` with the `three` dependency but without regenerating `bun.lock`; frozen installs fail until the lockfile is rebuilt (done on `bauerceptor` in this merge) | `frontend/bun.lock` | MAJOR if unfixed | `FIXED` on `bauerceptor`; `main` remains broken until this merges back |
 
 ### Deliberately not fixed
 
@@ -870,6 +875,24 @@ Do not merge if: the pytest suite fails, ruff check fails, or the tree contains 
 - Merged `bauerceptor-charlie` into `bauerceptor` as `20d3fb4` with `--no-ff --no-commit`; no conflicts. Refreshed the protected digest and ran `validate_task_ledger.py` (28 tasks, 13 done), `check_planning_docs.py` (exit 0), `check_file_lengths.py` (exit 0, 0 violations).
 - Pushed `66e324e..20d3fb4` to `origin/bauerceptor`.
 - Next: `agent-charlie` starts `BE-003` (deps `BE-002` + `DATA-006` both merged).
+
+### origin/main (M5 + M4 3D) integrated — agent-zeta, human-directed
+
+- Human asked for `origin/main` to be pulled in: PR #5 (M5 — comparison board, window finder, briefing export, `docs/QA_REPORT.md`, `docs/DEMO_SCRIPT.md`, `scripts/smoke_test.sh`) and PR #6 (M4 — Three.js 3D terrain viewer), plus the `d0d0c54` governance revision (removes the `AGENTS.md` 3D prohibition, drops the `"Do not start 3D"` phrase from `check_planning_docs.py`, assigns `M5` to devscion, adds `three`/`@types/three`).
+- Merged `origin/main` `7c4877a` into `bauerceptor` at `23ad60f` (zeta had concurrently integrated `BE-002` at `20d3fb4`/`23ad60f`; that work is untouched — this merge contains no `backend/src` or `backend/tests` change). Conflict resolution: `plan/protected.sha256` (ours, then refreshed); `plan/OWNERS.md` auto-merged and was corrected (the main-side `M5` row was missing the Branch cell; two statements had gone stale — "M5 has no owner" and "`terrain-3d` remains `.gitkeep`"). The ledger `ownership.modules.M5.owner` mirrors the human-approved `devscion`.
+- Integration fixes required because the M5/M4 code was written against the pre-`ARCH-002` hand-written types:
+  - `frontend/bun.lock` regenerated to include `three@0.170.0` + `@types/three` — main added the dependency without the lockfile, so `bun install --frozen-lockfile` would have failed.
+  - `WindowCandidate` → `CandidateWindow` (the generated contract name) in `windowMath.ts`, `TopWindowsList.tsx`, `WindowHeatmapView.tsx`, `WindowMonthGrid.tsx`, `windowMath.test.ts`.
+  - terrain-3d aligned to the generated `TerrainPatch` contract: `patch_radius_km` → `extent_m` (`meshBuilder.ts`, `terrainPatchUpsampler.ts`); new display-only `LocalTerrainPatch` structural type (wire patches, `grid_size` pinned 128, pass through unchanged).
+  - Removed the fabricated PSR heuristic in `terrainColors.ts` (`elev < -550 m ⇒ PSR`): real terrain must never be flagged PSR client-side — `psr_mask` is null by contract and PSR is never computed in this codebase. The "PSR Frost" surface mode is now offered only when a real per-vertex mask exists (never for wire patches). See open issues 30–31.
+  - `terrainPatchUpsampler.ts` relabelled honestly: its 12-crater scene is synthetic demonstration data, unreachable for wire-contract patches.
+  - Test fixtures completed to the generated contract: `EvaluatedSite.category`, `EvaluationSummary.overlap_fraction` (`delayOffsets.test.ts`, `exportHelpers.test.ts`).
+  - `delayOffsets.ts` requires an explicit `duration_days` for launch-delay coverage checks (optional in the generated request type); it now throws a clear error instead of an invented default.
+  - `frontend/.prettierignore` (new) for `dist/` and `public/data/fixtures/`: `format:check` has been failing on the generated byte-identical fixture mirror since `DATA-006` (Wave 5 did not run it), and reformatting would break the mirror invariant. No source file was reformatted.
+- Commands (all exit 0): `bun run typecheck`, `lint`, `test` (6 passed), `build`, `format:check`; `pytest tests/unit` (241 passed, includes charlie's `BE-002`), `ruff check .`; `validate_task_ledger.py` (28 tasks, 14 done), `check_planning_docs.py`, `check_file_lengths.py` (0 violations; `LunarTerrainCanvas.tsx` exactly 280 after the PSR-gating logic moved to `terrainColors.ts`).
+- Not pushed; zeta pushes `bauerceptor` after its gate.
+- Open issues recorded: #30 synthetic upsampler scene + PSR mode have no data source under the current contract (needs a human/devscion decision); #31 M4 3D merged on main before `P0-GATE` while `DEVELOPMENT_PLAN.md` Appendix F still describes 3D as gated — plan text was not revised with the code; #32 `QA-001`/`P1-COMPARE`/`P1-WINDOWS`/`P1-DELAYS`/`DELIVERY-*` remain pending in the ledger although their code and docs now exist on the branch — acceptance evidence still required when the DAG allows; #33 main committed `package.json` without `bun.lock` (fixed here).
+- Next: `agent-charlie` continues `BE-003`; its `backend/src/api` + `backend/src/application` + `backend/tests/integration` scope is untouched by this merge.
 
 ### BE-003 — done — agent-charlie
 
