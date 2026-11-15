@@ -16,6 +16,7 @@ Produce scientifically accurate lunar topography patches, `< 12 ms` vectorized t
 
 ## Feature Breakdown
 
+<!-- STATUS: SUPERSEDED | REASON: the operative registry is 16 entries, NASA's nine current Artemis III regions plus seven CLPS/Apollo/international sites; Shackleton Connecting Ridge and Faustini Rim A are excluded | REPLACEMENT: DEVELOPMENT_PLAN.md#req-05 | TASKS: DATA-001 -->
 ### `F1.1` — Curated Lunar Landing Site Registry
 * **Target Files:**
   * `backend/config/curated_sites.yaml` (~110 lines)

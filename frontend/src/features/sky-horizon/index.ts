@@ -9,11 +9,5 @@ export {
   type SVGPoint,
   type TrajectoryPointInput,
 } from "./horizonMath";
-export {
-  PanoramaHorizonChart,
-  type PanoramaHorizonChartProps,
-} from "./PanoramaHorizonChart";
-export {
-  PolarSkyDome,
-  type PolarSkyDomeProps,
-} from "./PolarSkyDome";
+export { PanoramaHorizonChart, type PanoramaHorizonChartProps } from "./PanoramaHorizonChart";
+export { PolarSkyDome, type PolarSkyDomeProps } from "./PolarSkyDome";

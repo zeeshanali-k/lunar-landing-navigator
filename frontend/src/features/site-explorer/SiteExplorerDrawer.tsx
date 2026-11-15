@@ -21,8 +21,17 @@ const CATEGORY_FILTERS: { id: CategoryFilter; label: string }[] = [
 
 export function SiteExplorerDrawer() {
   const {
-    sites, selectedSiteId, customCoords, evaluationData, startUtc, durationDays,
-    solarArrayType, observerHeightM, loading, selectSite, setCustomCoordinates,
+    sites,
+    selectedSiteId,
+    customCoords,
+    evaluationData,
+    startUtc,
+    durationDays,
+    solarArrayType,
+    observerHeightM,
+    loading,
+    selectSite,
+    setCustomCoordinates,
   } = useMissionStore();
   const { pinnedScenarios, pinScenario, unpinScenario } = useComparisonStore();
 
@@ -41,11 +50,7 @@ export function SiteExplorerDrawer() {
     return sites.filter((site) => {
       if (categoryFilter !== "all" && site.category !== categoryFilter) return false;
       if (!q) return true;
-      return (
-        site.name.toLowerCase().includes(q) ||
-        site.agency.toLowerCase().includes(q) ||
-        site.summary.toLowerCase().includes(q)
-      );
+      return site.name.toLowerCase().includes(q) || site.agency.toLowerCase().includes(q) || site.summary.toLowerCase().includes(q);
     });
   }, [sites, categoryFilter, searchQuery]);
 
@@ -91,7 +96,9 @@ export function SiteExplorerDrawer() {
   return (
     <aside className="panel-card site-explorer-drawer">
       <h2 className="panel-title">
-        <span><MapPin size={13} /> Landing Site Explorer</span>
+        <span>
+          <MapPin size={13} /> Landing Site Explorer
+        </span>
         <span style={{ fontSize: "0.72rem", color: "var(--accent-dte)" }}>{sites.length} Curated</span>
       </h2>
 
@@ -100,7 +107,10 @@ export function SiteExplorerDrawer() {
           type="button"
           onClick={() => setMode("curated")}
           className="btn-surface"
-          style={{ justifyContent: "center", borderColor: mode === "curated" ? "var(--accent-dte)" : "var(--border-subtle)" }}
+          style={{
+            justifyContent: "center",
+            borderColor: mode === "curated" ? "var(--accent-dte)" : "var(--border-subtle)",
+          }}
         >
           <MapPin size={13} /> Curated ({sites.length})
         </button>
@@ -108,7 +118,10 @@ export function SiteExplorerDrawer() {
           type="button"
           onClick={() => setMode("custom")}
           className="btn-surface"
-          style={{ justifyContent: "center", borderColor: mode === "custom" ? "var(--accent-dte)" : "var(--border-subtle)" }}
+          style={{
+            justifyContent: "center",
+            borderColor: mode === "custom" ? "var(--accent-dte)" : "var(--border-subtle)",
+          }}
         >
           <Crosshair size={13} /> Custom Coords
         </button>
@@ -154,7 +167,16 @@ export function SiteExplorerDrawer() {
                 return (
                   <div key={cat} style={{ display: "grid", gap: "0.45rem" }}>
                     {categoryFilter === "all" && (
-                      <div style={{ fontSize: "0.7rem", fontWeight: 700, color: SITE_CATEGORY_META[cat].color, textTransform: "uppercase", letterSpacing: "0.04em", marginTop: "0.2rem" }}>
+                      <div
+                        style={{
+                          fontSize: "0.7rem",
+                          fontWeight: 700,
+                          color: SITE_CATEGORY_META[cat].color,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.04em",
+                          marginTop: "0.2rem",
+                        }}
+                      >
                         {SITE_CATEGORY_META[cat].label}
                       </div>
                     )}
@@ -185,9 +207,12 @@ export function SiteExplorerDrawer() {
           {customCoords && evaluationData && (
             <div className="site-card" style={{ cursor: "default" }}>
               <strong style={{ fontSize: "0.78rem", color: "var(--accent-dte)" }}>Active Custom Telemetry</strong>
-              <span style={{ fontSize: "0.78rem" }}>{evaluationData.site.name} ({evaluationData.site.lat_deg.toFixed(4)}°, {evaluationData.site.lon_deg.toFixed(4)}°)</span>
+              <span style={{ fontSize: "0.78rem" }}>
+                {evaluationData.site.name} ({evaluationData.site.lat_deg.toFixed(4)}°, {evaluationData.site.lon_deg.toFixed(4)}°)
+              </span>
               <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                Score: <strong style={{ color: "var(--accent-ok)" }}>{evaluationData.summary.feasibility_score}</strong> | Sunlit: {evaluationData.summary.sunlit_hours}h
+                Score: <strong style={{ color: "var(--accent-ok)" }}>{evaluationData.summary.feasibility_score}</strong> | Sunlit:{" "}
+                {evaluationData.summary.sunlit_hours}h
               </span>
             </div>
           )}

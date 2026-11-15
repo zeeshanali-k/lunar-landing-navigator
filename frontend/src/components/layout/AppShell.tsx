@@ -28,8 +28,7 @@ export function AppShell() {
   const pinnedScenarios = useComparisonStore((s) => s.pinnedScenarios);
   const unpinScenario = useComparisonStore((s) => s.unpinScenario);
 
-  const isSphericalLimbOnly =
-    terrainUnavailable || evaluationData?.site.has_precomputed_terrain === false;
+  const isSphericalLimbOnly = terrainUnavailable || evaluationData?.site.has_precomputed_terrain === false;
   const horizonProfile = evaluationData?.horizon_profile ?? [];
   const timeseries = evaluationData?.timeseries ?? [];
 
@@ -104,7 +103,9 @@ export function AppShell() {
           <GuidedChallengesView />
         ) : (
           <section className="panel-card">
-            <h2 className="panel-title"><span>{activeTab.toUpperCase()} Workspace</span></h2>
+            <h2 className="panel-title">
+              <span>{activeTab.toUpperCase()} Workspace</span>
+            </h2>
             {activeTab === "compare" && (
               <div style={{ display: "grid", gap: "0.5rem" }}>
                 <p style={{ margin: 0, color: "var(--text-muted)" }}>

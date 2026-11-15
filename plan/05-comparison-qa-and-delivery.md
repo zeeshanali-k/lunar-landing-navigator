@@ -103,6 +103,7 @@ Address the core mission-planning pain point emphasized in the NASA challenge de
   * Containerized local & cloud deployment (`docker-compose up` + cloud URL).
   * Pre-populate `frontend/public/data/fixtures/` with static `Contracts A–E` JSON packs for the top 6 demo sites so live pitch demos work even if venue Wi-Fi drops.
   * Rehearsed **3-Minute Live Demo Flow**:
+<!-- STATUS: SUPERSEDED | REASON: Shackleton Connecting Ridge is not in the revision-4 registry; use Peak near Cabeus B, Haworth, or Mons Mouton for the demo | REPLACEMENT: DEVELOPMENT_PLAN.md#req-05 | TASKS: DELIVERY-001 -->
     1. *0:00–0:35 Hook:* Why Artemis South Pole is an extreme geometry puzzle (grazing `2°` Sun, zero-atmosphere razor shadows, Earth wobbling near mountain ridges) vs. fragmented legacy tools (Quickmap + Horizons).
     2. *0:35–1:35 Live 3D Cockpit:* Select **Shackleton Connecting Ridge** → scrub lunar day → watch 3D crater shadows, Polar Sky-Dome Earth libration loop, and Sunset/Earthset countdowns live → flip from Flat Panel (`6%` power) to **10m Vertical Tracking Mast (`99%` power)**.
     3. *1:35–2:25 Rapid Re-planning:* Simulate a **90-day launch delay** (`F5.2`), watch longest dark streak spike, then open **12-Month Window Heatmap** (`F5.3`) + **Side-by-Side Comparison** (`F5.1`) to pick a viable backup site (`Mons Mouton`) in 10 seconds.

@@ -29,12 +29,7 @@ function validateCoordinates(latRaw: string, lonRaw: string): { valid: boolean; 
   return { valid: true, error: null, lat, lon };
 }
 
-export function CustomCoordForm({
-  activeCustomCoords,
-  loading,
-  onSubmitCoords,
-  onPinCustom,
-}: CustomCoordFormProps) {
+export function CustomCoordForm({ activeCustomCoords, loading, onSubmitCoords, onPinCustom }: CustomCoordFormProps) {
   const [latText, setLatText] = useState(activeCustomCoords ? String(activeCustomCoords.lat_deg) : "-89.52");
   const [lonText, setLonText] = useState(activeCustomCoords ? String(activeCustomCoords.lon_deg) : "138.0");
   const [labelText, setLabelText] = useState(activeCustomCoords?.label ?? "Custom Target");
@@ -105,9 +100,7 @@ export function CustomCoordForm({
         </div>
       )}
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
-
-      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}></div>
 
       <div style={{ display: "flex", gap: "0.5rem" }}>
         <button
