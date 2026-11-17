@@ -6,7 +6,7 @@
   "functions": {
     "api/index.py": {
       "includeFiles": "{backend/src/**,backend/config/**,backend/data/site_packs/**,data/manifests/site_packs/index.json}",
-      "excludeFiles": "{frontend/**,backend/tests/**,backend/src/cli/**,backend/src/infrastructure/dem_tiler.py,backend/src/infrastructure/pds_dem.py,backend/src/infrastructure/raycaster.py,backend/.venv/**,contracts/**,docs/**,plan/**,scripts/**,submission/**,data/downloads/**,data/manifests/lola/**,data/manifests/horizons/**,data/manifests/references/**}"
+      "excludeFiles": "{frontend/**,backend/tests/**,backend/src/cli/**}"
     }
   },
   "rewrites": [
