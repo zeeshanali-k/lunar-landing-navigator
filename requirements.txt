@@ -1,0 +1,5 @@
+# Runtime-only Python dependencies for Vercel serverless deployment.
+# Offline DEM/ephemeris build packages (numpy, scipy, httpx) stay in backend/pyproject.toml.
+fastapi==0.163.0
+pydantic==2.14.3
+PyYAML==6.0.3

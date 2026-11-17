@@ -1,0 +1,28 @@
+# Local caches, virtual environments, and build outputs
+.git/
+.githooks/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+**/__pycache__/
+*.pyc
+backend/.venv/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Offline build-time, QA, governance, and presentation assets not needed on Vercel
+backend/tests/
+backend/src/cli/
+backend/data/kernels/
+backend/data/lola_grids/
+data/downloads/
+data/manifests/lola/
+data/manifests/horizons/
+data/manifests/references/
+contracts/
+docs/
+plan/
+scripts/
+submission/
+*.pdf
