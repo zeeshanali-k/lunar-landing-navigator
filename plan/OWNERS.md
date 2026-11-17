@@ -42,6 +42,7 @@ These branches exist only for the declared session. No agent edits another agent
 7. `main` changes reach a worker only by merging `main` into their branch; never by resetting it.
 8. A push happens only when the human whose branch it is asks for one, in that moment. An agent commits locally and stops there.
 9. ui-refactor is an approved branch for UI-001.
+10. allow Vercel deployment
 
 ## Write boundaries
 

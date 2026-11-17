@@ -418,6 +418,124 @@
       "completed_commit": "2dc501ae1e49e74f020807ab1c3758313d5f9ae0"
     },
     {
+      "id": "DEPLOY-001",
+      "title": "Configure full-stack Vercel deployment for frontend and FastAPI API",
+      "phase": "delivery",
+      "priority": "delivery",
+      "owner": "M5",
+      "reviewer": "M2",
+      "status": "pending",
+      "depends_on": [
+        "DELIVERY-002"
+      ],
+      "requirement_ids": [
+        "REQ-03",
+        "REQ-06",
+        "REQ-10",
+        "REQ-12"
+      ],
+      "working_directory": ".",
+      "read_paths": [
+        "DEVELOPMENT_PLAN.md",
+        "backend/src/api/main.py",
+        "backend/src/application/pack_repository.py",
+        "backend/src/infrastructure/site_registry_loader.py",
+        "backend/pyproject.toml",
+        "frontend/package.json",
+        "frontend/vite.config.ts"
+      ],
+      "write_paths": [
+        "vercel.json",
+        ".vercelignore",
+        "api",
+        "requirements.txt",
+        "pyproject.toml",
+        "backend/src/api",
+        "backend/tests/integration",
+        "frontend/package.json",
+        "frontend/vite.config.ts"
+      ],
+      "inputs": [
+        "backend/src/api/main.py",
+        "backend/data/site_packs",
+        "data/manifests/site_packs/index.json",
+        "backend/config/curated_sites.yaml",
+        "frontend/package.json"
+      ],
+      "outputs": [
+        "vercel.json",
+        "api/index.py",
+        "requirements.txt"
+      ],
+      "commands": [
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen pytest -v",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen ruff check .",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "backend",
+          "run": "uv run --python 3.12 --frozen mypy src tests",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "pnpm run typecheck",
+          "expected_exit": 0
+        },
+        {
+          "cwd": "frontend",
+          "run": "pnpm run build",
+          "expected_exit": 0
+        },
+        {
+          "cwd": ".",
+          "run": "uv run --project backend --python 3.12 --frozen python scripts/validate_task_ledger.py",
+          "expected_exit": 0
+        },
+        {
+          "cwd": ".",
+          "run": "uv run --project backend --python 3.12 --frozen python scripts/check_file_lengths.py",
+          "expected_exit": 0
+        }
+      ],
+      "acceptance": [
+        "vercel.json configures the frontend static build and routes /api/v1 requests to the Python ASGI entrypoint",
+        "api/index.py exposes the FastAPI app from backend/src/api/main.py and serves /api/v1/health, /api/v1/sites, /api/v1/sites/{site_id}/terrain, and /api/v1/evaluate with committed site packs",
+        "runtime Python dependencies exclude offline build-only packages (numpy, scipy, httpx) and stay strictly deterministic with no runtime network access",
+        "backend pytest, ruff check, mypy, frontend typecheck, frontend build, validate_task_ledger.py, check_planning_docs.py, and check_file_lengths.py exit 0"
+      ],
+      "required_evidence": [
+        {
+          "kind": "artifact",
+          "ref": "vercel.json"
+        },
+        {
+          "kind": "artifact",
+          "ref": "api/index.py"
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen pytest -v"
+        },
+        {
+          "kind": "command",
+          "ref": "pnpm run build"
+        }
+      ],
+      "evidence": [],
+      "human_approval_required": false,
+      "approval": null,
+      "blocked_reason": null,
+      "completed_at_utc": null,
+      "completed_commit": null
+    },
+    {
       "id": "UI-001",
       "title": "Redesign frontend theme, multi-screen navigation, and contextual help",
       "phase": "frontend",

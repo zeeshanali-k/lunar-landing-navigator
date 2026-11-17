@@ -1,0 +1,1131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lunar Landing Site Navigator — NASA Space Apps 2026 Demo Slides</title>
+    <style>
+      :root {
+        --slide-w: 13.3333in;
+        --slide-h: 7.5in;
+        --obsidian-0: #070b14;
+        --obsidian-1: #0d1424;
+        --obsidian-2: #151f35;
+        --obsidian-border: rgba(148, 163, 184, 0.22);
+        --light-bg: #f6f8fc;
+        --light-card: #ffffff;
+        --light-subtle: #edf2f9;
+        --light-border: #d7e0ee;
+        --text-dark: #0f172a;
+        --text-dark-muted: #475569;
+        --text-light: #f8fafc;
+        --text-light-muted: #94a3b8;
+        --accent-blue: #2563eb;
+        --accent-blue-soft: #dbeafe;
+        --accent-cyan: #0ea5e9;
+        --accent-gold: #f59e0b;
+        --accent-gold-soft: #fef3c7;
+        --accent-green: #059669;
+        --accent-green-soft: #d1fae5;
+        --accent-purple: #6366f1;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      @page {
+        size: 13.3333in 7.5in;
+        margin: 0;
+      }
+
+      html,
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        background: #0b1120;
+        color: var(--text-dark);
+      }
+
+      /* Interactive web viewer chrome (hidden when printing to PDF) */
+      .viewer-bar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 10px 24px;
+        background: rgba(11, 17, 32, 0.94);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        color: #f8fafc;
+        font-size: 13px;
+      }
+
+      .viewer-bar-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .viewer-btn {
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        background: #172033;
+        color: #f8fafc;
+        padding: 6px 12px;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .viewer-btn-primary {
+        background: #2563eb;
+        border-color: #3b82f6;
+      }
+
+      .deck {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 28px;
+        padding: 24px 16px 48px;
+      }
+
+      .slide {
+        position: relative;
+        width: var(--slide-w);
+        height: var(--slide-h);
+        overflow: hidden;
+        padding: 0.42in 0.56in 0.52in;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+        border-radius: 6px;
+        background: var(--light-bg);
+        color: var(--text-dark);
+        page-break-after: always;
+        break-after: page;
+      }
+
+      .slide:last-child {
+        page-break-after: auto;
+        break-after: auto;
+      }
+
+      .slide-dark {
+        background:
+          radial-gradient(circle at 85% 18%, rgba(37, 99, 235, 0.26), transparent 45%),
+          radial-gradient(circle at 12% 88%, rgba(245, 158, 11, 0.16), transparent 40%),
+          linear-gradient(155deg, #070b14 0%, #0d1527 60%, #101b33 100%);
+        color: var(--text-light);
+      }
+
+      @media print {
+        html,
+        body {
+          background: transparent;
+        }
+        .viewer-bar {
+          display: none !important;
+        }
+        .deck {
+          display: block;
+          padding: 0;
+          gap: 0;
+        }
+        .slide {
+          box-shadow: none;
+          border-radius: 0;
+          margin: 0;
+        }
+      }
+
+      /* Slide Header & Footer */
+      .slide-header {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .eyebrow-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--accent-blue);
+        background: var(--accent-blue-soft);
+        padding: 4px 11px;
+        border-radius: 999px;
+      }
+
+      .slide-dark .eyebrow {
+        color: #93c5fd;
+        background: rgba(37, 99, 235, 0.22);
+        border: 1px solid rgba(96, 165, 250, 0.35);
+      }
+
+      h1.hero-title {
+        font-size: 46px;
+        line-height: 1.08;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        color: #ffffff;
+      }
+
+      h2.slide-title {
+        font-size: 28px;
+        line-height: 1.18;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: var(--text-dark);
+      }
+
+      .slide-dark h2.slide-title {
+        color: #ffffff;
+      }
+
+      .slide-subtitle {
+        font-size: 14.5px;
+        line-height: 1.45;
+        color: var(--text-dark-muted);
+      }
+
+      .slide-dark .slide-subtitle {
+        color: #cbd5e1;
+      }
+
+      .slide-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 10px;
+        border-top: 1px solid var(--light-border);
+        font-size: 11.5px;
+        color: var(--text-dark-muted);
+      }
+
+      .slide-dark .slide-footer {
+        border-top-color: rgba(148, 163, 184, 0.22);
+        color: var(--text-light-muted);
+      }
+
+      .mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      }
+
+      /* Grids & Cards */
+      .content-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 14px 0 8px;
+        min-height: 0;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+        height: 100%;
+        align-items: stretch;
+      }
+
+      .grid-2-weighted {
+        display: grid;
+        grid-template-columns: 0.92fr 1.18fr;
+        gap: 24px;
+        height: 100%;
+        align-items: center;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        height: 100%;
+        align-items: stretch;
+      }
+
+      .card {
+        background: var(--light-card);
+        border: 1px solid var(--light-border);
+        border-radius: 14px;
+        padding: 18px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .card-tinted {
+        background: var(--light-subtle);
+        border: 1px solid var(--light-border);
+        border-radius: 14px;
+        padding: 18px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .card-dark {
+        background: rgba(15, 23, 42, 0.78);
+        border: 1px solid var(--obsidian-border);
+        border-radius: 14px;
+        padding: 18px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .card-title {
+        font-size: 16px;
+        font-weight: 750;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .slide-dark .card-title {
+        color: #ffffff;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 3px 9px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .badge-blue {
+        background: var(--accent-blue-soft);
+        color: #1d4ed8;
+      }
+
+      .badge-gold {
+        background: var(--accent-gold-soft);
+        color: #92400e;
+      }
+
+      .badge-green {
+        background: var(--accent-green-soft);
+        color: #065f46;
+      }
+
+      .badge-dark {
+        background: rgba(30, 41, 59, 0.9);
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        color: #e2e8f0;
+      }
+
+      ul.clean-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+
+      ul.clean-list li {
+        position: relative;
+        padding-left: 16px;
+        font-size: 13.5px;
+        line-height: 1.44;
+        color: #1e293b;
+      }
+
+      ul.clean-list li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 7px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent-blue);
+      }
+
+      .slide-dark ul.clean-list li {
+        color: #cbd5e1;
+      }
+
+      .slide-dark ul.clean-list li::before {
+        background: #38bdf8;
+      }
+
+      .callout-warn {
+        border-left: 4px solid var(--accent-gold);
+        background: #fffbeb;
+        padding: 12px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        line-height: 1.42;
+        color: #78350f;
+      }
+
+      .callout-info {
+        border-left: 4px solid var(--accent-blue);
+        background: #eff6ff;
+        padding: 12px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        line-height: 1.42;
+        color: #1e3a8a;
+      }
+
+      /* Screenshot Frames (box-shadow: none prevents Chromium PDF raster halo artifacts) */
+      .shot-frame {
+        background: #f8fafc;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: none;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .shot-frame-dark {
+        background: #0d1424;
+        border-color: #334155;
+      }
+
+      .shot-frame img {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: contain;
+        object-position: center;
+      }
+
+      .shot-frame-contained img {
+        max-height: 2.92in;
+        width: auto;
+        max-width: 100%;
+        margin: 0 auto;
+      }
+
+      .shot-caption {
+        padding: 7px 12px;
+        background: #f1f5f9;
+        border-top: 1px solid var(--light-border);
+        font-size: 11px;
+        color: var(--text-dark-muted);
+      }
+
+      .hero-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin-top: 10px;
+      }
+
+      .hero-pill {
+        padding: 7px 13px;
+        border-radius: 10px;
+        background: rgba(30, 41, 59, 0.72);
+        border: 1px solid rgba(148, 163, 184, 0.28);
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #e2e8f0;
+      }
+
+      .hero-pill strong {
+        color: #fbbf24;
+      }
+
+      .hero-visual-stack {
+        position: relative;
+        height: 4.55in;
+      }
+
+      .hero-shot-main {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 86%;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 2px solid rgba(148, 163, 184, 0.45);
+        box-shadow: none;
+        background: #ffffff;
+      }
+
+      .hero-shot-inset {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 63%;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 2px solid #38bdf8;
+        box-shadow: none;
+        background: #0d1424;
+      }
+
+      .hero-shot-main img,
+      .hero-shot-inset img {
+        width: 100%;
+        display: block;
+      }
+
+      /* Architecture / Roadmap tables */
+      .kv-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .kv-box {
+        background: var(--light-subtle);
+        border: 1px solid var(--light-border);
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+
+      .kv-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-dark-muted);
+      }
+
+      .kv-value {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-top: 2px;
+      }
+
+      .status-pill-row {
+        display: grid;
+        grid-template-columns: 96px 1fr;
+        gap: 10px;
+        align-items: start;
+        padding: 9px 12px;
+        border-radius: 10px;
+        background: var(--light-card);
+        border: 1px solid var(--light-border);
+        font-size: 12.5px;
+        line-height: 1.38;
+      }
+
+      .check-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+      }
+
+      .check-item {
+        padding: 9px 12px;
+        border-radius: 10px;
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+      }
+
+      .check-name {
+        font-size: 12px;
+        font-weight: 750;
+        color: #065f46;
+      }
+
+      .check-desc {
+        font-size: 11.5px;
+        color: #047857;
+        margin-top: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="viewer-bar">
+      <div>
+        <strong>Lunar Landing Site Navigator</strong> — NASA Space Apps 2026 Official 7-Slide Demonstration
+      </div>
+      <div class="viewer-bar-controls">
+        <span id="slide-indicator" class="mono">All 7 Slides</span>
+        <button type="button" class="viewer-btn" id="toggle-mode-btn">Focus Mode (1 Slide)</button>
+        <button type="button" class="viewer-btn" id="prev-btn" style="display: none">Prev</button>
+        <button type="button" class="viewer-btn" id="next-btn" style="display: none">Next</button>
+        <button type="button" class="viewer-btn viewer-btn-primary" onclick="window.print()">Save / Print PDF</button>
+      </div>
+    </div>
+
+    <main class="deck" id="deck">
+      <!-- SLIDE 1: TITLE -->
+      <section class="slide slide-dark">
+        <div class="eyebrow-row">
+          <span class="eyebrow">NASA Space Apps Challenge 2026 · Project Demonstration</span>
+          <span class="badge badge-dark mono">7-Slide Deck · 1 / 7</span>
+        </div>
+
+        <div class="content-area">
+          <div class="grid-2-weighted" style="gap: 28px">
+            <div style="display: flex; flex-direction: column; gap: 16px">
+              <h1 class="hero-title">Lunar Landing Site Navigator</h1>
+              <p class="slide-subtitle" style="font-size: 16px; color: #cbd5e1">
+                An intuitive, multi-theme mission planning and educational visualization cockpit for evaluating illumination, terrain occlusion,
+                and Direct-to-Earth communications across lunar landing sites.
+              </p>
+
+              <div class="hero-pills">
+                <div class="hero-pill"><strong>16</strong> IAU-Verified Sites</div>
+                <div class="hero-pill"><strong>6</strong> Focused Screens</div>
+                <div class="hero-pill"><strong>3</strong> Adaptive Themes</div>
+                <div class="hero-pill"><strong>Zero</strong> Runtime AI</div>
+              </div>
+
+              <div class="card-dark" style="margin-top: 6px; padding: 14px 16px">
+                <div style="font-size: 12px; font-weight: 700; color: #93c5fd; text-transform: uppercase; letter-spacing: 0.06em">
+                  Built For Dual Audiences
+                </div>
+                <div style="font-size: 13px; color: #e2e8f0; line-height: 1.45">
+                  <strong>Mission Planners:</strong> Trade-off deltas, launch-delay shifts &amp; annual window screening.<br />
+                  <strong>Explorers &amp; Educators:</strong> Daylight default theme, plain-language metrics &amp; inline popovers.
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-visual-stack">
+              <div class="hero-shot-main">
+                <img src="assets/overview-daylight-guide.png" alt="Lunar Landing Site Navigator Daylight Overview with contextual guide" />
+              </div>
+              <div class="hero-shot-inset">
+                <img src="assets/maps-3d.png" alt="Orbit Dark Maps and 3D lunar terrain heightfield view" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <span class="mono">github.com/zeeshanali-k/lunar-landing-navigator · branch: ui-refactor</span>
+          <span>Live screenshots captured from running React + FastAPI prototype (sample contract fixtures)</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 2: INTRODUCTION (PROBLEM & SOLUTION) -->
+      <section class="slide">
+        <div class="slide-header">
+          <div class="eyebrow-row">
+            <span class="eyebrow">Introduction · Problem Statement &amp; Solution</span>
+            <span class="badge badge-blue mono">Slide 2 / 7</span>
+          </div>
+          <h2 class="slide-title">Why Lunar Landing Evaluation Needs a Calmer, Unified Cockpit</h2>
+          <p class="slide-subtitle">
+            Choosing a lunar landing site means balancing grazing sunlight, ridge shadows, and Earth line-of-sight—without drowning users in
+            disconnected tools or raw telemetry grids.
+          </p>
+        </div>
+
+        <div class="content-area" style="gap: 14px">
+          <div class="grid-2" style="height: auto; flex: 1">
+            <div class="card">
+              <div class="card-title">
+                <span class="badge badge-gold">The Problem</span>
+                <span>Disconnected Tools &amp; Visual Overload</span>
+              </div>
+              <ul class="clean-list">
+                <li>
+                  <strong>Extreme Polar Geometry:</strong> Near the lunar South Pole, the Sun skims within degrees of crater rims while Earth hovers
+                  low in a libration corridor where ridges block Direct-to-Earth (DTE) radio links.
+                </li>
+                <li>
+                  <strong>Fragmented Engineering Workflow:</strong> Planners switch between planetary GIS maps, JPL ephemeris tables, and manual
+                  spreadsheets whenever mission start dates or solar-mast heights change.
+                </li>
+                <li>
+                  <strong>"Airplane Cockpit" Clutter:</strong> Dense dark dashboards show dozens of unlabeled metrics simultaneously, intimidating
+                  newcomers and hiding critical risks under visual noise.
+                </li>
+                <li>
+                  <strong>Silent Extrapolation Risks:</strong> Many tools mix interpolated polar DEMs with flat assumptions for mid-latitude regions
+                  instead of surfacing data boundaries honestly.
+                </li>
+              </ul>
+            </div>
+
+            <div class="card-tinted">
+              <div class="card-title">
+                <span class="badge badge-green">Our Solution</span>
+                <span>Progressive-Disclosure Lunar Navigator</span>
+              </div>
+              <ul class="clean-list">
+                <li>
+                  <strong>Decision-First Overview:</strong> Opens with 4 scannable verdict cards (Feasibility, Sunlight, Earth Radio Link, Overlap) and
+                  reveals detailed sub-scores and hardware controls only when expanded.
+                </li>
+                <li>
+                  <strong>Spatial + Sky + Temporal Sync:</strong> Links 2D stereographic maps, interactive 3D heightfields, 360° horizon silhouettes,
+                  and a 3-track mission scrubber on one URL state.
+                </li>
+                <li>
+                  <strong>Planner &amp; Explorer Modes:</strong> One toggle adapts framing between engineering analysis and accessible STEM exploration
+                  without changing any underlying metric.
+                </li>
+                <li>
+                  <strong>Honest Class A vs. Class B Model:</strong> Reserves LOLA polar topography specs for south-polar targets and labels mid-latitude
+                  sites clearly as <em>spherical limb only</em>.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <span>Lunar Landing Site Navigator · NASA Space Apps Challenge 2026</span>
+          <span>2 / 7</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 3: INTUITIVE UI REDESIGN (SCREEN 1 + THEMES + POPOVERS) -->
+      <section class="slide">
+        <div class="slide-header">
+          <div class="eyebrow-row">
+            <span class="eyebrow">Live Demonstration · UX Architecture &amp; Onboarding (UI-001)</span>
+            <span class="badge badge-blue mono">Slide 3 / 7</span>
+          </div>
+          <h2 class="slide-title">Intuitive 6-Screen Navigation, 3 Themes &amp; Contextual Popover Guides</h2>
+          <p class="slide-subtitle">
+            Replaces single-screen telemetry clutter with calm progressive disclosure, adaptive CSS custom-property themes, and click-to-read help
+            where users need it.
+          </p>
+        </div>
+
+        <div class="content-area">
+          <div class="grid-2-weighted">
+            <div style="display: flex; flex-direction: column; gap: 12px">
+              <div class="card" style="padding: 14px 16px">
+                <div class="card-title" style="font-size: 14.5px">1. Focused 6-Screen Workflow</div>
+                <p style="font-size: 12.8px; color: var(--text-dark-muted); line-height: 1.42">
+                  Top tabs divide tasks cleanly: <strong>Overview</strong>, <strong>Maps &amp; 3D</strong>, <strong>Sky &amp; Timeline</strong>,
+                  <strong>Compare</strong>, <strong>Windows</strong>, and <strong>Learn</strong>—backed by a slide-over <em>Switch Site</em> drawer.
+                </p>
+              </div>
+
+              <div class="card" style="padding: 14px 16px">
+                <div class="card-title" style="font-size: 14.5px">2. Three Accessible Themes (CSS Variables)</div>
+                <p style="font-size: 12.8px; color: var(--text-dark-muted); line-height: 1.42">
+                  Defaults to clean <strong>Daylight</strong> for bright presentations, with instant switches to <strong>Orbit Dark</strong> (low glare)
+                  and <strong>High Contrast</strong>—zero Tailwind or runtime overhead.
+                </p>
+              </div>
+
+              <div class="card" style="padding: 14px 16px">
+                <div class="card-title" style="font-size: 14.5px">3. Interactive ? HelpPopover Instructions</div>
+                <p style="font-size: 12.8px; color: var(--text-dark-muted); line-height: 1.42">
+                  Every section header and primary button (<em>Pin to Compare</em>, <em>Switch Site</em>, <em>Copy Link</em>, <em>Export</em>,
+                  <em>Next Sunset</em>) explains what it calculates and what to inspect next.
+                </p>
+              </div>
+
+              <div class="callout-info" style="font-size: 12px; padding: 10px 12px">
+                <strong>Resilient UI Rendering:</strong> Defensive metric formatting safely displays <span class="mono">N/A</span> when optional summary
+                fields are omitted by pre-codegen fixtures.
+              </div>
+            </div>
+
+            <div class="shot-frame">
+              <img src="assets/overview-daylight-guide.png" alt="Mission Overview screen in Daylight theme with open Guide HelpPopover" />
+              <div class="shot-caption">
+                Live capture (<span class="mono">Screen 1 of 6 · Daylight</span>): 4 headline verdict cards, collapsed telemetry/hardware sections, and
+                active <strong>Guide</strong> popover.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <span>Lunar Landing Site Navigator · NASA Space Apps Challenge 2026</span>
+          <span>3 / 7</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 4: MAPS & 3D + SKY & TIMELINE -->
+      <section class="slide">
+        <div class="slide-header">
+          <div class="eyebrow-row">
+            <span class="eyebrow">Live Demonstration · Spatial, Terrain &amp; Horizon Sync</span>
+            <span class="badge badge-blue mono">Slide 4 / 7</span>
+          </div>
+          <h2 class="slide-title">2D Polar Maps, 3D Heightfields &amp; Synchronized Horizon/Comms Scrubbing</h2>
+          <p class="slide-subtitle">
+            Scrubbing any timestamp updates solar incidence and Earth line-of-sight rays across both spatial terrain and sky-geometry charts.
+          </p>
+        </div>
+
+        <div class="content-area" style="gap: 14px">
+          <div class="grid-2" style="height: auto; flex: 1">
+            <div class="card" style="padding: 14px 16px; gap: 10px">
+              <div style="display: flex; align-items: center; justify-content: space-between">
+                <strong style="font-size: 15px">Maps &amp; 3D Terrain (Screen 2 of 6)</strong>
+                <span class="badge badge-dark mono">Orbit Dark</span>
+              </div>
+              <div class="shot-frame shot-frame-dark shot-frame-contained">
+                <img src="assets/maps-3d.png" alt="Maps and 3D screen showing 2D Polar Stereographic map and 3D ENU lunar terrain" />
+              </div>
+              <ul class="clean-list" style="gap: 6px">
+                <li>
+                  <strong>2D South Pole Map:</strong> Polar stereographic projection (<span class="mono">80°S–90°S</span> &amp; global view) with live Sun/Earth
+                  azimuth needles and direct links to <strong>NASA QuickMap</strong> &amp; <strong>Moon Trek</strong>.
+                </li>
+                <li>
+                  <strong>Interactive 3D ENU Canvas:</strong> Three.js/R3F crater heightfield with <em>Regolith</em>, <em>Elevation</em>,
+                  <em>Slope Hazard</em> &amp; <em>PSR Frost</em> layers plus live elevation exaggeration (<span class="mono">1x–3x Z</span>).
+                </li>
+              </ul>
+            </div>
+
+            <div class="card" style="padding: 14px 16px; gap: 10px">
+              <div style="display: flex; align-items: center; justify-content: space-between">
+                <strong style="font-size: 15px">Sky &amp; Timeline (Screen 3 of 6)</strong>
+                <span class="badge badge-dark mono">Orbit Dark</span>
+              </div>
+              <div class="shot-frame shot-frame-dark shot-frame-contained">
+                <img src="assets/sky-timeline.png" alt="Sky and Timeline screen showing 3-track scrubber, 360 horizon silhouette, and polar sky-dome" />
+              </div>
+              <ul class="clean-list" style="gap: 6px">
+                <li>
+                  <strong>3-Track Mission Scrubber:</strong> Solar regime streaks (Sunlit / Grazing / Dark), DTE Comms availability, and elevation/power
+                  curves with 1-click <strong>Next Sunset</strong> &amp; <strong>Next Earthset</strong> jumps.
+                </li>
+                <li>
+                  <strong>360° Horizon &amp; Polar Sky-Dome:</strong> Separates terrain horizon profile from spherical limb, tracking solar/Earth clearance
+                  with toggleable <em>Rim Zoom</em> (<span class="mono">-5°..+25°</span>).
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <span>Sample contract payload rendered from backend fixture during local dev preview</span>
+          <span>4 / 7</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 5: COMPARE SCENARIOS & LANDING WINDOWS -->
+      <section class="slide">
+        <div class="slide-header">
+          <div class="eyebrow-row">
+            <span class="eyebrow">Live Demonstration · Mission Trade-Offs, Windows &amp; Export</span>
+            <span class="badge badge-blue mono">Slide 5 / 7</span>
+          </div>
+          <h2 class="slide-title">Side-by-Side Scenario Comparison, Launch-Window Heatmap &amp; Export</h2>
+          <p class="slide-subtitle">
+            Turn individual site evaluations into rapid trade studies, seasonal landing-window discovery, and portable mission briefings.
+          </p>
+        </div>
+
+        <div class="content-area" style="gap: 14px">
+          <div class="grid-2" style="height: auto; flex: 1">
+            <div class="card" style="padding: 14px 16px; gap: 10px">
+              <div style="display: flex; align-items: center; justify-content: space-between">
+                <strong style="font-size: 15px">Compare Scenarios (Screen 4 of 6)</strong>
+                <span class="badge badge-blue mono">2–4 Scenarios</span>
+              </div>
+              <div class="shot-frame shot-frame-contained">
+                <img src="assets/compare.png" alt="Compare Scenarios screen in Daylight theme showing Baseline vs Backup comparison cards" />
+              </div>
+              <ul class="clean-list" style="gap: 6px">
+                <li>
+                  <strong>Signed Baseline Deltas:</strong> Compares pinned sites side-by-side showing feasibility deltas (<span class="mono">-3.3 pts</span>),
+                  sunlit hours (<span class="mono">-22.0h</span>), and DTE link gains (<span class="mono">+36.0h</span>).
+                </li>
+                <li>
+                  <strong>Overlaid Strips, Radar &amp; Delay Shifts:</strong> Collapsible 4-axis trade-off radar, stacked solar/comms tracks, and
+                  <strong>+14 / +29.5 / +90 / +180-day</strong> launch-delay sensitivity explorer.
+                </li>
+              </ul>
+            </div>
+
+            <div class="card" style="padding: 14px 16px; gap: 10px">
+              <div style="display: flex; align-items: center; justify-content: space-between">
+                <strong style="font-size: 15px">Landing Windows &amp; Export (Screen 5 of 6)</strong>
+                <span class="badge badge-green mono">Screening + Sharing</span>
+              </div>
+              <div class="shot-frame shot-frame-contained">
+                <img src="assets/windows.png" alt="Landing Window Finder screen showing top 3 ranked windows and 12-month heatmap" />
+              </div>
+              <ul class="clean-list" style="gap: 6px">
+                <li>
+                  <strong>Top Recommended Windows &amp; Monthly Heatmap:</strong> Ranks seasonal launch dates by feasibility, sunlit fraction, DTE link,
+                  and max dark streak—with 1-click <em>Load in Cockpit</em>.
+                </li>
+                <li>
+                  <strong>Reproducible Sharing &amp; Briefing Export:</strong> Canonical shareable URL parameters (<span class="mono">Copy Link</span>), CSV
+                  timeseries, full JSON bundle, and printable briefing sheet (<span class="mono">Export</span>).
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <span>Lunar Landing Site Navigator · NASA Space Apps Challenge 2026</span>
+          <span>5 / 7</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 6: SCIENTIFIC FOUNDATION & CLEAN ARCHITECTURE -->
+      <section class="slide">
+        <div class="slide-header">
+          <div class="eyebrow-row">
+            <span class="eyebrow">Scientific Rigor &amp; System Architecture</span>
+            <span class="badge badge-blue mono">Slide 6 / 7</span>
+          </div>
+          <h2 class="slide-title">16 IAU-Sourced Landing Sites, Honest Terrain Classes &amp; Clean Architecture</h2>
+          <p class="slide-subtitle">
+            Strict single-source contracts (<span class="mono">Contracts A–E</span>), precomputed offline architecture, and a deliberate
+            zero-runtime-AI policy for full reproducibility.
+          </p>
+        </div>
+
+        <div class="content-area" style="gap: 14px">
+          <div class="grid-3" style="height: auto; flex: 1">
+            <div class="card">
+              <div class="card-title">
+                <span class="badge badge-blue">DATA-001</span>
+                <span>16-Site Verified Registry</span>
+              </div>
+              <div class="kv-grid" style="margin-top: 2px">
+                <div class="kv-box">
+                  <div class="kv-label">Artemis III (9)</div>
+                  <div class="kv-value" style="font-size: 12.5px">Peak Cabeus B, Haworth, Malapert, Mons Mouton (+Plateau), Nobile 1 &amp; 2, de Gerlache 2, Slater</div>
+                </div>
+                <div class="kv-box">
+                  <div class="kv-label">CLPS / Global (7)</div>
+                  <div class="kv-value" style="font-size: 12.5px">Mare Crisium, Gruithuisen, Lacus Mortis, Apollo 11 &amp; 15, Chandrayaan-3, Chang'e-4</div>
+                </div>
+              </div>
+              <ul class="clean-list" style="margin-top: 4px; gap: 7px">
+                <li>Aligned to NASA's <strong>2024-10-28</strong> nine Artemis III candidate landing regions.</li>
+                <li>Every entry in <span class="mono">curated_sites.yaml</span> records an IAU/USGS Gazetteer feature URL—zero invented coordinates.</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <div class="card-title">
+                <span class="badge badge-gold">REQ-04 – 09</span>
+                <span>Data Products &amp; Class Split</span>
+              </div>
+              <ul class="clean-list" style="gap: 8px">
+                <li>
+                  <strong>Class A Polar Sites (&le; &minus;80°):</strong> Targeted for NASA LRO LOLA <span class="mono">ldem_80s_80m.img</span>
+                  (<span class="mono">80 m/px</span> polar stereographic DEM &amp; 360° horizon raycast).
+                </li>
+                <li>
+                  <strong>Class B Non-Polar Sites:</strong> Explicitly modeled as <span class="mono">spherical_limb_only</span>—terrain endpoints
+                  specify <span class="mono">409 TERRAIN_NOT_AVAILABLE</span> and <span class="mono">null</span> terrain/feasibility scores.
+                </li>
+                <li>
+                  <strong>Ephemeris &amp; Offline Rule:</strong> Build-time <strong>JPL Horizons</strong> (<span class="mono">MOON_ME</span>,
+                  <span class="mono">2026–2029</span>) site packs ensure zero runtime network calls.
+                </li>
+              </ul>
+            </div>
+
+            <div class="card-tinted">
+              <div class="card-title">
+                <span class="badge badge-green">STACK</span>
+                <span>Hexagonal Web Stack</span>
+              </div>
+              <ul class="clean-list" style="gap: 8px">
+                <li>
+                  <strong>Backend (Python 3.12):</strong> FastAPI + Pydantic v2 schemas (<span class="mono">/health</span>, <span class="mono">/sites</span>,
+                  <span class="mono">/sites/{id}/terrain</span>, <span class="mono">/evaluate</span>, <span class="mono">/compare</span>,
+                  <span class="mono">/windows</span>).
+                </li>
+                <li>
+                  <strong>Frontend (React + TS):</strong> Strict TypeScript, Vite, Three.js / React-Three-Fiber, 4 decoupled Zustand stores, native
+                  <span class="mono">fetch</span> + pure CSS variables.
+                </li>
+                <li>
+                  <strong>No Runtime AI / ML:</strong> Closed-form computation only—every metric is verifiable against NASA/JPL references with zero
+                  inference drift.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout-info" style="display: flex; align-items: center; justify-content: space-between; font-size: 12.5px">
+            <span>
+              <strong>Data Provenance Standard:</strong> NASA LRO LOLA (<span class="mono">ldem_80s_80m</span>) · JPL Horizons
+              (<span class="mono">MOON_ME</span>) · IAU/USGS Gazetteer · NASA QuickMap · Moon Trek · CSA
+            </span>
+            <span class="badge badge-blue mono">Single Source of Truth</span>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <span>Lunar Landing Site Navigator · Clean Architecture &amp; Provenance Design</span>
+          <span>6 / 7</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 7: VERIFICATION & ROADMAP -->
+      <section class="slide">
+        <div class="slide-header">
+          <div class="eyebrow-row">
+            <span class="eyebrow">Verification, Quality Gates &amp; Roadmap</span>
+            <span class="badge badge-blue mono">Slide 7 / 7</span>
+          </div>
+          <h2 class="slide-title">Verified Engineering Quality Today &amp; Clear Delivery Path</h2>
+          <p class="slide-subtitle">
+            Strict CI/local guardrails validate types, linting, formatting, file budgets (&le; 280 lines), and live UI flows while remaining
+            transparent about next pipeline milestones.
+          </p>
+        </div>
+
+        <div class="content-area" style="gap: 14px">
+          <div class="grid-2" style="height: auto; flex: 1">
+            <div class="card" style="gap: 10px">
+              <div class="card-title">
+                <span class="badge badge-green">VERIFIED</span>
+                <span>Observed Checks on Branch <span class="mono">ui-refactor</span></span>
+              </div>
+              <div class="check-grid">
+                <div class="check-item">
+                  <div class="check-name">TypeScript &amp; Build</div>
+                  <div class="check-desc"><span class="mono">tsc --noEmit</span> &amp; Vite production bundle exit 0</div>
+                </div>
+                <div class="check-item">
+                  <div class="check-name">Vitest Unit Suite</div>
+                  <div class="check-desc">7 test files, 12/12 tests passing after final edit</div>
+                </div>
+                <div class="check-item">
+                  <div class="check-name">ESLint &amp; Prettier</div>
+                  <div class="check-desc">Zero warnings (<span class="mono">--max-warnings=0</span>) &amp; format clean</div>
+                </div>
+                <div class="check-item">
+                  <div class="check-name">Repo Guardrails</div>
+                  <div class="check-desc">0 files &gt; 280 lines; prohibited &amp; ledger DAG checks pass</div>
+                </div>
+              </div>
+              <div class="callout-info" style="margin-top: 2px; font-size: 12.2px">
+                <strong>Live Browser QA Verified:</strong> Daylight default, Orbit Dark &amp; High Contrast switches, contextual HelpPopovers,
+                slide-over Site Drawer, defensive <span class="mono">N/A</span> telemetry expansion, and all 6 navigation screens tested cleanly.
+              </div>
+            </div>
+
+            <div class="card-tinted" style="gap: 9px">
+              <div class="card-title">
+                <span class="badge badge-blue">ROADMAP</span>
+                <span>Task-Ledger Progression (<span class="mono">29 Tasks</span>)</span>
+              </div>
+
+              <div class="status-pill-row">
+                <span class="badge badge-green" style="text-align: center">DONE</span>
+                <div>
+                  <strong>Foundation &amp; UX (<span class="mono">UI-001</span>, <span class="mono">DATA-001</span>, <span class="mono">ARCH-001</span>):</strong> 16 IAU-verified sites, pinned toolchain/CI gates,
+                  multi-theme 6-screen UI redesign pushed to <span class="mono">ui-refactor</span> (<span class="mono">5a46abc</span>).
+                </div>
+              </div>
+
+              <div class="status-pill-row">
+                <span class="badge badge-gold" style="text-align: center">NEXT · M1/M2</span>
+                <div>
+                  <strong>Data &amp; Contracts (<span class="mono">ARCH-002</span>, <span class="mono">DATA-002..006</span>):</strong> Generate OpenAPI/TS schemas, ingest LOLA <span class="mono">80 m</span>
+                  DEM + JPL Horizons <span class="mono">2026–2029</span> tracks, and refresh fixtures from the 16-site registry.
+                </div>
+              </div>
+
+              <div class="status-pill-row">
+                <span class="badge badge-blue" style="text-align: center">QUEUED</span>
+                <div>
+                  <strong>Closed-Form Physics &amp; Offline Gate (<span class="mono">BE-001..003</span>, <span class="mono">FE-*</span>, <span class="mono">QA-001</span>):</strong> Replace sample contract stubs with real
+                  raycasted horizon, solar/DTE scoring &amp; full offline bundle verification.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="callout-warn" style="display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 12.5px">
+            <span>
+              <strong>Mission Impact:</strong> Makes lunar South Pole trade-offs approachable in seconds while keeping terrain uncertainty explicit
+              (<span class="mono">Class A vs. Class B</span>).
+            </span>
+            <span class="badge badge-gold" style="white-space: nowrap; flex-shrink: 0">NASA Space Apps 2026</span>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <span class="mono">https://github.com/zeeshanali-k/lunar-landing-navigator · Branch: ui-refactor</span>
+          <span>NASA Space Apps Challenge 2026 · 7 / 7</span>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        const deck = document.getElementById("deck");
+        const slides = Array.from(document.querySelectorAll(".slide"));
+        const toggleBtn = document.getElementById("toggle-mode-btn");
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+        const indicator = document.getElementById("slide-indicator");
+        let focusMode = false;
+        let currentIndex = 0;
+
+        function renderMode() {
+          if (!focusMode) {
+            slides.forEach((s) => (s.style.display = "flex"));
+            toggleBtn.textContent = "Focus Mode (1 Slide)";
+            prevBtn.style.display = "none";
+            nextBtn.style.display = "none";
+            indicator.textContent = "All " + slides.length + " Slides";
+            deck.style.justifyContent = "flex-start";
+            return;
+          }
+          slides.forEach((s, idx) => {
+            s.style.display = idx === currentIndex ? "flex" : "none";
+          });
+          toggleBtn.textContent = "Scroll All Slides";
+          prevBtn.style.display = "inline-block";
+          nextBtn.style.display = "inline-block";
+          indicator.textContent = "Slide " + (currentIndex + 1) + " / " + slides.length;
+        }
+
+        toggleBtn.addEventListener("click", () => {
+          focusMode = !focusMode;
+          renderMode();
+        });
+
+        prevBtn.addEventListener("click", () => {
+          currentIndex = Math.max(0, currentIndex - 1);
+          renderMode();
+        });
+
+        nextBtn.addEventListener("click", () => {
+          currentIndex = Math.min(slides.length - 1, currentIndex + 1);
+          renderMode();
+        });
+
+        window.addEventListener("keydown", (event) => {
+          if (!focusMode) return;
+          if (event.key === "ArrowRight" || event.key === " ") {
+            event.preventDefault();
+            currentIndex = Math.min(slides.length - 1, currentIndex + 1);
+            renderMode();
+          } else if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            currentIndex = Math.max(0, currentIndex - 1);
+            renderMode();
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
