@@ -424,7 +424,7 @@
       "priority": "delivery",
       "owner": "M5",
       "reviewer": "M2",
-      "status": "pending",
+      "status": "done",
       "depends_on": [
         "DELIVERY-002"
       ],
@@ -528,12 +528,65 @@
           "ref": "pnpm run build"
         }
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen pytest -v",
+          "exit": 0,
+          "note": "273 passed"
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen ruff check .",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --python 3.12 --frozen mypy src tests",
+          "exit": 0,
+          "note": "Success: no issues found in 66 source files"
+        },
+        {
+          "kind": "command",
+          "ref": "pnpm run typecheck",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "pnpm run build",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --project backend --python 3.12 --frozen python scripts/validate_task_ledger.py",
+          "exit": 0
+        },
+        {
+          "kind": "command",
+          "ref": "uv run --project backend --python 3.12 --frozen python scripts/check_file_lengths.py",
+          "exit": 0
+        },
+        {
+          "kind": "artifact",
+          "ref": "vercel.json",
+          "sha256": "37ccda4a6d16ad04f3b186b3082af8aacc1023072b9e2bc5de4a7be0090dd722"
+        },
+        {
+          "kind": "artifact",
+          "ref": "api/index.py",
+          "sha256": "2faf9b4382bd28c84a315b9799f4a387842f7b240ff02fc3c21fc625820d0331"
+        },
+        {
+          "kind": "artifact",
+          "ref": "requirements.txt",
+          "sha256": "09ebb5ee6ad5ee20880b7d663b02c14c507eb226b40dca9037cfd915e5b31b04"
+        }
+      ],
       "human_approval_required": false,
       "approval": null,
       "blocked_reason": null,
-      "completed_at_utc": null,
-      "completed_commit": null
+      "completed_at_utc": "2026-11-17T12:19:38Z",
+      "completed_commit": "d6e1a2e6dc6dcfc03bf667434a95c7d637b90f4c"
     },
     {
       "id": "UI-001",
