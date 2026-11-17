@@ -1,0 +1,22 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "cd frontend && if command -v bun >/dev/null 2>&1; then bun install --frozen-lockfile; else pnpm install --no-lockfile; fi",
+  "buildCommand": "cd frontend && if command -v bun >/dev/null 2>&1; then bun run build; else pnpm run build; fi",
+  "outputDirectory": "frontend/dist",
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "{backend/src/**,backend/config/**,backend/data/site_packs/**,data/manifests/site_packs/index.json}",
+      "excludeFiles": "{frontend/**,backend/tests/**,backend/src/cli/**,backend/src/infrastructure/dem_tiler.py,backend/src/infrastructure/pds_dem.py,backend/src/infrastructure/raycaster.py,backend/.venv/**,contracts/**,docs/**,plan/**,scripts/**,submission/**,data/downloads/**,data/manifests/lola/**,data/manifests/horizons/**,data/manifests/references/**}"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

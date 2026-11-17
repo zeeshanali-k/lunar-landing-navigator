@@ -921,3 +921,13 @@ M3 impact: BE-003 is an FE-003 input; after zeta merges BE-003 (with DATA-006 al
 Known risks: none
 Do not merge if: pytest, ruff, or mypy fails, or the tree contains changes outside the paths above
 ```
+
+
+---
+
+### DEPLOY-001 — done
+
+- Branch/commit: `feat/vercel-deploy` @ `d6e1a2e6` (task work); ledger & work-log closure left uncommitted for human `ALLOW_PROTECTED=1` digest refresh.
+- Changed: added `api/index.py` (Vercel ASGI entrypoint exporting `app` from `backend/src/api/main.py`), `requirements.txt` (runtime-only pinned deps `fastapi==0.163.0`, `pydantic==2.14.3`, `PyYAML==6.0.3`, excluding offline `numpy`/`scipy`/`httpx`), `vercel.json` (builds `frontend/dist` with Bun primary / `pnpm` fallback, bundles `backend/src/**`, `backend/config/**`, `backend/data/site_packs/**`, and `data/manifests/site_packs/index.json` via `includeFiles`, excludes offline/test paths, and rewrites `/api/(.*)` -> `/api/index.py` and `/((?!api/).*)` -> `/index.html`), `.vercelignore`, and `backend/tests/integration/test_vercel_entrypoint.py`.
+- Commands: `uv run --python 3.12 --frozen pytest -v` — exit 0 (273 passed); `uv run --python 3.12 --frozen ruff check .` — exit 0; `uv run --python 3.12 --frozen mypy src tests` — exit 0 (66 files); `pnpm run typecheck` — exit 0; `pnpm run build` — exit 0; `uv run --project backend --python 3.12 --frozen python scripts/validate_task_ledger.py` — exit 0; `uv run --project backend --python 3.12 --frozen python scripts/check_file_lengths.py` — exit 0.
+- Open issues: none blocking; human sign-off (`ALLOW_PROTECTED=1 uv run --project backend --python 3.12 --frozen python scripts/check_planning_docs.py --refresh`) is needed to refresh `plan/protected.sha256` for the `plan/task-ledger.json` and `WORK_LOG.md` closure edits before running `check_planning_docs.py` or committing.

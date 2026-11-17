@@ -84,6 +84,7 @@ When a check fails, the agent reports the failure and stops. Making the check pa
 Sixteen curated sites; site/date/duration controls; precomputed Sun and Earth ephemeris; real LOLA terrain for covered sites and an honest `spherical_limb_only` model elsewhere; 360° horizon silhouette; multi-day power/DTE timeline; KPI strip with solar elevation and hours-to-sunset/earthset; power and DTE assessment; canonical shareable URL; and an offline demo that requires no network.
 
 **P0 has no** custom coordinates, comparison, window heatmap, 2D polar map, 3D, PSR masks, export, Docker, cloud deployment, or database.
+**Delivery exception (`DEPLOY-001`):** Full-stack Vercel deployment (Vite frontend + FastAPI serverless API) is authorized on `feat/vercel-deploy`.
 
 ### P1 — only after `P1-APPROVAL`
 
